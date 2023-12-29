@@ -1,0 +1,119 @@
+/*
+Template Name: It Serv
+File: Layout CSS
+Author: TemplatesOnWeb
+Author URI: https://www.templateonweb.com/
+Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
+*/
+/*********************services****************/
+.serv_pg1i2{
+background-image: linear-gradient(90deg, #7114efe3 0%, #1475f7e8 50%, #7114EF) !important;
+top:0;
+padding:45px 15px 0px 15px;
+display:none; 
+ }
+.serv_pg1i:hover .serv_pg1i2{
+display:block;
+ }
+.serv_pg1i3{
+bottom:0; 
+background-image: linear-gradient(90deg, #7114efe3 0%, #1475f7e8 50%, #7114EF) !important;
+padding:15px 15px;
+ }
+.serv_pg1i3 span{
+width:80px;
+height:80px;
+line-height:77px;
+font-size:36px;
+display:inline-block;
+background:#fff;
+color:#5333F2;
+border-radius:50%;
+border:3px solid #5333F2;
+margin-top:-100px;
+ }
+.serv_pg1i:hover .serv_pg1i3{
+display:none;
+ }
+.test_1ril span{
+width:70px;
+height:70px;
+line-height:67px;
+font-size:32px;
+display:inline-block;
+background:#fff;
+color:#5333F2;
+border-radius:50%;
+border:3px solid #5333F2;
+text-align:center;
+ }
+.test_1r{
+padding:80px 40px; 
+ }
+.test_1l{
+background-image: url(../img/34.jpg);
+background-position: center;
+ }
+.test_1lm{
+background: #0000009e;
+padding:460px 40px 40px 40px;
+ }
+/*********************services_end****************/
+
+
+@media screen and (max-width : 767px){
+.serv_pg1i {
+margin-top:15px; 
+ }
+.serv_pg1i2  p{
+text-align:left; 
+ }
+.test_1lm {
+padding: 360px 40px 40px 40px;
+text-align:center;
+}
+.test_1lm p{
+text-align:left;
+}
+.test_1r {
+padding: 40px 20px;
+text-align:center;
+}
+.test_1r p{
+text-align:left; 
+}
+.test_1ril{
+margin-top:15px; 
+ }
+ }
+@media (min-width:768px) and (max-width:991px) {
+.serv_pg1i1 img{
+min-height:330px; 
+ }
+.serv_pg1i2 p{
+font-size:12px;
+ }
+.test_1r {
+padding: 40px 15px;
+}
+.test_1r br{
+display:none;
+}
+.test_1r p{
+font-size:15px;
+}
+ }
+@media (min-width:992px) and (max-width:1200px) {
+.serv_pg1i1 img{
+min-height:330px; 
+ }
+.serv_pg1i3 h5{
+font-size:16px;
+ }
+.serv_pg1i2 p{
+font-size:14px;
+ }
+.test_1r {
+padding: 40px 15px;
+}
+ }

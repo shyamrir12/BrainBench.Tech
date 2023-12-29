@@ -1,0 +1,88 @@
+/*
+Template Name: It Serv
+File: Layout CSS
+Author: TemplatesOnWeb
+Author URI: https://www.templateonweb.com/
+Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
+*/
+/*********************team_detail****************/
+.team_dt1ri span {
+width: 55px;
+height: 55px;
+line-height:55px;
+background-color: #fff;
+border-radius: 5px;
+text-align: center;
+font-size: 36px;
+color: #5333F2;
+margin-right: 20px;
+display: inline-block;
+vertical-align:top;
+}
+.team_dt1ri h5 {
+line-height:1.3em;
+}
+.team_dt1r ul li a {
+background: #2E2D2D;
+border-radius: 5px;
+}
+.team_dt1{
+padding:40px 20px; 
+ }
+.team_dt2{
+padding:0px 20px 40px 20px; 
+ }
+.progress{
+background:#fff;
+height:6px; 
+ }
+.progress-bar{
+background:#5333F2;
+ }
+/*********************team_detail_end****************/
+
+
+@media screen and (max-width : 767px){
+.team_dt1 {
+padding: 40px 10px;
+}
+.team_dt2 {
+padding: 0px 10px 40px 10px;
+}
+.team_dt2 h2{
+text-align:center;
+}
+.team_dt1r {
+text-align:center; 
+ }
+.team_dt1r p{
+text-align:left; 
+ }
+.team_dt1ri {
+text-align:left; 
+ }
+.team_dt1ri h5{
+font-size:15px;
+ }
+.team_dt1ri span {
+margin-right: 10px;
+}
+
+ }
+@media (min-width:768px) and (max-width:991px) {
+.team_dt1l img{
+min-height:540px; 
+ }
+.team_dt2l p{
+font-size:14px; 
+ }
+.team_dt2l h6{
+font-size:14px; 
+ }
+ }
+@media (min-width:992px) and (max-width:1200px) {
+.team_dt1l img{
+min-height:540px; 
+ }
+
+ }

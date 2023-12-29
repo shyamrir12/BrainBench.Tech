@@ -1,0 +1,62 @@
+/*
+Template Name: It Serv
+File: Layout CSS
+Author: TemplatesOnWeb
+Author URI: https://www.templateonweb.com/
+Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
+*/
+/*********************contact****************/
+.contact_1li span {
+font-size:30px;
+}
+.contact_1li{
+box-shadow: 0 11px 27px rgb(0 9 71 / 13%);
+padding: 30px 20px; 
+ }
+.contact_1r{
+box-shadow: 0 11px 27px rgb(0 9 71 / 13%);
+padding: 30px;  
+ }
+.contact_1ril .form-control {
+border-radius: 0;
+border-color: #5333f212;
+height: 48px;
+margin-top:12px;
+}
+.contact_1ril .form-select {
+border-radius: 0;
+border-color: #5333f212;
+height: 48px;
+}
+.contact_1ril .area {
+height:150px;
+}
+/*********************contact_end****************/
+
+
+@media screen and (max-width : 767px){
+.contact_1l {
+text-align:center; 
+ }
+.contact_1r{
+margin-top:20px; 
+ }
+.contact_1r .form-control{
+margin-bottom:15px; 
+ }
+.contact_1r h6{
+text-align:center;  
+ }
+ }
+@media (min-width:768px) and (max-width:991px) {
+.contact_1li {
+padding: 30px 10px;
+}
+.contact_1li span{
+font-size:20px; 
+ }
+ }
+@media (min-width:992px) and (max-width:1200px) {
+
+
+ }

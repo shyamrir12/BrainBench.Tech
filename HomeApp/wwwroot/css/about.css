@@ -1,0 +1,198 @@
+/*
+Template Name: It Serv
+File: Layout CSS
+Author: TemplatesOnWeb
+Author URI: https://www.templateonweb.com/
+Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
+*/
+/*********************about****************/
+.about_pg1r{
+margin-top:60px;
+ }
+.about_pg1r1 img{
+width:80%; 
+ }
+.about_pg1r2 h2{
+background-image: linear-gradient(90deg, #7114EF 0%, #1475F7 50%, #7114EF);
+line-height:0.4em;
+color:#fff;
+padding:40px 30px; 
+ }
+.about_pg1r2{
+top:-50px; 
+ }
+.about_pg1r3{
+bottom:-35px;
+width:70%;
+left:80px;
+box-shadow: 0 11px 27px rgb(0 9 71 / 13%);
+ }
+.about_pg1r3m{
+border-radius: 30px 30px 0px 0px;
+padding:30px 15px;
+ }
+.about_pg1r3l span{
+font-size:50px; 
+line-height:0;
+ }
+ 
+.hist_1i img{
+width:120px;
+height:120px; 
+ }
+.hist_1i h5{
+background-image: linear-gradient(90deg, #7114EF 0%, #1475F7 50%, #7114EF);
+padding:15px; 
+ }
+ 
+.team_1i2{
+top:0;
+background:#000000db;
+padding:30px 15px;
+display:none;
+ }
+.team_1i3{
+background:#000000db;
+padding:20px 10px 40px 10px;
+bottom:0; 
+ }
+.team_1i4 ul li a i{
+color: #B1B1B1;
+ }
+.team_1i4 ul li a {
+background:#2E2D2D;
+border-radius:5px;
+ }
+.team_1i4{
+bottom:-20px; 
+ }
+.team_1i:hover .team_1i2{
+display:block; 
+ }
+.team_1i:hover .team_1i3{
+background:#ffffffed;
+ }
+.team_1i:hover .team_1i3 h4{
+color:#2E2D2D!important;
+ }
+
+.subs_1{
+background: 
+ }
+.subs_m {
+background-image: linear-gradient(90deg, #7114efe3 0%, #1475f7e8 50%, #7114EF) !important;
+padding-top: 80px;
+padding-bottom: 80px;
+}
+.subs_1 {
+background-image: url(../img/1.jpg);
+background-position: center;
+margin-top:60px;
+}
+/*********************about_end****************/
+
+
+@media screen and (max-width : 767px){
+.about_pg1l{
+text-align:center; 
+ }
+.about_pg1l p{
+text-align:left; 
+ }
+.about_pg1r1 img{
+width:100%; 
+ }
+.about_pg1r2{
+position:static!important;
+width:100%;
+margin-top:15px;
+margin-bottom:15px;
+text-align:center;
+ }
+.about_pg1r3{
+position:static!important;
+width:100%;
+border-radius:0;
+ }
+.about_pg1r3m{
+border-radius:0;
+text-align:center; 
+ }
+.about_pg1r3r{
+margin-top:15px;
+ }
+.about_pg1r3r p{
+text-align:left;
+ }
+.hist_1i{
+margin-top:15px;  
+  }
+.hist_1i p{
+text-align:left; 
+  }
+.team_1i1 img{
+min-height:330px;  
+  }
+.team_1i{
+margin-top:30px; 
+ }
+.team_1i2 p{
+text-align:left;  
+ }
+.subs_1i{
+margin-top:15px; 
+ }
+ }
+@media (min-width:768px) and (max-width:991px) {
+.about_pg1r1  img{
+min-height:450px; 
+ }
+.about_pg1r3 {
+position:static!important;
+width:100%;
+}
+.about_pg1r3m {
+margin-left:20px!important;
+margin-right:20px!important;
+padding:20px 0px;
+margin-top:20px;
+}
+.about_pg1r3l span{
+font-size:30px; 
+ }
+.team_1i4 ul li a {
+width:35px;
+height:35px;
+}
+.team_1i4 ul li a i{
+line-height:35px;
+font-size:16px;
+}
+.team_1i2  p{
+font-size:12px; 
+ }
+.subs_1i  h5{
+font-size:16px; 
+ }
+ }
+@media (min-width:992px) and (max-width:1200px) {
+.about_pg1r1  img{
+min-height:450px; 
+ }
+.about_pg1r3 {
+position:static!important;
+width:100%;
+}
+.about_pg1r3m {
+margin-left:20px!important;
+margin-right:20px!important;
+padding:20px 0px;
+margin-top:20px;
+}
+.about_pg1r3l span{
+font-size:30px; 
+ }
+.team_1i2  p{
+font-size:14px; 
+ }
+ }
