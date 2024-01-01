@@ -45,20 +45,20 @@ namespace AuthServer.Controllers
 			var key = Encoding.ASCII.GetBytes(secretKey);
 
 			//create claims
-			var claimEmail = new Claim(ClaimTypes.Email, user.ApplicantName);
+			var claimEmail = new Claim(ClaimTypes.Email, user.EmailId);
 			string UserSubUserid = "";
-			if (user.IsSubUser)
-			{
-				UserSubUserid = user.SubUserID.ToString();
-			}
-			else
-			{
-				UserSubUserid = user.UserId.ToString();
-			}
+			//if (user.IsSubUser)
+			//{
+			//	UserSubUserid = user.SubUserID.ToString();
+			//}
+			//else
+			//{
+			//	UserSubUserid = user.UserId.ToString();
+			//}
 			var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, UserSubUserid);
 
-			var claimRole = new Claim(ClaimTypes.Role, user.UserType == null ? "" : user.UserType);
-			var UserName = new Claim(ClaimTypes.Name, user.UserType == null ? "" : user.UserName);
+			var claimRole = new Claim(ClaimTypes.Role, user.Role == null ? "" : user.Role);
+			var UserName = new Claim(ClaimTypes.Name, user.Name == null ? "" : user.Name);
 
 			//create claimsIdentity
 			var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimRole, UserName }, "serverAuth");
@@ -90,7 +90,7 @@ namespace AuthServer.Controllers
 			UserLoginSession loggedInUser = await _usercontext.Authenticate(authenticationRequest);
 			if (loggedInUser != null)
 			{
-				if (loggedInUser.ApplicantName == "-1")
+				if (loggedInUser.Name == "-1")
 				{
 					token = "";
 				}

@@ -17,58 +17,62 @@
 	public class MenuEF
 	{
 
-		public int? MenuId { get; set; }
-		public string MenuName { get; set; }
-		public string ParentId { get; set; }
-		public string Controller { get; set; }
-		public string url { get; set; }
-		public string Area { get; set; }
-		public string ActionName { get; set; }
-		public string IsView { get; set; }
-		public string IsAdd { get; set; }
-		public string IsEdit { get; set; }
-		public string IsDelete { get; set; }
-		public int? DisplaySrNo { get; set; }
-		public string CssClass { get; set; }
-		public string MenuLevel { get; set; }
-		public string ParentMenuName { get; set; }
-		public int? MobileMenu { get; set; }
+		public MenuEF()
+		{
+			Items = new List<MenuItem>();
+		}
 
-		public List<childMenu> childMenuList { get; set; }
-		public string GifIcon { get; set; }
-		public string divclass { get; set; }
-		public string SvgPath { get; set; }
-		public string LinkPath { get; set; }
-	}
-	public class ParentMenu
-	{
+		// User Information
+		public string role { get; set; }
+		public string name { get; set; }
+		public string username { get; set; }
+		public string designation { get; set; }
+		public string userimage { get; set; }
+		public string department { get; set; }
+
+
+		public List<MenuItem> Items;
+
 
 	}
-	public class childMenu
+	
+
+	public class MenuItem
 	{
-		public int MenuId { get; set; }
+		public MenuItem()
+		{
+			this.ChildMenuItems = new List<MenuItem>();
+		}
+
+		public int MenuItemId { get; set; }
+		public string MenuItemName { get; set; }
+		public string MenuItemPath { get; set; }
 		public string MenuName { get; set; }
-		public int ParentId { get; set; }
-		public string Controller { get; set; }
+		public Nullable<int> ParentItemId { get; set; }
+
 		public string url { get; set; }
 		public string Area { get; set; }
-		public string ActionName { get; set; }
-		public string IsView { get; set; }
-		public string IsAdd { get; set; }
-		public string IsEdit { get; set; }
-		public string IsDelete { get; set; }
 		public string DisplaySrNo { get; set; }
-		public string CssClass { get; set; }
-		public string MenuLevel { get; set; }
-		public string ParentMenuName { get; set; }
 		public string GifIcon { get; set; }
-		public string Description { get; set; }
+
+		public virtual ICollection<MenuItem> ChildMenuItems { get; set; }
+
 	}
-	public class menuonput
+	public class TreeNode
 	{
-		public int UserID { get; set; }
-		public int MineralId { get; set; }
-		public string MineralName { get; set; }
-		public int? MMenuId { get; set; }
+		public int CategoryId { get; set; }
+		public string CategoryName { get; set; }
+		public string ControllerName { get; set; }
+		public string ActionName { get; set; }
+		public TreeNode ParentCategory { get; set; }
+		public List<TreeNode> Children { get; set; }
+	}
+	public class Category
+	{
+		public int CategoryId { get; set; }
+		public string CategoryName { get; set; }
+		public string ControllerName { get; set; }
+		public string ActionName { get; set; }
+		public System.Nullable<int> ParentCategoryId { get; set; }
 	}
 }
