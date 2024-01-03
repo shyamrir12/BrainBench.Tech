@@ -2,6 +2,10 @@
 {
 	public class UserLoginSession
 	{
+		public UserLoginSession()
+		{
+			Items = new List<MenuItem>();
+		}
 		public int UserID { get; set; }
 		public int RoleId { get; set; }
 		public string Role { get; set; }
@@ -25,11 +29,8 @@
 		public string? WardId { get; set; }
 		public string? RasoiId { get; set; }
 
-		public MenuEF Listmenu
-		{
-			get; set;
-		}
-
+		public List<MenuItem> Items;
+		
 
 		//int? userId;
 		//int? subUserId;

@@ -47,7 +47,8 @@ namespace AuthServer.Services
 				var resultPass = ConnectionAuthDB.Query<UserLoginSession>("AdminPanel_uspUserdata", paramListPass, commandType: System.Data.CommandType.StoredProcedure);
 				if (resultPass.Count() > 0)
 				{
-					string pwd2 = ComputeSha256Hash(model.UserID + resultPass.FirstOrDefault().EncryptPassword);
+
+					string pwd2 = ComputeSha256Hash(model.UserID + resultPass.FirstOrDefault().Password);
 					if (model.Password.ToUpper() == pwd2.ToUpper())
 					{
 						model.Password = resultPass.FirstOrDefault().Password;
@@ -90,11 +91,11 @@ namespace AuthServer.Services
 
 				throw ex;
 			}
-			finally
-			{
+			//finally
+			//{
 
-				objUserLoginSession = null;
-			}
+			//	objUserLoginSession = null;
+			//}
 		}
 
 
@@ -118,9 +119,9 @@ namespace AuthServer.Services
 				if (result.Count() > 0)
 				{
 					objUserLoginSession = result.FirstOrDefault();
+
 					
-			
-					objUserLoginSession.Listmenu = MenuList(objUserLoginSession.UserID, objUserLoginSession.RoleId);
+					objUserLoginSession.Items = MenuList(objUserLoginSession.UserID, objUserLoginSession.RoleId);
 				}
 
 				return objUserLoginSession;
@@ -141,18 +142,18 @@ namespace AuthServer.Services
 		}
 
 
-		public MenuEF MenuList(int UserID,int RoleId)
+		public List<MenuItem> MenuList(int UserID,int RoleId)
 		{
-			
-			MenuEF objListMenuEF = new MenuEF();
+
+			List<MenuItem> objListMenuEF = new List<MenuItem>();
 			
 			List<Category> categories = new List<Category>();
 			try
 			{
 				var paramList = new
 				{
-					RoleId = UserID,
-					UserID = RoleId,
+					RoleId = RoleId,
+					UserID = UserID,
 					
 				};
 				var result = ConnectionAuthDB.Query<Category>("Proc_Get_MenuBy_UserRoll", paramList, commandType: System.Data.CommandType.StoredProcedure);
@@ -195,11 +196,11 @@ namespace AuthServer.Services
 							});
 						}
 						if (_google.MenuName.Equals("Dashboard"))
-							objListMenuEF.Items.Insert(0, _google);
+							objListMenuEF.Insert(0, _google);
 						else if (_google.MenuName.Equals("Master"))
-							objListMenuEF.Items.Insert(1, _google);
+							objListMenuEF.Insert(1, _google);
 						else
-							objListMenuEF.Items.Add(_google);
+							objListMenuEF.Add(_google);
 					}
 				}
 			}

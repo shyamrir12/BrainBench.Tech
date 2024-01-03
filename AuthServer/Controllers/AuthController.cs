@@ -10,6 +10,7 @@ using System.Text;
 
 namespace AuthServer.Controllers
 {
+	[Route("api/[controller]/[action]")]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class AuthController : ControllerBase
@@ -23,8 +24,8 @@ namespace AuthServer.Controllers
 			this._configuration = configuration;
 			this._usercontext = usercontext;
 		}
-		
 
+		
 		//Migrating to JWT Authorization...
 		private string GenerateJwtToken(UserLoginSession user)
 		{
@@ -47,14 +48,14 @@ namespace AuthServer.Controllers
 			//create claims
 			var claimEmail = new Claim(ClaimTypes.Email, user.EmailId);
 			string UserSubUserid = "";
-			//if (user.IsSubUser)
-			//{
-			//	UserSubUserid = user.SubUserID.ToString();
-			//}
-			//else
-			//{
-			//	UserSubUserid = user.UserId.ToString();
-			//}
+			if (user.subroleid!=null&&user.subroleid>0)
+			{
+				UserSubUserid = user.subroleid.ToString();
+			}
+			else
+			{
+				UserSubUserid = user.UserID.ToString();
+			}
 			var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, UserSubUserid);
 
 			var claimRole = new Claim(ClaimTypes.Role, user.Role == null ? "" : user.Role);
@@ -148,7 +149,7 @@ namespace AuthServer.Controllers
 					//returning the user if found
 					var userId = principle.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 					var UserType = principle.FindFirst(ClaimTypes.Role)?.Value;
-					var UserName = principle.FindFirst(ClaimTypes.UserData)?.Value;
+					//var UserName = principle.FindFirst(ClaimTypes.UserData)?.Value;
 					LoginEF model = new LoginEF();
 					model.UserID = int.Parse(userId);
 					model.UserType = UserType.ToString();
