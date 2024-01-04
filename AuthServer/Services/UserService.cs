@@ -170,6 +170,10 @@ namespace AuthServer.Services
 							CategoryName = item.CategoryName,
 							ControllerName = item.ControllerName,
 							ActionName =item.ActionName,
+							url = item.url,
+							Area = item.Area,
+							DisplaySrNo = item.DisplaySrNo,
+							GifIcon = item.GifIcon,
 							ParentCategoryId = (item.ParentCategoryId != 0) ? item.ParentCategoryId : (int?)null
 						});
 
@@ -182,18 +186,30 @@ namespace AuthServer.Services
 					{
 						var _google = new MenuItem()
 						{
+							MenuItemId = item.CategoryId,
 							MenuName = item.CategoryName,
 							MenuItemName = item.ControllerName,
 							MenuItemPath = item.ActionName,
+							url = item.url,
+							Area = item.Area,
+							DisplaySrNo = item.DisplaySrNo,
+							GifIcon = item.GifIcon,
+							ParentItemId = item.ParentCategoryId,
 						};
 						foreach (var item2 in item.Children)
 						{
 							_google.ChildMenuItems.Add(new MenuItem()
 							{
+								MenuItemId = item2.CategoryId,
 								MenuName = item2.CategoryName,
 								MenuItemName = item2.ControllerName,
 								MenuItemPath = item2.ActionName,//+"?page=" + item.CategoryId
-							});
+								url = item2.url,
+								Area = item2.Area,
+								DisplaySrNo = item2.DisplaySrNo,
+								GifIcon = item2.GifIcon,
+								ParentItemId= item2.ParentCategoryId,
+							}); 
 						}
 						if (_google.MenuName.Equals("Dashboard"))
 							objListMenuEF.Insert(0, _google);
@@ -218,10 +234,17 @@ namespace AuthServer.Services
 		{
 			return flatObjects.Where(x => x.ParentCategoryId.Equals(parentId)).Select(item => new TreeNode
 			{
+				
 				CategoryName = item.CategoryName,
 				ControllerName = item.ControllerName,
 				ActionName = item.ActionName,
 				CategoryId = item.CategoryId,
+				url=item.url,
+				Area = item.Area,
+				DisplaySrNo = item.DisplaySrNo,				
+				GifIcon = item.GifIcon,
+				ParentCategoryId = item.ParentCategoryId,
+
 				Children = FillRecursive(flatObjects, item.CategoryId)
 			}).ToList();
 		}

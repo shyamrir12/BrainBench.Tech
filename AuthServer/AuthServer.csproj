@@ -14,7 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LoginModels\LoginModels.csproj" />
+    <Reference Include="LoginModels">
+      <HintPath>..\LoginModels\bin\Debug\net6.0\LoginModels.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

@@ -65,6 +65,12 @@
 		public string ControllerName { get; set; }
 		public string ActionName { get; set; }
 		public TreeNode ParentCategory { get; set; }
+
+		public string url { get; set; }
+		public string Area { get; set; }
+		public string DisplaySrNo { get; set; }
+		public string GifIcon { get; set; }
+		public System.Nullable<int> ParentCategoryId { get; set; }
 		public List<TreeNode> Children { get; set; }
 	}
 	public class Category
@@ -73,6 +79,11 @@
 		public string CategoryName { get; set; }
 		public string ControllerName { get; set; }
 		public string ActionName { get; set; }
+
+		public string url { get; set; }
+		public string Area { get; set; }
+		public string DisplaySrNo { get; set; }
+		public string GifIcon { get; set; }
 		public System.Nullable<int> ParentCategoryId { get; set; }
 	}
 }
