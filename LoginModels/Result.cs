@@ -1,4 +1,4 @@
-﻿namespace AuthServer.Models
+﻿namespace LoginModels
 {
 	public class Result<T>
 	{

@@ -1,5 +1,5 @@
 ﻿using AuthServer.Factory;
-using AuthServer.Models;
+using LoginModels;
 using AuthServer.Repository;
 using Dapper;
 using System.Data;

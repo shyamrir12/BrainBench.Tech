@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AuthServer.Models
+namespace LoginModels
 {
 	public static class MyUtility
 	{

@@ -1,4 +1,4 @@
-﻿using AuthServer.Models;
+﻿using LoginModels;
 
 namespace AuthServer.Services
 {
