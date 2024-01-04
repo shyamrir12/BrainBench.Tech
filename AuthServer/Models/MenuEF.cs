@@ -31,7 +31,7 @@
 		public string department { get; set; }
 
 
-		public List<MenuItem> Items;
+		public List<MenuItem> Items { get; set; }
 
 
 	}

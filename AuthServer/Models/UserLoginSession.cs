@@ -29,8 +29,8 @@
 		public string? WardId { get; set; }
 		public string? RasoiId { get; set; }
 
-		public List<MenuItem> Items;
-		
+		public List<MenuItem> Items { get; set; }
+
 
 		//int? userId;
 		//int? subUserId;
