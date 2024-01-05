@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AdminPanelModels\AdminPanelModels.csproj" />
+    <ProjectReference Include="..\LoginModels\LoginModels.csproj" />
+  </ItemGroup>
+
 </Project>
