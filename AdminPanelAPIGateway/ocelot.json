@@ -1,0 +1,34 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5232"
+  },
+  "Routes": [
+    /********New Auth Start**************/
+    {
+      "DownstreamPathTemplate": "/api/auth/authenticatejwt",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5206
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/AuthenticateJWT",//for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/auth/GetUserByJWT",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5206
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/GetUserByJWT", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+    ///********New Auth End**************
+  ]
+}

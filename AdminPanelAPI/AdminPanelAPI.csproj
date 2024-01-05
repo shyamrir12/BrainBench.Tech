@@ -7,8 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.24" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.24.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AdminPanelModels\AdminPanelModels.csproj" />
     <ProjectReference Include="..\LoginModels\LoginModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
