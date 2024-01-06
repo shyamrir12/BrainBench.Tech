@@ -23,13 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LoginModels", "LoginModels"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoginModels", "LoginModels\LoginModels.csproj", "{670FC839-DD36-42B8-9706-667889762E67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminPanelModels", "AdminPanelModels\AdminPanelModels.csproj", "{B964AEAB-243D-4850-9851-D0C635B78FF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminPanelModels", "AdminPanelModels\AdminPanelModels.csproj", "{B964AEAB-243D-4850-9851-D0C635B78FF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeModels", "HomeModels\HomeModels.csproj", "{C4CE309B-DC31-4447-8B44-CE0EF0D098C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeModels", "HomeModels\HomeModels.csproj", "{C4CE309B-DC31-4447-8B44-CE0EF0D098C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminPanelAPIGateway", "AdminPanelAPIGateway\AdminPanelAPIGateway.csproj", "{95D70ED8-2861-46EF-A53B-72A91D49CFF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminPanelAPIGateway", "AdminPanelAPIGateway\AdminPanelAPIGateway.csproj", "{95D70ED8-2861-46EF-A53B-72A91D49CFF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminPanelApp", "AdminPanelApp\AdminPanelApp.csproj", "{0243046F-87BA-4982-A80E-79C802EA6F77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminPanelApp", "AdminPanelApp\AdminPanelApp.csproj", "{0243046F-87BA-4982-A80E-79C802EA6F77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
