@@ -7,7 +7,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <PackageReference Include="Azure.Storage.Files.Shares" Version="12.17.1" />
+    <PackageReference Include="Dapper" Version="2.1.24" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.24.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IntegrationModels\IntegrationModels.csproj" />
+    <ProjectReference Include="..\LoginModels\LoginModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\AzureHelperServices\" />
+    <Folder Include="Data\DSCResponseVerifyServices\" />
+    <Folder Include="Data\EncryptionServiceServices\" />
+    <Folder Include="Data\ExceptionDataServices\" />
+    <Folder Include="Data\LicensePaymentServices\" />
+    <Folder Include="Data\MailServices\" />
+    <Folder Include="Data\SMSServices\" />
+    <Folder Include="Data\PaymentResponsesServices\" />
   </ItemGroup>
 
 </Project>
