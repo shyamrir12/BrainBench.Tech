@@ -12,17 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 //from 5.0 auth app
 //add cross
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var Clint1 = builder.Configuration.GetSection("KeyList")["Clint1"];
+var Clint2 = builder.Configuration.GetSection("KeyList")["Clint2"];
+builder.Services.AddCors();
 builder.Services.AddCors(options =>
 {
-
-	options.AddPolicy(MyAllowSpecificOrigins,
-	builder =>
-	{
-		builder.AllowAnyOrigin()
-   .AllowAnyMethod()
-		.AllowAnyHeader();
-	});
+	options.AddDefaultPolicy(builder =>
+	builder.WithOrigins(Clint1, Clint2)
+		   .AllowAnyMethod()
+		   .AllowAnyHeader());
 });
 
 //add auth
@@ -71,7 +69,7 @@ var app = builder.Build();
 
 //from 5.0 auth app
 //app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors();
 //app.UseRouting();
 app.UseAuthentication();
 //from 5.0 auth app

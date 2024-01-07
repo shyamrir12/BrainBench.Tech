@@ -5,7 +5,7 @@ namespace IntegrationApi.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class LicensePaymentController : ControllerBase
+	public class PaymentController : ControllerBase
 	{
 	}
 }

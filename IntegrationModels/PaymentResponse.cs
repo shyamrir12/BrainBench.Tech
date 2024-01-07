@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntegrationModels
 {
-	public class PaymentResponseDetails
+	public class PaymentResponse
 	{
 		public string SessionBank { get; set; }
 		public string DocContent { get; set; }
