@@ -1,4 +1,5 @@
-﻿using LoginModels;
+﻿using IntegrationApi.Data.ExceptionDataServices;
+using LoginModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,10 @@ namespace IntegrationApi.Controllers
 	[ApiController]
 	public class ValuesController : ControllerBase
 	{
-		private readonly ILogger<ValuesController> _logger;
-		public ValuesController(ILogger<ValuesController> logger)
+		private readonly IExceptionDataProvider _objIExceptionProvider;
+		public ValuesController(IExceptionDataProvider objIExceptionProvider)
 		{
-			_logger = logger;
+			_objIExceptionProvider = objIExceptionProvider;
 		}
 
 		[HttpGet]
@@ -22,19 +23,22 @@ namespace IntegrationApi.Controllers
 			try
 			{
 				//int a, b, c;
-				//a = 10;b = 0;
+				//a = 10; b = 0;
 				//c = a / b;
 				res.Data = new string[] { "value1", "value2" };
-				res.Message = new System.Collections.Generic.List<string>() { "Success" };
+				res.Message = new List<string>() { "Success" };
 				res.Status = true;
 			}
 			catch (Exception ex) {
 
-				res.Data = null;
-				res.Message = new System.Collections.Generic.List<string>() { "Exception : " + ex.Message };
+				res.Data =null;
+				res.Message = new List<string>() { "fail",ex.Message };
 				res.Status = false;
-				_logger.LogError(ex, ex.Message);
+				_objIExceptionProvider.ErrorLoger(ex, HttpContext);
+
+
 			}
+			
 
 			return res;
 

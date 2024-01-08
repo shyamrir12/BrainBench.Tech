@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using IntegrationApi.ExceptionFilter;
 using IntegrationApi.Factory;
 using IntegrationApi.Repository;
 using IntegrationModels;
@@ -9,9 +10,11 @@ namespace IntegrationApi.Data.ExceptionDataServices
 	public class ExceptionDataProvider : RepositoryBase, IExceptionDataProvider
 	{
 		private readonly ILogger<ExceptionDataProvider> _logger;
+
 		public ExceptionDataProvider(IConnectionFactory connectionFactory, ILogger<ExceptionDataProvider> logger) : base(connectionFactory)
 		{
 			_logger = logger;
+
 		}
 		public string ErrorList(LogEntry objLogEntry)
 		{
@@ -30,10 +33,34 @@ namespace IntegrationApi.Data.ExceptionDataServices
 				var result = Connection.Execute("ReportErrorLog", paramList, commandType: System.Data.CommandType.StoredProcedure);
 				return "1";
 			}
-			catch (System.Exception ex)
+			catch (Exception ex)
 			{
-				throw ex;
+				throw;
 			}
+		}
+
+		public string ErrorLoger(Exception exception, HttpContext context)
+		{
+			_logger.LogError(exception, exception.Message);
+			try
+			{
+				var paramList = new
+				{
+					Controller = context.Request.RouteValues["controller"].ToString(),
+					Action = context.Request.RouteValues["controller"].ToString(),
+					ReturnType = "globel error",
+					ErrorMessage = exception.Message,
+					StackTrace = exception.StackTrace,
+
+				};
+				var result = Connection.Execute("ReportErrorLog", paramList, commandType: System.Data.CommandType.StoredProcedure);
+				
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, ex.Message);
+			}
+			return "1";
 		}
 	}
 }

@@ -39,8 +39,9 @@ namespace IntegrationApi.Data.DSCResponseVerifyServices
 				}
 				catch (Exception ex)
 				{
-					throw ex;
+					//throw ex;
 				}
+
 				return objMessage;
 			}
 		}

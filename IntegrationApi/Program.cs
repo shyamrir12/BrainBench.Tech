@@ -82,10 +82,11 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-var loggerFactory = app.Services.GetService<ILoggerFactory>();
-loggerFactory.AddFile(builder.Configuration["Logging:LogFilePath"].ToString());
 
 // Configure the HTTP request pipeline.
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+var loggerFactory = app.Services.GetService<ILoggerFactory>();
+loggerFactory.AddFile(builder.Configuration["Logging:LogFilePath"].ToString());
 
 //from 5.0 auth app
 app.UseHttpsRedirection();
@@ -98,5 +99,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.Run();
