@@ -41,14 +41,14 @@ namespace IntegrationApi.Data.ExceptionDataServices
 
 		public string ErrorLoger(Exception exception, HttpContext context)
 		{
-			_logger.LogError(exception, exception.Message);
+			//_logger.LogError(exception, exception.Message);
 			try
 			{
 				var paramList = new
 				{
 					Controller = context.Request.RouteValues["controller"].ToString(),
 					Action = context.Request.RouteValues["controller"].ToString(),
-					ReturnType = "globel error",
+					ReturnType = context.Request.RouteValues["area"].ToString(),
 					ErrorMessage = exception.Message,
 					StackTrace = exception.StackTrace,
 

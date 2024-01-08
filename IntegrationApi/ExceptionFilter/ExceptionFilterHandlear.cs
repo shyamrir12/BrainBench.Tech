@@ -18,7 +18,7 @@ namespace IntegrationApi.ExceptionFilter
 		
 		public override void OnException(ExceptionContext context)
 		{
-			_logger.LogError(context.Exception, context.Exception.Message);
+			//_logger.LogError(context.Exception, context.Exception.Message);
 
 			try
 			{
