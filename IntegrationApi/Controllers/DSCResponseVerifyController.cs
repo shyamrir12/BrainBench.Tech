@@ -12,35 +12,18 @@ namespace IntegrationApi.Controllers
 	public class DSCResponseVerifyController : ControllerBase
 	{
 		private readonly IDSCResponseVerifyProvider _objIDSCResponseVerifyProvider;
-		private readonly IExceptionDataProvider _objIExceptionProvider;
-		public DSCResponseVerifyController(IDSCResponseVerifyProvider objIDSCResponseVerifyProvider, IExceptionDataProvider objIExceptionProvider)
+
+		public DSCResponseVerifyController(IDSCResponseVerifyProvider objIDSCResponseVerifyProvider)
 		{
 			_objIDSCResponseVerifyProvider = objIDSCResponseVerifyProvider;
-			_objIExceptionProvider = objIExceptionProvider;
+			
 		}
 
 		[HttpPost]
-		public async Task<Result<MessageEF>> InsertDSCRespnseData(DSCResponse objDSCResponseModel)
+		public async Task<MessageEF> InsertDSCRespnseData(DSCResponse objDSCResponseModel)
 		{
-
-			Result<MessageEF> res=new Result<MessageEF> ();
-			try
-			{
-				res.Data = await _objIDSCResponseVerifyProvider.InsertDSCRespnseData(objDSCResponseModel);
-				res.Message = new List<string>() { "Success" };
-				res.Status = true;
+			return await _objIDSCResponseVerifyProvider.InsertDSCRespnseData(objDSCResponseModel);
 			
-			}
-			catch (Exception ex) {
-
-				res.Data = null;
-				res.Message = new List<string>() { "Fail", ex.Message };
-				res.Status = false;
-				_objIExceptionProvider.ErrorLoger(ex, HttpContext); 
-			
-			}
-			
-			return res;
 		}
 	}
 }

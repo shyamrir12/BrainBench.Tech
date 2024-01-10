@@ -27,19 +27,19 @@ builder.Services.AddCors(options =>
 		   .AllowAnyHeader());
 });
 //add exception filter
-//builder.Services.AddMvc(
-//			   config =>
-//			   {
-//				   config.Filters.Add(typeof(ExceptionFilterHandlear));
-//			   }
+builder.Services.AddMvc(
+			   config =>
+			   {
+				   config.Filters.Add(typeof(ExceptionFilterHandlear));
+			   }
 
-//						  )//.AddNewtonsoftJson().SetCompatibilityVersion(CompatibilityVersion.Latest)
+						  )//.AddNewtonsoftJson().SetCompatibilityVersion(CompatibilityVersion.Latest)
 
-//			 .AddJsonOptions(options =>
-//			 {
-//				 options.JsonSerializerOptions.IgnoreNullValues = true;
-//				 options.JsonSerializerOptions.WriteIndented = true;
-//			 });
+			 .AddJsonOptions(options =>
+			 {
+				 options.JsonSerializerOptions.IgnoreNullValues = true;
+				 options.JsonSerializerOptions.WriteIndented = true;
+			 });
 //add auth
 var audienceConfig = builder.Configuration.GetSection("Audience");
 var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(audienceConfig["Secret"]));

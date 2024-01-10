@@ -16,8 +16,8 @@ namespace IntegrationApi.Data.DSCResponseVerifyServices
 		{
 			MessageEF objMessage = new MessageEF();
 			{
-				//try
-				//{
+				try
+				{
 					var p = new DynamicParameters();
 					p.Add("@DSCCertificateClass", objDSCResponseModel.DSCCertificateClass);
 					p.Add("@DSCUsedBy", objDSCResponseModel.DSCUsedBy);
@@ -36,11 +36,11 @@ namespace IntegrationApi.Data.DSCResponseVerifyServices
 					int newID = Convert.ToInt32(await Connection.QueryAsync<int>("InsertDSCResponseRecords", p, commandType: CommandType.StoredProcedure));
 
 					objMessage.Satus = newID.ToString();
-				//}
-				//catch (Exception ex)
-				//{
-				//	//throw ex;
-				//}
+				}
+				catch (Exception ex)
+				{
+					throw ex;
+				}
 
 				return objMessage;
 			}

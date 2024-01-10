@@ -140,6 +140,7 @@ namespace IntegrationApi.Data.MailServices
 
 			}
 		}
+		//sp not created
 		public List<GetUserAndEmail> GetUserAndEmail(GetUserAndEmail objRaiseTicket)
 		{
 			{

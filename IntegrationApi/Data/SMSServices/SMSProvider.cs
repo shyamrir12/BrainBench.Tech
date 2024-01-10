@@ -11,21 +11,22 @@ namespace IntegrationApi.Data.SMSServices
 {
 	public class SMSProvider : RepositoryBase, ISMSProvider
 	{
-
-		public SMSProvider(IConnectionFactory connectionFactory) : base(connectionFactory)
+		private readonly IConfiguration configuration;
+		public SMSProvider(IConnectionFactory connectionFactory,IConfiguration configuration) : base(connectionFactory)
 		{
+			this.configuration = configuration;
 
 		}
-		#region User Details
-		static String username = "CGCHIPS-CHIMMS";
-		static String password = "CHiMMS@54321";
-		static String senderid = "DIGSEC";
-		static String secureKey = "e0a83fe1-9943-42d1-a4a5-84cee2c9e87f";
-		static String message = "Hi......";
-		static String mobileNo = "7069042466";
-		// static String mobileNos = "9856XXXXX, 9856XXXXX ";
-		static String scheduledTime = "20110819 13:26:00";
-		#endregion
+		//#region User Details
+		//static String username = "CGCHIPS-CHIMMS";
+		//static String password = "CHiMMS@54321";
+		//static String senderid = "DIGSEC";
+		//static String secureKey = "e0a83fe1-9943-42d1-a4a5-84cee2c9e87f";
+		//static String message = "Hi......";
+		//static String mobileNo = "7069042466";
+		//// static String mobileNos = "9856XXXXX, 9856XXXXX ";
+		//static String scheduledTime = "20110819 13:26:00";
+		//#endregion
 
 
 		public List<SMSTemplate> GetAllApprovedSMSTemplate(SMSTemplate sMS)
@@ -85,7 +86,7 @@ namespace IntegrationApi.Data.SMSServices
 
 							System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 							//request = (HttpWebRequest)WebRequest.Create("https://msdgweb.mgov.gov.in/esms/sendsmsrequest");
-							request = (HttpWebRequest)WebRequest.Create("https://msdgweb.mgov.gov.in/esms/sendsmsrequestDLT");
+							request = (HttpWebRequest)WebRequest.Create(configuration.GetSection("SMSConfiguration").GetValue<string>("requesturl"));
 							request.ProtocolVersion = HttpVersion.Version10;
 							request.KeepAlive = false;
 							request.ServicePoint.ConnectionLimit = 1;
@@ -104,7 +105,12 @@ namespace IntegrationApi.Data.SMSServices
 							var dr = Connection.ExecuteScalar("select top 1 EMAIL_SENT from EXPIRY_DATE_ALERT", p, commandType: System.Data.CommandType.Text);
 							if (Convert.ToBoolean(dr) == true)
 							{
-								sendOTPMSG(sMS.UserId, username, password, senderid, sMS.mobileNo, sMS.message, secureKey, request, sMS.templateid);
+								sendOTPMSG(sMS.UserId,
+									configuration.GetSection("SMSConfiguration").GetValue<string>("username")
+									, configuration.GetSection("SMSConfiguration").GetValue<string>("password")
+									, configuration.GetSection("SMSConfiguration").GetValue<string>("senderid")
+									, sMS.mobileNo, sMS.message, configuration.GetSection("SMSConfiguration").GetValue<string>("secureKey")
+									, request, sMS.templateid);
 							}
 							messageEF.Satus = "success";
 							//sendOTPMSG(username, password, senderid, mobileNo, message, secureKey, request);
@@ -305,8 +311,8 @@ namespace IntegrationApi.Data.SMSServices
 
 
 					System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-					//request = (HttpWebRequest)WebRequest.Create("https://msdgweb.mgov.gov.in/esms/sendsmsrequest");
-					request = (HttpWebRequest)WebRequest.Create("https://msdgweb.mgov.gov.in/esms/sendsmsrequestDLT");
+
+					request = (HttpWebRequest)WebRequest.Create(configuration.GetSection("SMSConfiguration").GetValue<string>("requesturl"));
 					request.ProtocolVersion = HttpVersion.Version10;
 					request.KeepAlive = false;
 					request.ServicePoint.ConnectionLimit = 1;
@@ -321,7 +327,12 @@ namespace IntegrationApi.Data.SMSServices
 					var http = new HttpClient(handler);
 
 					// added by Avneesh on 12-04-2021
-					sMSResponseModel = sendTESTOTPMSG(sMS.UserId, username, password, senderid, sMS.mobileNo, sMS.message, secureKey, request, sMS.templateid);
+					sMSResponseModel = sendTESTOTPMSG(sMS.UserId,
+									configuration.GetSection("SMSConfiguration").GetValue<string>("username")
+									, configuration.GetSection("SMSConfiguration").GetValue<string>("password")
+									, configuration.GetSection("SMSConfiguration").GetValue<string>("senderid"),
+									sMS.mobileNo, sMS.message,
+									 configuration.GetSection("SMSConfiguration").GetValue<string>("secureKey"), request, sMS.templateid);
 
 					//sendOTPMSG(username, password, senderid, mobileNo, message, secureKey, request);
 				}
@@ -412,13 +423,13 @@ namespace IntegrationApi.Data.SMSServices
 				sMSResponseModel.Status = "success";
 				sMSResponseModel.SMSResponse = Status;
 				sMSResponseModel.ResponseFromSMSSide = responseFromServer;
-				sMSResponseModel.RequestSMSUrl = "https://msdgweb.mgov.gov.in/esms/sendsmsrequestDLT";
+				sMSResponseModel.RequestSMSUrl = configuration.GetSection("SMSConfiguration").GetValue<string>("requesturl");
 			}
 			catch (Exception ex)
 			{
 				sMSResponseModel.Status = "failure";
 				sMSResponseModel.SMSResponse = ex.Message;
-				sMSResponseModel.RequestSMSUrl = "https://msdgweb.mgov.gov.in/esms/sendsmsrequestDLT";
+				sMSResponseModel.RequestSMSUrl = configuration.GetSection("SMSConfiguration").GetValue<string>("requesturl");
 			}
 			return sMSResponseModel;
 		}
