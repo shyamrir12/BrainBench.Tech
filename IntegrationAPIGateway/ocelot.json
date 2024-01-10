@@ -1,0 +1,135 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5136"
+  },
+  "Routes": [
+
+    /********New Auth Start**************/
+    {
+      "DownstreamPathTemplate": "/api/auth/GetUserByJWT",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5206
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/GetUserByJWT", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /********New Auth End**************/
+
+    /************************common email start*****************************/
+    {
+      "DownstreamPathTemplate": "/api/MailService/SendCommonMail",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+
+      ],
+      "UpstreamPathTemplate": "/MailService/SendCommonMail",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    /************************common email end*****************************/
+    /****************************SMS INTEGRATION**************************/
+    {
+      "DownstreamPathTemplate": "/api/SMSService/Main",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+
+      ],
+      "UpstreamPathTemplate": "/SMSService/Main",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    /****************************SMS INTEGRATION END**************************/
+
+    /***********File server start*******************/
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/SaveFile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/SaveFile",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/SaveFiles",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/SaveFiles",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    /***********Sunil Deshalaher 27-07-22 *******************/
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/DownloadFileResult",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/DownloadFileResult",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    /***********File server start*******************/
+    /***********DSC start*****************/
+    {
+      "DownstreamPathTemplate": "/api/DSCResponseVerify/InsertDSCRespnseData",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5136
+        }
+
+      ],
+      "UpstreamPathTemplate": "/DSCResponseVerify/InsertDSCRespnseData",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+    /***********DSC start*****************/
+  ]
+}
