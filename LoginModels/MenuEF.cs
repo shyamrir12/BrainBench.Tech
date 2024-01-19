@@ -1,18 +1,28 @@
-﻿namespace LoginModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LoginModels
 {
 	public class LoginEF
 	{
 		public int? UserTypeId { get; set; }
 		public string? UserType { get; set; }
 		public string UserName { get; set; }
-		public string Password { get; set; }
-		public string? Mail { get; set; }
+
+        [Required]
+        [StringLength(200, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
+        public string Password { get; set; }
+        [Required]
+        [EmailAddress]
+        public string? Mail { get; set; }
 		public int? UserID { get; set; }
 		public string? MobileNo { get; set; }
 		public string? Remoteid { get; set; }
 		public string? Localip { get; set; }
 		public string? Browserinfo { get; set; }
-	}
+
+
+   
+    }
 
 	public class MenuEF
 	{

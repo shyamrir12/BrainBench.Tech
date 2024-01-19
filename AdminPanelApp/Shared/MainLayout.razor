@@ -1,6 +1,58 @@
-﻿@inherits LayoutComponentBase
+﻿@using LoginModels;
+@inherits LayoutComponentBase
+@inject NavigationManager _navigationManager
+@inject HttpClient _httpClient
+@inject IJSRuntime _jsRuntime
+@inject ILocalStorageService _localStorageService
 
-<div class="page">
+<MudThemeProvider />
+<MudDialogProvider Position="DialogPosition.Center" />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudSpacer />
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Class="ml-3" Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
+                <MudText Typo="Typo.h6">Hello, @context.User.Identity.Name</MudText>
+
+
+            </Authorized>
+            @*<NotAuthorized>
+            <MudIconButton Icon="@Icons.Filled.Login" Color="Color.Inherit" />
+            </NotAuthorized>*@
+        </AuthorizeView>
+        @*<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />*@
+    </MudAppBar>
+    <MudDrawer @bind-Open="@open" Elevation="1">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Class="ml-3">  Medical App</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <NavMenu />
+        </MudNavMenu>
+    </MudDrawer>
+    @*<MudDrawer @bind-Open="@open" ClipMode="DrawerClipMode.Docked" PreserveOpenState="@preserveOpenState" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
+
+    <NavMenu />
+    </MudDrawer>*@
+    <MudMainContent>
+        <MudContainer Class="mt-16" MaxWidth="MaxWidth.Medium">
+
+            @Body
+            @*<MudScrollToTop >
+            <MudFab Color="Color.Tertiary" Icon="@Icons.Filled.ArrowCircleUp" />
+            </MudScrollToTop>*@
+
+
+        </MudContainer>
+    </MudMainContent>
+
+</MudLayout>
+
+@* <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -14,4 +66,42 @@
             @Body
         </article>
     </main>
-</div>
+</div> *@
+
+
+@code {
+    bool open = true;
+    bool dense = false;
+    bool preserveOpenState = false;
+    Breakpoint breakpoint = Breakpoint.Lg;
+    DrawerClipMode clipMode = DrawerClipMode.Never;
+
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //getting the current authenticated user for the app
+        UserLoginSession currentUser = null;// await _httpClient.GetFromJsonAsync<User>("user/getcurrentuser");
+        if (currentUser != null)
+        {
+            //setting the themeName parameter for JS function
+            //var themeName = currentUser.DarkTheme == 1 ? "dark" : "light";
+            //var themeName = "light";
+            //calling the JS function
+            //var module = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
+            //await module.InvokeVoidAsync("setTheme", themeName);
+        }
+        await base.OnInitializedAsync();
+    }
+
+
+
+    private void LoginUser()
+    {
+        _navigationManager.NavigateTo("/", true);
+    }
+}
+

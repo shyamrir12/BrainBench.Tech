@@ -1,6 +1,6 @@
 ﻿namespace AdminPanelApp.Data.RegisterServices
 {
-	public class RegisterProvider
+	public class RegisterProvider: IRegisterProvider
 	{
 	}
 }

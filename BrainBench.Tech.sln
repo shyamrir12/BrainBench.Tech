@@ -33,13 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminPanelApp", "AdminPanel
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{39E33BC5-C591-4BDE-B075-3AB704CF5B16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationApi", "IntegrationApi\IntegrationApi.csproj", "{DED3696D-B140-4676-8F43-36C28A07B073}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationApi", "IntegrationApi\IntegrationApi.csproj", "{DED3696D-B140-4676-8F43-36C28A07B073}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationAPIGateway", "IntegrationAPIGateway\IntegrationAPIGateway.csproj", "{E310161B-4AC4-4411-8A39-8BB8FE258F81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationAPIGateway", "IntegrationAPIGateway\IntegrationAPIGateway.csproj", "{E310161B-4AC4-4411-8A39-8BB8FE258F81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationModels", "IntegrationModels\IntegrationModels.csproj", "{096A9B07-B829-4500-8CB6-1BA0AE334034}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationModels", "IntegrationModels\IntegrationModels.csproj", "{096A9B07-B829-4500-8CB6-1BA0AE334034}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationApp", "IntegrationApp\IntegrationApp.csproj", "{32A64A5C-5B12-46DB-B162-FC1A012D63C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationApp", "IntegrationApp\IntegrationApp.csproj", "{32A64A5C-5B12-46DB-B162-FC1A012D63C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

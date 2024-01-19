@@ -14,6 +14,7 @@ namespace AdminPanelApp.Data.LoginServices
 		}
 		public async Task<AuthenticationResponse> AuthenticateJWT(LoginEF model)
 		{
+
 			var httpMessageReponse = await _httpClient.PostAsJsonAsync<LoginEF>($"auth/authenticatejwt", model);
 
 			return await  httpMessageReponse.Content.ReadFromJsonAsync<AuthenticationResponse>();
@@ -26,5 +27,7 @@ namespace AdminPanelApp.Data.LoginServices
 
 			return await httpMessageReponse.Content.ReadFromJsonAsync<Result<UserLoginSession>>();
 		}
+
+		
 	}
 }

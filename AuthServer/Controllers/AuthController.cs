@@ -109,7 +109,7 @@ namespace AuthServer.Controllers
 			return await Task.FromResult(new AuthenticationResponse() { Token = token });
 		}
 		[HttpPost]
-		public async Task<Result<UserLoginSession>> GetUserByJWT(AuthenticationResponse jwtToken)
+		public async Task<Result<UserLoginSession>> GetUserByJWT( [FromBody] string jwtToken)
 		{
 			Result<UserLoginSession> res = new Result<UserLoginSession>();
 			double seconds = 0;
@@ -132,7 +132,7 @@ namespace AuthServer.Controllers
 				SecurityToken securityToken;
 
 				//validating the token
-				var principle = tokenHandler.ValidateToken(jwtToken.Token, tokenValidationParameters, out securityToken);
+				var principle = tokenHandler.ValidateToken(jwtToken, tokenValidationParameters, out securityToken);
 				var jwtSecurityToken = (JwtSecurityToken)securityToken;
 
 				DateTime validTo = jwtSecurityToken.Payload.ValidTo;

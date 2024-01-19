@@ -36,27 +36,32 @@ namespace AdminPanelApp.Handlers
 		}
 		public async Task<UserLoginSession> GetUserByJWTAsync()
 		{
-			//pulling the token from localStorage
-			var jwtToken = await _localStorageService.GetItemAsStringAsync("jwt_token");
-			if (jwtToken == null) return null;
+            //pulling the token from localStorage
+            var jwtToken = await _localStorageService.GetItemAsStringAsync("jwt_token");
+            if (jwtToken == null) return null;
 
-			//preparing the http request
-			var requestMessage = new HttpRequestMessage(HttpMethod.Post, "user/getuserbyjwt");
-			requestMessage.Content = new StringContent(jwtToken);
+            //preparing the http request
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "auth/GetUserByJWT");
+            requestMessage.Content = new StringContent(jwtToken);
 
-			requestMessage.Content.Headers.ContentType
-				= new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            requestMessage.Content.Headers.ContentType
+                = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
-			//making the http request
-			var response = await _httpClient.SendAsync(requestMessage);
+            //making the http request
+            var response = await _httpClient.SendAsync(requestMessage);
 
-			var responseStatusCode = response.StatusCode;
-			var returnedUser = await response.Content.ReadFromJsonAsync<UserLoginSession>();
+            var responseStatusCode = response.StatusCode;
+            var returnedUser = await response.Content.ReadFromJsonAsync<UserLoginSession>();
 
-			//returning the user if found
-			if (returnedUser != null) return await Task.FromResult(returnedUser);
-			else return null;
+            //returning the user if found
+            if (returnedUser != null) return await Task.FromResult(returnedUser);
+            else return null;
+
+
+			
 		}
+        }
+		
 
 	}
-}
+

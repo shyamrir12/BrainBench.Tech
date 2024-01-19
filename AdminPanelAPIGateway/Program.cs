@@ -6,19 +6,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 //add cross
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var Clint1 = builder.Configuration.GetSection("KeyList")["Clint1"];
+var Clint2 = builder.Configuration.GetSection("KeyList")["Clint2"];
+builder.Services.AddCors();
 builder.Services.AddCors(options =>
 {
-
-	options.AddPolicy(MyAllowSpecificOrigins,
-	builder =>
-	{
-		builder.AllowAnyOrigin()
-   .AllowAnyMethod()
-		.AllowAnyHeader();
-	});
+    options.AddDefaultPolicy(builder =>
+    builder.WithOrigins(Clint1, Clint2)
+           .AllowAnyMethod()
+           .AllowAnyHeader());
 });
-
 //add auth
 var audienceConfig = builder.Configuration.GetSection("Audience");
 var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(audienceConfig["Secret"]));
@@ -66,7 +63,7 @@ app.UseRouting();
 
 //from 5.0 auth app
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors();
 app.UseRouting();
 app.UseAuthentication();
 //from 5.0 auth app
