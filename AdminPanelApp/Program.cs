@@ -1,21 +1,23 @@
 using AdminPanelApp;
 using AdminPanelApp.Data.LoginServices;
 using AdminPanelApp.Data.RegisterServices;
+using AdminPanelApp.Data.UserSessionIndexDB;
 using AdminPanelApp.Handlers;
+using BlazorDB;
 using Blazored.LocalStorage;
 using Blazored.Toast;
-using LoginModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
-using System.Net.Http.Json;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
+
 var url = builder.Configuration.GetValue<string>("KeyList:WebApiurl");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(url) });
@@ -25,6 +27,22 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(url) });
 AddHttpClients(builder,url);
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddBlazorDB(options =>
+{
+    options.Name = "BrainBanchDB";
+    options.Version = 1;
+    options.StoreSchemas = new List<StoreSchema>()
+    {
+        new StoreSchema()
+        {
+            Name = "Customer",      // Name of entity
+            PrimaryKey = "Id",      // Primary Key of entity
+            PrimaryKeyAuto = true,  // Whether or not the Primary key is generated
+            Indexes = new List<string> { "Id" }
+        }
+    };
+});
+builder.Services.AddScoped<UserDb>();
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddTransient<CustomAuthorizationHandler>();

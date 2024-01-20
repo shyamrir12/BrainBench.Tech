@@ -6,12 +6,13 @@ namespace LoginModels
 	{
 		public int? UserTypeId { get; set; }
 		public string? UserType { get; set; }
-		public string UserName { get; set; }
+        [Required]
+        public string UserName { get; set; }
 
         [Required]
         [StringLength(200, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
         public string Password { get; set; }
-        [Required]
+       
         [EmailAddress]
         public string? Mail { get; set; }
 		public int? UserID { get; set; }

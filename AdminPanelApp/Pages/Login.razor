@@ -18,8 +18,8 @@
                     <MudCard>
                         <MudCardContent>
                           
-                            <MudTextField Label="Email" Class="mt-3"
-                            @bind-Value="loginef.Mail" For="@(() => loginef.Mail)" />
+                            <MudTextField Label="User Name" Class="mt-3"
+                            @bind-Value="loginef.UserName" For="@(() => loginef.UserName)" />
                             <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
                             @bind-Value="loginef.Password" For="@(() => loginef.Password)" InputType="InputType.Password" />
                             
@@ -92,7 +92,7 @@
         if (user.Identity.IsAuthenticated)
         {
 
-            _navigationManager.NavigateTo("/profile", true);
+            _navigationManager.NavigateTo("/register", true);
 
         }
 
@@ -139,13 +139,13 @@
 
         Random randcls = new Random();
         loginef.UserID = randcls.Next();
-        loginef.Password = ComputeSha256Hash(loginef + loginef.Password);
-        loginef.UserName = "admin";
+        loginef.Password = ComputeSha256Hash(loginef.UserID + ComputeSha256Hash(loginef.Password));
+        loginef.Mail = "test1234@gail.com";
         AuthenticationResponse authenticationResponse = await _loginProvider.AuthenticateJWT(loginef);
             if (authenticationResponse.Token != string.Empty)
             {
                 await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
-                _navigationManager.NavigateTo("/profile", true);
+                 _navigationManager.NavigateTo("/register", true);
                
             }
             else
