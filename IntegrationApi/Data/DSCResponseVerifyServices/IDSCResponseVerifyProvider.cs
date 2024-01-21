@@ -1,4 +1,5 @@
 ﻿using IntegrationModels;
+using LoginModels;
 
 namespace IntegrationApi.Data.DSCResponseVerifyServices
 {

@@ -1,4 +1,5 @@
 ﻿using IntegrationModels;
+using LoginModels;
 using Microsoft.AspNetCore.Connections;
 
 namespace IntegrationApi.Data.AzureHelperServices

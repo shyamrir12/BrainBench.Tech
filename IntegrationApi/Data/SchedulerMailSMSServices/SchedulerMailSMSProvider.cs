@@ -4,6 +4,7 @@ using IntegrationApi.Data.SMSServices;
 using IntegrationApi.Factory;
 using IntegrationApi.Repository;
 using IntegrationModels;
+using LoginModels;
 using System.Data;
 
 namespace IntegrationApi.Data.SchedulerMailSMSServices

@@ -1,5 +1,6 @@
 ﻿using IntegrationApi.Data.AzureHelperServices;
 using IntegrationModels;
+using LoginModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

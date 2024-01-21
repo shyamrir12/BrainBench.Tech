@@ -1,4 +1,5 @@
 ﻿using IntegrationModels;
+using LoginModels;
 using System.Text;
 
 namespace IntegrationApi.Data

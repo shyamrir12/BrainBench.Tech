@@ -5,6 +5,8 @@ namespace AdminPanelAPI.Data.RegisterServices
 {
 	public interface IRegisterProvider
 	{
-        Task<Result<string>> RegisterUser(RegisterUser model);
+        Task<Result<MessageEF>> RegisterUser(RegisterUser model);
+        Task<Result<MessageEF>> CheckUserExist(RegisterUser model);
+        Task<Result<List<ListItems>>> GetApplicationType();
     }
 }

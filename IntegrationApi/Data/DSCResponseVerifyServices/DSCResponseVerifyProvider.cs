@@ -2,6 +2,7 @@
 using IntegrationApi.Factory;
 using IntegrationApi.Repository;
 using IntegrationModels;
+using LoginModels;
 using System.Data;
 
 namespace IntegrationApi.Data.DSCResponseVerifyServices
