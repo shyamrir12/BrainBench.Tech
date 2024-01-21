@@ -1,6 +1,6 @@
 ﻿namespace AdminPanelApp.Data.RegisterServices
 {
-	public interface IRegisterProvider
+	public class RegisterSubscriber: IRegisterSubscriber
 	{
 	}
 }

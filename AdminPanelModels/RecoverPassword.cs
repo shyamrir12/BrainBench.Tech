@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdminPanelModels
 {
-	internal class RecoverPassword
+	public class RecoverPassword
 	{
 	}
 }

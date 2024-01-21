@@ -56,7 +56,7 @@ await builder.Build().RunAsync();
 
 
 	//authentication http clients RegisterUserServiceClient
-	builder.Services.AddHttpClient<IRegisterProvider, RegisterProvider>
+	builder.Services.AddHttpClient<IRegisterSubscriber, RegisterSubscriber>
 		("RegisterViewModelClient", client => client.BaseAddress = new Uri(baseurl));
 	builder.Services.AddHttpClient<ILoginProvider, LoginProvider>
 		("LoginViewModelClient", client => client.BaseAddress = new Uri(baseurl));

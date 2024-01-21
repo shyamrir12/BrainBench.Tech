@@ -55,30 +55,43 @@ namespace AdminPanelApp.Handlers
 			else
 			{
                 //preparing the http request
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, "auth/GetUserByJWT");
-                requestMessage.Content = new StringContent(jwtToken);
+                var list = await _usermanager.GetAllAsync();
+                if (list.Any())
+                {
 
-                requestMessage.Content.Headers.ContentType
-                    = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    var obj = JsonConvert.DeserializeObject<Result<UserLoginSession>>(list.FirstOrDefault().Email);
+                    UserLoginSession d = obj.Data;
+                    return  d;
+                }
+                else
+                {
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Post, "auth/GetUserByJWT");
+                    requestMessage.Content = new StringContent(jwtToken);
 
-                //making the http request
-                var response = await _httpClient.SendAsync(requestMessage);
+                    requestMessage.Content.Headers.ContentType
+                        = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
-                var responseStatusCode = response.StatusCode;
-                var returnedUser = await response.Content.ReadFromJsonAsync<Result<UserLoginSession>>();
+                    //making the http request
+                    var response = await _httpClient.SendAsync(requestMessage);
 
-				//returning the user if found
-				if (returnedUser != null)
-				{
-                    await AddCustomers(response);
-                    return await Task.FromResult(returnedUser.Data);
+                    var responseStatusCode = response.StatusCode;
+                    var returnedUser = await response.Content.ReadFromJsonAsync<Result<UserLoginSession>>();
 
+                    //returning the user if found
+                    if (returnedUser != null)
+                    {
+                        await AddCustomers(response);
+                        return await Task.FromResult(returnedUser.Data);
+
+                    }
+
+                    else
+                    {
+                        return new UserLoginSession();
+                    }
                 }
 
-				else
-				{
-                    return new UserLoginSession();
-                }
+                
 
                 
             }
@@ -100,14 +113,7 @@ namespace AdminPanelApp.Handlers
                 Email = responseString.ToString(),
             });
 
-            //var list = await _usermanager.GetAllAsync();
-            //if (list != null)
-            //{
-
-            //    var obj= JsonConvert.DeserializeObject <Result<UserLoginSession>> (list.FirstOrDefault().Email);
-            //    UserLoginSession d = obj.Data;
-               
-            //}
+            
         }
 
         
