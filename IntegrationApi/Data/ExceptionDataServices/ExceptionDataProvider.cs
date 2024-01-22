@@ -47,7 +47,7 @@ namespace IntegrationApi.Data.ExceptionDataServices
 				var paramList = new
 				{
 					Controller = context.Request.RouteValues["controller"].ToString(),
-					Action = context.Request.RouteValues["controller"].ToString(),
+					Action = context.Request.RouteValues["action"].ToString(),
 					ReturnType = context.Request.RouteValues["area"].ToString(),
 					ErrorMessage = exception.Message,
 					StackTrace = exception.StackTrace,

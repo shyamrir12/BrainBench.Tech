@@ -28,7 +28,47 @@
       ],
       "UpstreamPathTemplate": "/auth/GetUserByJWT", //for clent
       "UpstreamHttpMethod": [ "POST" ]
-    }
+    },
     ///********New Auth End**************
+
+    /********Registration Start**************/
+    {
+      "DownstreamPathTemplate": "/api/Register/CheckUserExist",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Register/CheckUserExist", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Register/RegisterUser",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Register/RegisterUser", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Register/GetApplicationType",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Register/GetApplicationType", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+
+    /********Registration Start**************/
   ]
 }

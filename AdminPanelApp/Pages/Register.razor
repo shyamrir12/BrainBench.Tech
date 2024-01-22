@@ -1,5 +1,7 @@
 ﻿@page "/register"
-@using System.ComponentModel.DataAnnotations
+@using AdminPanelApp.Data.RegisterServices;
+@using  AdminPanelModels;
+@inject IRegisterSubscriber _registerSubscriber
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -8,13 +10,21 @@
             <MudCard>
                 <MudCardContent>
                     <MudTextField Label="First name" HelperText="Max. 8 characters"
-                    @bind-Value="model.Username" For="@(() => model.Username)" />
-                    <MudTextField Label="Email" Class="mt-3"
-                    @bind-Value="model.Email" For="@(() => model.Email)" />
+                    @bind-Value="model.username" For="@(() => model.username)" />
+                    <MudTextField Label="User Name" Class="mt-3"
+                    @bind-Value="model.EmailId" For="@(() => model.EmailId)" />
                     <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
                     @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
                     <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
-                    @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+                    @bind-Value="model.PD_Reenterpwd" For="@(() => model.PD_Reenterpwd)" InputType="InputType.Password" />
+                    <MudSelect T="string" Label="Application Type" AnchorOrigin="Origin.BottomCenter" @bind-Value="model.Iid">
+                        @foreach (var item in ListApplicationType)
+                        {
+                            <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
+
+                        }
+                    </MudSelect>
+
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
@@ -32,36 +42,26 @@
 
 
 @code {
-    
-    
-    RegisterAccountForm model = new RegisterAccountForm();
-  
+
+    RegisterUser model = new RegisterUser();
+    public IEnumerable<ListItems> ListApplicationType = new List<ListItems>();
+   
+    public Result<List<ListItems>> resultListApplicationType = new Result<List<ListItems>>();
     bool success;
-
-    public class RegisterAccountForm
+    protected override async Task OnInitializedAsync()
     {
-        [Required]
-        [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
-        public string Username { get; set; }
+        resultListApplicationType = await _registerSubscriber.GetApplicationType();
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-
+        if (resultListApplicationType.Status = true)
+        {
+            ListApplicationType = resultListApplicationType.Data;
+        }
     }
+
     private async Task OnValidSubmit(EditContext context)
     {
-
-        
         success = true;
         StateHasChanged();
     }
+    
 }
