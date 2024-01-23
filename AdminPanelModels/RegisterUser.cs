@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -54,7 +55,9 @@ namespace AdminPanelModels
         [Required]
 		[RegularExpression(@"^([0-9]{6})$", ErrorMessage = "Invalid OTP !")]
 		public string otp { get; set; }
-		
 
-	}
+        public IBrowserFile? userphoto { get; set; }
+
+
+    }
 }

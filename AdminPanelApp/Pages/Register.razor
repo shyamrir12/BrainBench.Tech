@@ -1,6 +1,6 @@
 ﻿@page "/register"
 @using AdminPanelApp.Data.RegisterServices;
-@using  AdminPanelModels;
+@using AdminPanelModels;
 @inject IRegisterSubscriber _registerSubscriber
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
@@ -24,7 +24,27 @@
 
                         }
                     </MudSelect>
-
+                    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" bind-Files=model.userphoto For="@(() => model.userphoto)">
+                        <ButtonTemplate Context="tableRowContext">
+                            <MudFab HtmlTag="label"
+                                    Color="Color.Secondary"
+                                    Icon="@Icons.Material.Filled.Image"
+                                    Label="Load picture"
+                                    for="@tableRowContext.Id" />
+                        </ButtonTemplate>
+                    </MudFileUpload>
+                    @if (files != null)
+                    {
+                        <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
+                        <MudList>
+                            @foreach (var file in files)
+                            {
+                                <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                                    @file.Name <code>@file.Size bytes</code>
+                                </MudListItem>
+                            }
+                        </MudList>
+                    }
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
@@ -45,9 +65,17 @@
 
     RegisterUser model = new RegisterUser();
     public IEnumerable<ListItems> ListApplicationType = new List<ListItems>();
-   
+
     public Result<List<ListItems>> resultListApplicationType = new Result<List<ListItems>>();
     bool success;
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private void UploadFiles(IBrowserFile file)
+    {
+        files.Add(file);
+        //TODO upload the files to the server
+    }
+
     protected override async Task OnInitializedAsync()
     {
         resultListApplicationType = await _registerSubscriber.GetApplicationType();
@@ -60,8 +88,55 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
+
         success = true;
         StateHasChanged();
     }
-    
+
+
+//      foreach (var formFile in TP_File_Copy)
+//                         {
+//                             if (formFile != null && formFile.Length > 0)
+//                             {
+//                                 if (!string.IsNullOrEmpty(formFile.FileName))
+//                                 {
+//                                     //Code to save file with Base64
+//                                     string base64BinaryStr = Convert.ToBase64String(ReadFully(formFile.OpenReadStream()));
+//     string strName = DateTime.Now.Ticks.ToString() + "_" + Path.GetFileName(formFile.FileName);
+//     //save file in azure (Sunil DEshalahre 27-08-22)
+//     System.Threading.Tasks.Task<MessageEF> e = azureFileOperation.SaveFile(new MyFileRequest() { FileContenctBase64 = base64BinaryStr, FileName = strName, FolderName = "OfflineTPFiles" }, configuration.GetSection("AzureAPIUrl").Value);
+
+//     obj.TP_File_PATH = "OfflineTPFiles\\" + strName;
+//                                     obj.TP_FILE = strName;
+
+//                                 }
+// }
+//                         }
+
+
+//     //For centralized SMS
+//     SMS obj = new SMS();
+//     DateTime currentDateTime = DateTime.Now;
+//     string formattedDateTime = currentDateTime.ToString("dd-MMM-yyyy HH:mm tt");
+//     string templateid = _configuration.GetSection("KeyList").GetSection("SMSKeys").GetValue<string>("OTPTemplate");
+//     obj.mobileNo = objforgotPasswordModel.MOBILENO;
+//                     obj.templateid = templateid;
+//                     obj.parameterlist = new List<string>() { objOtPModel.OTP
+//     };
+//     var res1 = sMSModel.Main(obj);
+
+//     //For centralized Email
+//     CommonMail commonMail = new CommonMail();
+//     string Subject = _configuration.GetSection("KeyList").GetSection("SMSKeys").GetValue<string>("OTPMailSubject");
+//     commonMail.TemplateID = templateid;
+//                     commonMail.To = objforgotPasswordModel.EMAILID;
+//                     commonMail.Subject = Subject;
+//                     commonMail.ParameterList = new List<string>() { objOtPModel.OTP
+// };
+// var res = mailModel.SendCommonMail(commonMail);
+// if (res1.Satus.ToUpper() == "SUCCESS" || res.Satus.ToUpper() == "SUCCESS")
+// {
+//     messageEF.Satus = "success";
+// }
+
 }
