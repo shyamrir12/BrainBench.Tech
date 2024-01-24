@@ -1,7 +1,13 @@
 ﻿@page "/register"
+@using AdminPanelApp.Data.AzureHelperServices;
+@using AdminPanelApp.Data.MailSMSServices;
 @using AdminPanelApp.Data.RegisterServices;
 @using AdminPanelModels;
+
 @inject IRegisterSubscriber _registerSubscriber
+@inject IAzureFileSubscriber _azrfileSubscriber
+@inject IMailSMSSubscriber _mailsmsSubscriber
+@inject IConfiguration _configuration
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -9,14 +15,22 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="First name" HelperText="Max. 8 characters"
-                    @bind-Value="model.username" For="@(() => model.username)" />
-                    <MudTextField Label="User Name" Class="mt-3"
+                    <MudTextField Label="Email Id" Class="mt-3"
                     @bind-Value="model.EmailId" For="@(() => model.EmailId)" />
+
+                    <MudTextField Label="User name" HelperText="Max. 8 characters"
+                    @bind-Value="model.username" For="@(() => model.username)" />
+                 
                     <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
                     @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+
                     <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
                     @bind-Value="model.PD_Reenterpwd" For="@(() => model.PD_Reenterpwd)" InputType="InputType.Password" />
+
+                    <MudTextField Label="OrganizationName" HelperText="Organization Name" Class="mt-3"
+                    @bind-Value="model.OrganizationName" For="@(() => model.OrganizationName)"  />
+
+
                     <MudSelect T="string" Label="Application Type" AnchorOrigin="Origin.BottomCenter" @bind-Value="model.Iid">
                         @foreach (var item in ListApplicationType)
                         {
@@ -24,13 +38,15 @@
 
                         }
                     </MudSelect>
-                    <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles" bind-Files=model.userphoto For="@(() => model.userphoto)">
-                        <ButtonTemplate Context="tableRowContext">
+
+
+                    <MudFileUpload T="IBrowserFile" Context="editformcontext"   FilesChanged="UploadFiles" >
+                        <ButtonTemplate >
                             <MudFab HtmlTag="label"
                                     Color="Color.Secondary"
                                     Icon="@Icons.Material.Filled.Image"
                                     Label="Load picture"
-                                    for="@tableRowContext.Id" />
+                                    for="@editformcontext" />
                         </ButtonTemplate>
                     </MudFileUpload>
                     @if (files != null)
@@ -45,6 +61,12 @@
                             }
                         </MudList>
                     }
+
+
+                    <MudTextField Label="otp" HelperText="enter otp" Class="mt-3"
+                    @bind-Value="model.otp" For="@(() => model.otp)" />
+
+
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
@@ -73,6 +95,7 @@
     private void UploadFiles(IBrowserFile file)
     {
         files.Add(file);
+        model.userphoto = file;
         //TODO upload the files to the server
     }
 
@@ -88,31 +111,43 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
+        var folderpath = _configuration.GetValue<string>("KeyList:ProfilePhoto");
 
+        if(model.userphoto!=null&&model.userphoto.Size>0)
+        {
+            if (!string.IsNullOrEmpty(model.userphoto.Name))
+            {
+
+                var buffers = new byte[model.userphoto.Size];
+                await model.userphoto.OpenReadStream().ReadAsync(buffers);
+
+                byte[] ImageBytes = buffers;
+
+                string base64BinaryStr = Convert.ToBase64String(ImageBytes);
+                string strName = DateTime.Now.Ticks.ToString() + "_" + Path.GetFileName(model.userphoto.Name);
+
+                MyFileRequest myFileRequest = new MyFileRequest();
+               // myFileRequest.FileContenctBase64 = base64BinaryStr;
+                myFileRequest.FileName = strName;
+                myFileRequest.FolderName = folderpath;
+                myFileRequest.FileNameWithPath=folderpath+"\\" + strName;
+                MessageEF e = await _azrfileSubscriber.SaveFile(myFileRequest);
+              //create properti save in db
+                //     obj.TP_File_PATH = "folderpath\\" + strName;
+                //     obj.TP_FILE = strName;
+            }
+
+        }
         success = true;
         StateHasChanged();
     }
+  
 
 
-//      foreach (var formFile in TP_File_Copy)
-//                         {
-//                             if (formFile != null && formFile.Length > 0)
-//                             {
-//                                 if (!string.IsNullOrEmpty(formFile.FileName))
-//                                 {
-//                                     //Code to save file with Base64
-//                                     string base64BinaryStr = Convert.ToBase64String(ReadFully(formFile.OpenReadStream()));
-//     string strName = DateTime.Now.Ticks.ToString() + "_" + Path.GetFileName(formFile.FileName);
-//     //save file in azure (Sunil DEshalahre 27-08-22)
-//     System.Threading.Tasks.Task<MessageEF> e = azureFileOperation.SaveFile(new MyFileRequest() { FileContenctBase64 = base64BinaryStr, FileName = strName, FolderName = "OfflineTPFiles" }, configuration.GetSection("AzureAPIUrl").Value);
-
-//     obj.TP_File_PATH = "OfflineTPFiles\\" + strName;
-//                                     obj.TP_FILE = strName;
-
-//                                 }
-// }
-//                         }
-
+    // MyFileResult fr = azureFileOperation.DownloadFile(configuration.GetSection("AzureAPIUrl").Value, configuration.GetSection("Path").GetValue<string>("EndUserDownloadPath") + "\\" + filename);
+    // var bytes = Convert.FromBase64String(fr.FileBase64);
+    // var contents = new MemoryStream(bytes);
+    //         return File(contents, fr.ContentType, fr.FileName);
 
 //     //For centralized SMS
 //     SMS obj = new SMS();

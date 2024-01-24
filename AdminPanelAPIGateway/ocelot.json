@@ -3,7 +3,7 @@
     "BaseUrl": "http://localhost:5232"
   },
   "Routes": [
-    /********New Auth Start**************/
+    /********New Auth Start******AuthServer API********/
     {
       "DownstreamPathTemplate": "/api/auth/AuthenticateJWT",
       "DownstreamScheme": "http",
@@ -31,7 +31,84 @@
     },
     ///********New Auth End**************
 
-    /********Registration Start**************/
+    /********EMail/SMS/File Upload Start*******Intigration API*******/
+    /************************common email start*****************************/
+    {
+      "DownstreamPathTemplate": "/api/MailService/SendCommonMail",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/MailService/SendCommonMail",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /************************common email end*****************************/
+    /****************************SMS INTEGRATION**************************/
+    {
+      "DownstreamPathTemplate": "/api/SMSService/Main",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/SMSService/Main",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /****************************SMS INTEGRATION END**************************/
+
+    /***********File server start*******************/
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/SaveFile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/SaveFile",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/SaveFiles",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/SaveFiles",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /***********Sunil Deshalaher 27-07-22 *******************/
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/DownloadFileResult",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/DownloadFileResult",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /***********File server start*******************/
+
+    /********EMail/SMS/File Upload END**************/
+
+    /********Registration Start*******AdminPanel API*******/
     {
       "DownstreamPathTemplate": "/api/Register/CheckUserExist",
       "DownstreamScheme": "http",

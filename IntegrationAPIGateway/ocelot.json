@@ -26,7 +26,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5136
+          "Port": 5159
         }
 
       ],
@@ -45,7 +45,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5136
+          "Port": 5159
         }
 
       ],
@@ -65,7 +65,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5136
+          "Port": 5159
         }
 
       ],
@@ -82,7 +82,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5136
+          "Port": 5159
         }
 
       ],
@@ -100,7 +100,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5136
+          "Port": 5159
         }
 
       ],
@@ -119,7 +119,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5136
+          "Port": 5159
         }
 
       ],

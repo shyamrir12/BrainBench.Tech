@@ -23,12 +23,12 @@ namespace AdminPanelApp.Data.AzureHelperServices
             throw new NotImplementedException();
         }
 
-        public async Task< MyFileResult> DownloadFile(string IntergationHost, MyFileRequest filerequest)
+        public async Task< MyFileResult> DownloadFile( MyFileRequest filerequest)
         {
             try
             {
               
-                var httpMessageReponse = await _httpClient.PostAsJsonAsync<MyFileRequest>(IntergationHost + "/IntegrationApi/api/AzureFile/DownloadFileResult", filerequest);
+                var httpMessageReponse = await _httpClient.PostAsJsonAsync<MyFileRequest>($"/AzureFile/DownloadFileResult", filerequest);
 
                 return await httpMessageReponse.Content.ReadFromJsonAsync<MyFileResult>();
 
@@ -41,13 +41,13 @@ namespace AdminPanelApp.Data.AzureHelperServices
             }
         }
 
-        public async Task<MessageEF> SaveFile( string IntergationHost, MyFileRequest objParams)
+        public async Task<MessageEF> SaveFile(  MyFileRequest objParams)
         {
 
             try
             {
 
-                var httpMessageReponse = await _httpClient.PostAsJsonAsync<MyFileRequest>(IntergationHost + "/IntegrationApi/api/AzureFile/SaveFile", objParams);
+                var httpMessageReponse = await _httpClient.PostAsJsonAsync<MyFileRequest>($"/AzureFile/SaveFile", objParams);
 
                 return await httpMessageReponse.Content.ReadFromJsonAsync<MessageEF>();
 

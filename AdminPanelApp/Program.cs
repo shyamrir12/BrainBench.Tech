@@ -1,5 +1,7 @@
 using AdminPanelApp;
+using AdminPanelApp.Data.AzureHelperServices;
 using AdminPanelApp.Data.LoginServices;
+using AdminPanelApp.Data.MailSMSServices;
 using AdminPanelApp.Data.RegisterServices;
 using AdminPanelApp.Data.UserSessionIndexDB;
 using AdminPanelApp.Handlers;
@@ -60,10 +62,13 @@ await builder.Build().RunAsync();
 		("RegisterViewModelClient", client => client.BaseAddress = new Uri(baseurl));
 	builder.Services.AddHttpClient<ILoginProvider, LoginProvider>
 		("LoginViewModelClient", client => client.BaseAddress = new Uri(baseurl));
+    builder.Services.AddHttpClient<IMailSMSSubscriber, MailSMSSubscriber>
+        ("MAILSMSViewModelClient", client => client.BaseAddress = new Uri(baseurl));
+    builder.Services.AddHttpClient<IAzureFileSubscriber, AzureFileSubscriber>
+        ("FilesViewModelClient", client => client.BaseAddress = new Uri(baseurl));
 
-
-	//	builder.Services.AddHttpClient<IMedicineServiceClient, MedicineServiceClient>
-	//	  ("MedicineServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    //	builder.Services.AddHttpClient<IMedicineServiceClient, MedicineServiceClient>
+    //	  ("MedicineServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
 
 }
 

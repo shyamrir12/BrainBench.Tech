@@ -10,11 +10,12 @@ namespace AdminPanelModels
 {
 	public class RegisterUser
 	{
-		public string EmailId { get; set; }
+		
 		[EmailAddress(ErrorMessage = "Invalid Email Address !")]
 		[Display(Name = "Email Id")]
-	
-		[RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number !")]
+        public string EmailId { get; set; }
+
+        [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number !")]
 		public string Mobile_No { get; set; }
 		[Required]
 		[StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
@@ -52,11 +53,13 @@ namespace AdminPanelModels
         [RegularExpression(@"^([0-9])$", ErrorMessage = "Invalid Application !")]
         public string Iid { get; set; }
 
+        public IBrowserFile userphoto { get; set; }
+
         [Required]
 		[RegularExpression(@"^([0-9]{6})$", ErrorMessage = "Invalid OTP !")]
 		public string otp { get; set; }
 
-        public IBrowserFile? userphoto { get; set; }
+       
 
 
     }
