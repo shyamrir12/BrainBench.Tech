@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrationApi.Controllers
 {
-	[Route("api/[controller]/{action}")]
-	[ApiController]
+    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
+    [ApiController]
 	public class MailServiceController : ControllerBase
 	{
 		private readonly IMailProvider mailProvider;

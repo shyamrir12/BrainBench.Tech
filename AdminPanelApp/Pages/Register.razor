@@ -3,7 +3,7 @@
 @using AdminPanelApp.Data.MailSMSServices;
 @using AdminPanelApp.Data.RegisterServices;
 @using AdminPanelModels;
-
+@inject IJSRuntime JSRuntime
 @inject IRegisterSubscriber _registerSubscriber
 @inject IAzureFileSubscriber _azrfileSubscriber
 @inject IMailSMSSubscriber _mailsmsSubscriber
@@ -127,14 +127,39 @@
                 string strName = DateTime.Now.Ticks.ToString() + "_" + Path.GetFileName(model.userphoto.Name);
 
                 MyFileRequest myFileRequest = new MyFileRequest();
-               // myFileRequest.FileContenctBase64 = base64BinaryStr;
+                myFileRequest.FileContenctBase64 = base64BinaryStr;
                 myFileRequest.FileName = strName;
                 myFileRequest.FolderName = folderpath;
                 myFileRequest.FileNameWithPath=folderpath+"\\" + strName;
                 MessageEF e = await _azrfileSubscriber.SaveFile(myFileRequest);
-              //create properti save in db
+                 //create properti save in db
                 //     obj.TP_File_PATH = "folderpath\\" + strName;
                 //     obj.TP_FILE = strName;
+                //file download
+                MyFileResult fr = await _azrfileSubscriber.DownloadFile(myFileRequest);
+                await JSRuntime.InvokeVoidAsync("downloadFile", fr.ContentType, fr.FileBase64, fr.FileName);
+
+
+                    //For centralized SMS
+                    SMS obj = new SMS();
+                    DateTime currentDateTime = DateTime.Now;
+                    string formattedDateTime = currentDateTime.ToString("dd-MMM-yyyy HH:mm tt");
+                    string templateid = _configuration.GetValue<string>("KeyList:OTPTemplate");
+                                    obj.mobileNo = "9301789363";
+                                    obj.templateid = templateid;
+                                    obj.parameterlist = new List<string>() { model.otp};
+                var res1 = _mailsmsSubscriber.Main(obj);
+
+                    //For centralized Email
+                    CommonMail commonMail = new CommonMail();
+                    string Subject = _configuration.GetValue<string>("KeyList:OTPMailSubject");
+                    commonMail.TemplateID = templateid;
+                                    commonMail.To = model.EmailId;
+                                    commonMail.Subject = Subject;
+                commonMail.ParameterList = new List<string>() { model.otp };
+                var res = _mailsmsSubscriber.SendCommonMail(commonMail);
+               
+
             }
 
         }
@@ -143,35 +168,5 @@
     }
   
 
-
-    // MyFileResult fr = azureFileOperation.DownloadFile(configuration.GetSection("AzureAPIUrl").Value, configuration.GetSection("Path").GetValue<string>("EndUserDownloadPath") + "\\" + filename);
-    // var bytes = Convert.FromBase64String(fr.FileBase64);
-    // var contents = new MemoryStream(bytes);
-    //         return File(contents, fr.ContentType, fr.FileName);
-
-//     //For centralized SMS
-//     SMS obj = new SMS();
-//     DateTime currentDateTime = DateTime.Now;
-//     string formattedDateTime = currentDateTime.ToString("dd-MMM-yyyy HH:mm tt");
-//     string templateid = _configuration.GetSection("KeyList").GetSection("SMSKeys").GetValue<string>("OTPTemplate");
-//     obj.mobileNo = objforgotPasswordModel.MOBILENO;
-//                     obj.templateid = templateid;
-//                     obj.parameterlist = new List<string>() { objOtPModel.OTP
-//     };
-//     var res1 = sMSModel.Main(obj);
-
-//     //For centralized Email
-//     CommonMail commonMail = new CommonMail();
-//     string Subject = _configuration.GetSection("KeyList").GetSection("SMSKeys").GetValue<string>("OTPMailSubject");
-//     commonMail.TemplateID = templateid;
-//                     commonMail.To = objforgotPasswordModel.EMAILID;
-//                     commonMail.Subject = Subject;
-//                     commonMail.ParameterList = new List<string>() { objOtPModel.OTP
-// };
-// var res = mailModel.SendCommonMail(commonMail);
-// if (res1.Satus.ToUpper() == "SUCCESS" || res.Satus.ToUpper() == "SUCCESS")
-// {
-//     messageEF.Satus = "success";
-// }
 
 }

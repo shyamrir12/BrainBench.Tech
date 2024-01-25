@@ -8,20 +8,20 @@ namespace AdminPanelModels
 {
     public class MyFileRequest
     {
-        public string FileName;
-        public string FolderName;
-        public string FileContenctBase64;
-        public string FileNameWithPath;
+        public string FileName { get; set; }
+        public string FolderName { get; set; }
+        public string FileContenctBase64 { get; set; }
+        public string FileNameWithPath { get; set; }
 
     }
 
     public class MyFileResult
     {
-        public Stream Filestream;
-        public string ContentType;
-        public string FileName;
-        public string Status;
-        public string FileBase64;
-        public object FileStream1;
+        public Stream Filestream { get; set; }
+        public string ContentType { get; set; }
+        public string FileName { get; set; }
+        public string Status { get; set; }
+        public string FileBase64 { get; set; }
+        public object FileStream1 { get; set; }
     }
 }

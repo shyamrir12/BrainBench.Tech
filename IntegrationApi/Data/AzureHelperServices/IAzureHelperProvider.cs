@@ -5,7 +5,7 @@ namespace IntegrationApi.Data.AzureHelperServices
 {
 	public interface IAzureHelperProvider
 	{
-		Task<MessageEF> SaveFile(IntegrationModels.MyFileRequest objParams);
+		Task<MessageEF> SaveFile(MyFileRequest objParams);
 		Task<MyFileResult> DownloadFile(MyFileRequest FileNameWithPath);
 		Task<MessageEF> DeleteFile(MyFileRequest FileNameWithPath);
 		Task<MessageEF> CheckFileExistance(MyFileRequest FileNameWithPath);

@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrationApi.Controllers
 {
-	[Route("api/{controller}/{action}")]
-	[ApiController]
+    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
+    [ApiController]
 	public class AzureFileController : ControllerBase
 	{
 		private readonly IAzureHelperProvider iAzureFileOperation;
@@ -17,7 +18,7 @@ namespace IntegrationApi.Controllers
 		}
 
 		[HttpPost]
-		public async Task<MessageEF> SaveFile(MyFileRequest request)
+		public async Task<MessageEF> SaveFile( MyFileRequest request)
 		{
 			
 			return await iAzureFileOperation.SaveFile(request);

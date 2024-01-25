@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IntegrationApi.Controllers
 {
-	[Route("api/[controller]/{action}")]
-	[ApiController]
+    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
+    [ApiController]
 	public class SMSServiceController : ControllerBase
 	{
 		private readonly ISMSProvider sMSProvider;
@@ -16,13 +17,13 @@ namespace IntegrationApi.Controllers
 		{
 			this.sMSProvider = sMSProvider;
 		}
-
-		public MessageEF Main(SMS sMS)
+        [HttpPost]
+        public MessageEF Main(SMS sMS)
 		{
 			return sMSProvider.Main(sMS);
 		}
-
-		public SMSResponseData TestSMS(string MobileNo)
+        [HttpPost]
+        public SMSResponseData TestSMS(string MobileNo)
 		{
 			return sMSProvider.TestSMS(MobileNo);
 		}
