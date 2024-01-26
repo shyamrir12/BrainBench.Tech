@@ -113,7 +113,8 @@ namespace IntegrationApi.Data.MailServices
 					mail.Priority = System.Net.Mail.MailPriority.High;
 					using (SmtpClient client = CreateMailClient())
 					{
-						client.Port = Convert.ToInt32(configuration.GetSection("MailConfiguration").GetValue<int>("smtpPort"));
+                       
+                        client.Port = Convert.ToInt32(configuration.GetSection("MailConfiguration").GetValue<int>("smtpPort"));
 						client.Host = Convert.ToString(configuration.GetSection("MailConfiguration").GetValue<string>("smtpHost"));
 						client.Credentials = new System.Net.NetworkCredential(configuration.GetSection("MailConfiguration").GetValue<string>("smtpLoginId").ToString(),
 							configuration.GetSection("MailConfiguration").GetValue<string>("smtpPassword"));

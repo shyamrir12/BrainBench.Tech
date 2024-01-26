@@ -136,28 +136,28 @@
                 //     obj.TP_File_PATH = "folderpath\\" + strName;
                 //     obj.TP_FILE = strName;
                 //file download
-                MyFileResult fr = await _azrfileSubscriber.DownloadFile(myFileRequest);
-                await JSRuntime.InvokeVoidAsync("downloadFile", fr.ContentType, fr.FileBase64, fr.FileName);
+                // MyFileResult fr = await _azrfileSubscriber.DownloadFile(myFileRequest);
+                // await JSRuntime.InvokeVoidAsync("downloadFile", fr.ContentType, fr.FileBase64, fr.FileName);
 
 
                     //For centralized SMS
-                    SMS obj = new SMS();
-                    DateTime currentDateTime = DateTime.Now;
-                    string formattedDateTime = currentDateTime.ToString("dd-MMM-yyyy HH:mm tt");
-                    string templateid = _configuration.GetValue<string>("KeyList:OTPTemplate");
-                                    obj.mobileNo = "9301789363";
-                                    obj.templateid = templateid;
-                                    obj.parameterlist = new List<string>() { model.otp};
-                var res1 = _mailsmsSubscriber.Main(obj);
+               //      SMS obj = new SMS();
+               //      DateTime currentDateTime = DateTime.Now;
+               //      string formattedDateTime = currentDateTime.ToString("dd-MMM-yyyy HH:mm tt");
+               //      string templateid = _configuration.GetValue<string>("KeyList:OTPTemplate");
+               //                      obj.mobileNo = "9301789363";
+               //                      obj.templateid = templateid;
+               //                      obj.parameterlist = new List<string>() { model.otp};
+               // var res1 = _mailsmsSubscriber.Main(obj);
 
                     //For centralized Email
-                    CommonMail commonMail = new CommonMail();
-                    string Subject = _configuration.GetValue<string>("KeyList:OTPMailSubject");
-                    commonMail.TemplateID = templateid;
-                                    commonMail.To = model.EmailId;
-                                    commonMail.Subject = Subject;
-                commonMail.ParameterList = new List<string>() { model.otp };
-                var res = _mailsmsSubscriber.SendCommonMail(commonMail);
+                //     CommonMail commonMail = new CommonMail();
+                //     string Subject = _configuration.GetValue<string>("KeyList:OTPMailSubject");
+                //     commonMail.TemplateID = templateid;
+                //                     commonMail.To = model.EmailId;
+                //                     commonMail.Subject = Subject;
+                // commonMail.ParameterList = new List<string>() { model.otp };
+                // var res = _mailsmsSubscriber.SendCommonMail(commonMail);
                
 
             }
