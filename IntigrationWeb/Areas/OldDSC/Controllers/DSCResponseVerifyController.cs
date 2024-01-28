@@ -123,12 +123,15 @@ namespace IntigrationWeb.Areas.OldDSC.Controllers
                         strFinalString = strWithoutSign.Substring(0, strWithoutSign.IndexOf("CommonName"));
                         strFinalString = strFinalString.Replace("==", string.Empty).Replace("\r", string.Empty);
                     }
-                    else
+                    else if (base64BinaryStr.IndexOf("CommonName") > 0)
                     {
                         strFinalString = base64BinaryStr.Substring(0, base64BinaryStr.IndexOf("CommonName"));
                         strFinalString = strFinalString.Replace("==", string.Empty).Replace("\r", string.Empty);
                     }
-
+                     else
+                    {
+                        strFinalString = base64BinaryStr;
+                    }
                     //if ((System.IO.File.Exists(savepath)))
                     //{
                     //    string file = "File Already Exists";

@@ -38,9 +38,7 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
         [HttpPost]
         public ActionResult Decrypt(AjaxRetquest jsonData, string Type, string Data, string TempFilePath)
         {
-            //emBridgeLib bridge = new emBridgeLib(ConfigurationSettings.AppSettings.Get("licPath"), ConfigurationSettings.AppSettings.Get("logPath"));
-            emBridgeLib bridge = new emBridgeLib(Path.Combine(_hostingEnvironment.WebRootPath, _configuration["licPath"]), Path.Combine(_hostingEnvironment.WebRootPath, _configuration["logPath"]));
-            ;
+            emBridgeLib bridge = new emBridgeLib(Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:licPath")), Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:logPath") ));
             try
             {
                 var jsonReq = "";
@@ -77,13 +75,13 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
         [HttpPost]
         public ActionResult Encrypt(AjaxRetquest jsonData, string Data, string Type)
         {
-            string s = Path.Combine(_hostingEnvironment.WebRootPath, _configuration["licPath"]);
-            string ss = Path.Combine(_hostingEnvironment.WebRootPath, _configuration["logPath"]);
-            emBridgeLib bridge = new emBridgeLib(Path.Combine(_hostingEnvironment.WebRootPath, _configuration["licPath"]), Path.Combine(hostingEnvironment.WebRootPath, configuration["logPath"]));
+            //_configuration.GetValue<string>("KeyList:FNDSCCreateFilePATH")
+         
+            emBridgeLib bridge = new emBridgeLib(Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:licPath")), Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:logPath")));
+
             try
             {
-                //JObject jObject = JObject.Parse(jsonData);
-                //var jData = jObject["datatosend"];
+                
                 var jsonReq = "";
                 switch (Type)
                 {
@@ -103,11 +101,9 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
                         jsonReq = JsonConvert.SerializeObject(requestSign);
                         break;
                     case "PKCSBulkSign":
-                        //string path = ConfigurationSettings.AppSettings.Get("PdfInputPath");
-                        string path = Path.Combine(_hostingEnvironment.WebRootPath, _configuration["PdfInputPath"]);
+                        string path = Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:FNDSCCreateFilePATH"));
                         PKCSBulkPdfHashSignRequest pKCSBulkPdfHashSignRequest = JsonConvert.DeserializeObject<PKCSBulkPdfHashSignRequest>(Data);
-                        //pKCSBulkPdfHashSignRequest.TempFolder = ConfigurationSettings.AppSettings.Get("tempDirectory");
-                        pKCSBulkPdfHashSignRequest.TempFolder = Path.Combine(_hostingEnvironment.WebRootPath, _configuration["tempDirectory"]);
+                        pKCSBulkPdfHashSignRequest.TempFolder = Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:FNDSCReadFilePATH"););
                         List<emBridgeSignerInput> bulkInput = new List<emBridgeSignerInput>();
                         TestDSC testDSC = JsonConvert.DeserializeObject<TestDSC>(Data);
                         if (testDSC.PdfFileBase64.Length > 0)
@@ -120,26 +116,11 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
                             string docID = Path.GetFileName(path + "\\" + testDSC.PDFName);
                             byte[] fileBytes = System.IO.File.ReadAllBytes(path + "\\" + testDSC.PDFName);
                             string fileBas64 = Convert.ToBase64String(fileBytes);
-                            //emBridgeSignerInput input = new emBridgeSignerInput(fileBas64, docID, "Bengaluru", "Testing", "eMudhra Limited", true, emBridge.Enum.PageTobeSigned.First, emBridge.Enum.Coordinates.BottomRight);
+                           
                             emBridgeSignerInput input = new emBridgeSignerInput(fileBas64, docID, "Bengaluru", "Testing", "eMudhra Limited", true, globalem.emBridge.Enum.PageTobeSigned.First, globalem.emBridge.Enum.Coordinates.BottomRight);
                             bulkInput.Add(input);
                         }
-                        else
-                        {
-                            //if (Directory.Exists(path)) // for bulk pdf sign in folder
-                            //{
-                            //    string[] filePaths = Directory.GetFiles(path, "*.pdf");
-                            //    foreach (string filePath in filePaths)
-                            //    {
-                            //        string docID = Path.GetFileName(filePath);
-                            //        byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
-                            //        string fileBas64 = Convert.ToBase64String(fileBytes);
-                            //        //emBridgeSignerInput input = new emBridgeSignerInput(fileBas64, docID, "Bengaluru", "Testing", "eMudhra Limited", true, emBridge.Enum.PageTobeSigned.First, emBridge.Enum.Coordinates.BottomRight);
-                            //        emBridgeSignerInput input = new emBridgeSignerInput(fileBas64, docID, "Bengaluru", "Testing", "eMudhra Limited", true, globalem.emBridge.Enum.PageTobeSigned.First, globalem.emBridge.Enum.Coordinates.BottomRight);
-                            //        bulkInput.Add(input);
-                            //    }
-                            //}
-                        }
+                        
                         pKCSBulkPdfHashSignRequest.BulkInput = bulkInput;
                         Request requestPkcsBulkSign = bridge.encPKCSBulkSign(pKCSBulkPdfHashSignRequest);
                         jsonReq = JsonConvert.SerializeObject(requestPkcsBulkSign);
@@ -161,8 +142,6 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
         {
             MyFileRequest fr = new MyFileRequest();
             fr.FileNameWithPath=path;
-
-            //save file in azure (Sunil DEshalahre 27-078-22)
             MyFileResult fres = await _azureFileOperation.DownloadFile(fr);
             var bytes = Convert.FromBase64String(fres.FileBase64);
             var contents = new MemoryStream(bytes);
@@ -187,43 +166,54 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult SaveNormalPdfFile(string base64BinaryStr, string fileName, int ID, string UpdateIn)
+        public async Task<JsonResult> SaveNormalPdfFile(string base64BinaryStr, string fileName, int ID, string UpdateIn)
         {
             string OutputResult = "SUCCESS";
+            Item result = null;
+            var folderpath = _configuration.GetValue<string>("KeyList:FNDSCReadFilePATH");
             try
             {
                 //appsettings.json
                 var RootPath = Path.Combine(_hostingEnvironment.WebRootPath, _configuration["FNDSCReadFilePATH"]);
-                var savepath = Path.Combine(RootPath, fileName);
-                using (FileStream fs = new FileStream(savepath, FileMode.Create))
-                {
-                    using (BinaryWriter bw = new BinaryWriter(fs))
-                    {
-                        byte[] data = Convert.FromBase64String(base64BinaryStr);
-                        bw.Write(data);
-                        bw.Close();
-                    }
-                    fs.Close();
-                }
+                //var savepath = Path.Combine(RootPath, fileName);
+                //using (FileStream fs = new FileStream(savepath, FileMode.Create))
+                //{
+                //    using (BinaryWriter bw = new BinaryWriter(fs))
+                //    {
+                //        byte[] data = Convert.FromBase64String(base64BinaryStr);
+                //        bw.Write(data);
+                //        bw.Close();
+                //    }
+                //    fs.Close();
+                //}
+
+                MyFileRequest myFileRequest = new MyFileRequest();
+                myFileRequest.FileContenctBase64 = base64BinaryStr;
+                myFileRequest.FileName = fileName;
+                myFileRequest.FolderName = folderpath;
+                myFileRequest.FileNameWithPath = folderpath + "\\" + fileName;
+                MessageEF e = await _azureFileOperation.SaveFile(myFileRequest);
+                result = new Item { Message = OutputResult, FilePath = myFileRequest.FileNameWithPath };
+
 
             }
             catch (Exception ex)
             {
                 OutputResult = "FAILED";
+                result = new Item { Message = OutputResult, FilePath = "NA", FileName = "NA" };
             }
-            return Json(OutputResult.ToUpper());
+            return Json(result);
         }
 
         [HttpPost]
-        public JsonResult SavePdfFile(string base64BinaryStr, string fileName, int ID, string UpdateIn, string Month_Year)
+        public async Task<JsonResult> SavePdfFileAsync(string base64BinaryStr, string fileName, int ID, string UpdateIn, string Month_Year)
         {
             string OutputResult = "SUCCESS";
             var UserId = "2";//send id when request
+            var folderpath = _configuration.GetValue<string>("KeyList:FNDSCCreateFilePATH");
             try
             {
-                var ServerPath = "/DSC/WithDSC/" + fileName;
-                var RootPath = Path.Combine(_hostingEnvironment.WebRootPath, _configuration["FNDSCCreateFilePATH"]);
-                var savepath = Path.Combine(RootPath, fileName);
+              
                 try
                 {
                     #region Old Code To Check base 64 file
@@ -245,28 +235,15 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
                         strFinalString = base64BinaryStr;
                     }
                     #endregion
-
-                    #region New Code added by sunil deshalahre(on 02-07-22)
-                    //string strFinalString = string.Empty;
-
-                    #endregion
-
-                    if ((System.IO.File.Exists(savepath)))
-                    {
-                        string file = "File Already Exists";
-                    }
-                    else
-                    {
-                        base64Finale = strFinalString.Replace("\n", "");
-                        byte[] bytes = Convert.FromBase64String(base64Finale.Trim());
-                        System.IO.FileStream stream = new FileStream(savepath, FileMode.CreateNew);
-                        System.IO.BinaryWriter writer = new BinaryWriter(stream);
-                        writer.Write(bytes, 0, bytes.Length);
-                        writer.Close();
-                    }
                     base64Finale = strFinalString.Replace("\n", "");
-                    //save file in azure (Sunil DEshalahre 27-078-22)
-                    System.Threading.Tasks.Task<MessageEF> e = _azureFileOperation.SaveFile(new MyFileRequest() { FileContenctBase64 = base64Finale, FileName = fileName, FolderName = "DSC/WithDSC" });
+
+                    MyFileRequest myFileRequest = new MyFileRequest();
+                    myFileRequest.FileContenctBase64 = base64Finale;
+                    myFileRequest.FileName = fileName;
+                    myFileRequest.FolderName = folderpath;
+                    myFileRequest.FileNameWithPath = folderpath + "\\" + fileName;
+                    MessageEF e = await _azureFileOperation.SaveFile(myFileRequest);
+                  
                 }
                 catch (Exception ex)
                 {
@@ -275,14 +252,14 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
                     return Json(OutputResult.ToUpper());
                 }
 
-                //update to DB code pending (02-07-22) Sunil Deshalahre
-                //Update to DB code updated on (06-07-22) Sunil Deshalahre
+              
                 NewDSCRequest newDSC = new NewDSCRequest();
-                newDSC.FileName = ServerPath;// fileName;
+                newDSC.FileName = folderpath + "\\" + fileName; ;
                 newDSC.ID = ID.ToString();
                 newDSC.UpdateIn = UpdateIn;
                 newDSC.UserId = UserId;
                 newDSC.MonthYear = Month_Year;
+                //api not aaded in intigration api
                 MessageEF msgEF = _newDSCModel.SaveDSCFilePath(newDSC);
             }
             catch (Exception ex)
@@ -293,5 +270,11 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
         }
 
 
+    }
+    public class Item
+    {
+        public string Message { get; set; }
+        public string FilePath { get; set; }
+        public string FileName { get; set; }
     }
 }

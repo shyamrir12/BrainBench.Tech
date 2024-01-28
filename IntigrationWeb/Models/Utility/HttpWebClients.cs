@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
@@ -9,15 +10,26 @@ namespace IntigrationWeb.Models.Utility
     {
       
         private IConfiguration _configuration;
-        public HttpWebClients(IConfiguration configuration)
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        string jwt = "";
+
+      
+        public HttpWebClients(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
-           
+            _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
         }
 
         public string PostRequest(string URI, string parameterValues)
-        {
-          
+        { 
+            
+            //ShyamSir
+            var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            jwt = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value;
+            //ShyamSir
+
             string BaseURI = _configuration.GetValue<string>("KeyList:WebApiurl");
             string URL = BaseURI + URI;
             string jsonString = null;
@@ -31,7 +43,7 @@ namespace IntigrationWeb.Models.Utility
             client.BaseAddress = new Uri(URL);
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-           // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
             //GET Method  
             HttpContent c = new StringContent(parameterValues, Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PostAsync(URL, c).Result;
@@ -50,6 +62,10 @@ namespace IntigrationWeb.Models.Utility
 
         public string GetRequest(string URI, object parameterValues)
         {
+            //ShyamSir
+            var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            jwt = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value;
+            //ShyamSir
             string BaseURI = _configuration.GetValue<string>("KeyList:WebApiurl"); ;
 
             string URL = BaseURI + URI;
@@ -59,7 +75,7 @@ namespace IntigrationWeb.Models.Utility
                 client.BaseAddress = new Uri(URL);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "ZURTZWN1cml0eTplX0RfQVBJLXVyaQ==");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
                 //GET Method  
                 HttpResponseMessage response = client.GetAsync(URL).Result;
                 if (response.IsSuccessStatusCode)
@@ -73,6 +89,7 @@ namespace IntigrationWeb.Models.Utility
             }
             return jsonString;
         }
+       
 
     }
 }

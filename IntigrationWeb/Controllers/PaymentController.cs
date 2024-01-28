@@ -2,7 +2,7 @@
 
 namespace IntigrationWeb.Controllers
 {
-    public class PaymentController1 : Controller
+    public class PaymentController : Controller
     {
         public IActionResult Index()
         {
