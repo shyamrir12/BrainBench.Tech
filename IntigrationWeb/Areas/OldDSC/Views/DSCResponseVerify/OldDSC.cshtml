@@ -1,0 +1,294 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+
+    Layout = "~/Views/Shared/_LayoutDSCOld.cshtml";
+}
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1" style="display: none" id="btnErrorPopup"></button>
+<div id="myModal1" class="modal fade modal-error" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" id="errorHeader">
+                <h5 class="modal-title" id="errorTitle"><i class="fas fa-exclamation-triangle"></i>Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeError" onclick='return getSetFocus();setGetFocus();'>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-1">
+                    </div>
+                    <div class="col-sm-10">
+                        <span id="errorMessage"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <h4 class="text-center mb-3"></h4>
+    @*<div class="row">
+    <div class="col-lg-4">
+    <div class="form-group">
+    <input type="button" id="signData" class="form-control btn btn-success" value="Cancel Digital Signing" />
+    </div>
+    </div>
+    </div>*@
+    <div id="divLoading">
+    </div>
+
+    <input type="hidden" id="hfPdfFileBase64" value="" />
+    <input type="hidden" id="dataToSign" value="" />
+    <input type="hidden" id="hfdsctype" value="" />
+
+    <input id="FNID" type="hidden" />
+    <input id="FNTYPE" type="hidden" />
+    <input id="UPDATEIN" type="hidden" />
+    <input id="SIGNType" type="hidden" />
+    <input id="TABLEID" type="hidden" />
+    <input id="Coordinate" type="hidden" value="600,100,1300,50" />
+
+</section>
+<script>
+    try {
+        var connection = new WebSocket('wss://localhost.emudhra.com:8080');
+
+        connection.onopen = function () {
+            console.log('Connection Opened');
+        };
+        connection.onerror = function (error) {
+            console.log('Please check the DSC connection: ' + error);
+        };
+        connection.onmessage = function (e) {
+            if (e.data.indexOf("subProtocol") == -1) {
+                //  alert(e.data);
+            }
+        };
+    }
+    catch (e) {
+        swal("", "No DSC Connection Found", "warning");
+    }
+    function getParameterValues(key) {
+        var pageURL = window.location.search.substring(1);
+        var urlQS = pageURL.split('&');
+        for (var i = 0; i < urlQS.length; i++) {
+            var paramName = urlQS[i].split('=');
+            if (paramName[0] == key) {
+                //replace the special char like "+","&" etc from value
+                var value = paramName[1].replace('%20', ' ').replace('%26', '&').replace('+', ' ');
+                return value;
+            }
+        }
+    }
+
+    window.addEventListener("message", (event) => {
+        debugger;
+        // Normally you would check event.origin
+        // To verify the targetOrigin matches
+        // this window's domain
+        let hfPdfFileBase64 = document.querySelector('#hfPdfFileBase64');
+        let FNID = document.querySelector('#FNID');
+        let FNTYPE = document.querySelector('#FNTYPE');
+        let UPDATEIN = document.querySelector('#UPDATEIN');
+        let SIGNType = document.querySelector('#SIGNType');
+        let TABLEID = document.querySelector('#TABLEID');
+        let Coordinate = document.querySelector('#Coordinate');
+        let dataToSign = document.querySelector('#dataToSign');
+        let hfdsctype = document.querySelector('#hfdsctype');
+
+
+        // event.data contains the message sent
+        if (event.data.SIGNType == "signpdf") {
+            SIGNType.value = event.data.SIGNType;
+            hfdsctype.value = event.data.SIGNType;
+            hfPdfFileBase64.value = event.data.PdfFileBase64;//`Name is ${event.data.pName} Age is  ${event.data.pAge}`;
+            FNID.value = event.data.FNID;
+            FNTYPE.value = event.data.FNTYPE;
+            UPDATEIN.value = event.data.UPDATEIN;
+            TABLEID.value = event.data.TABLEID;
+            Coordinate.value = event.data.Coordinate;
+        }
+        else if (event.data.SIGNType == "signdoc") {
+            SIGNType.value = event.data.SIGNType;
+            hfdsctype.value = event.data.SIGNType;
+            dataToSign.value = event.data.DocData;
+        }
+    });
+
+    window.onload = function () {
+        debugger;
+        var dsctype = getParameterValues("dsctype");
+
+        //(1)Show the loading div while window loaded for 5 seconds
+        //(1)Show the loading div while window loaded for 5 seconds
+        $("#divLoading").addClass('show');
+        setTimeout(function () { $("#divLoading").addClass('hide'); }, 5000);
+
+        if (dsctype == "signpdf") {
+            let demoCall = { RequestParam: "signpdf" };
+            // In production, DO NOT use '*', use toe target domain
+            window.opener.postMessage(demoCall, '*')// childwin is the targetWindow
+            $("#hfdsctype").val(dsctype);
+        }
+        else if (dsctype == "signdoc") {
+            let demoCallData = { RequestParam: "signdoc" };
+            // In production, DO NOT use '*', use toe target domain
+            window.opener.postMessage(demoCallData, '*')// childwin is the targetWindow
+            $("#hfdsctype").val(dsctype);
+        } else {
+            $("#btnErrorPopup").click();
+            $("#errorMessage").html('DSC Type is not defined! Please specify the dsctype in your request link.');
+            $("#hfdsctype").val("");
+        }
+        //alert($("#hfdsctype").val());
+    };
+    $(document).ready(function () {
+        debugger;
+        //alert($("#hfdsctype").val());
+        setTimeout(function () {
+            $("#divLoading").removeClass('show');
+            $("#divLoading").addClass('hide');
+            if ($("#hfdsctype").val() == "signpdf") {
+                SavePDF();
+            }
+            else if ($("#hfdsctype").val() == "signdoc") {
+                onSingData();
+            }
+
+        }, 5000);
+    });
+
+    function onSingData() {
+        var Postdata = 'action=signdoc' + "\n" + 'datatosign=Digital Signature Required' + "\n" + 'signaction=sign' + "\n" + 'filepath=' + "\n" + 'panNumberParam=' + "\n" + 'expirycheck=false' + "\n" + 'issuername=' + "\n" + 'certclass=1|2|3' + "\n" + 'certtype=ALL';
+        connection.send(Postdata);
+
+        connection.onerror = function (error) {
+            //alert('Please check the server connection: ' + error);
+            // alert(error);
+            swal("", "Please check the server connection:" + error, "warning");
+        };
+
+        connection.onmessage = function (e) { // when DSC is success then following function executed.
+            if (e.data.indexOf("subProtocol") == -1) {
+                $("#DSCResponse").val(e.data).change();
+                $.ajax(
+                    {
+                        url: '@Url.Action("CheckVerifyResponse", "DSCResponseVerify", new { Area = "OldDsc" })',
+                        type: "POST",
+                        data: { contentType: "pkcs7", signDataBase64Encoded: e.data, responseType: "plain" },
+                        success: function (msg) {
+                            if (msg == "SUCCESS") {
+                                let msgSuccess = { DSCResult: "SUCCESS" };
+                                // In production, DO NOT use '*', use toe target domain
+                                window.opener.postMessage(msgSuccess, '*')// childwin is the targetWindow
+                                //window.opener.location.reload();
+                                window.close();
+                            } else if (msg == "EXCEPTION") {
+                                // alert('Unable to CheckVerifyResponse');
+                                swal("", "Unable to CheckVerifyResponse", "warning");
+                            }
+                            else {
+                                let msgFailed = { DSCResult: "FAILED" };
+                                // In production, DO NOT use '*', use toe target domain
+                                window.opener.postMessage(msgFailed, '*')// childwin is the targetWindow
+                                //window.opener.location.reload();
+                                window.close();
+                            }
+                        }
+                    });
+            }
+            else {
+                art(e.data);
+            }
+        };
+    }
+
+    function SavePDF() {
+        debugger;
+        //alert(signedData);
+        var dt = new Date();
+        var FileName;
+        var Coordinate;
+        if ($("#FNID").val() == "") {
+            FileName = "_" + dt.getDate() + "" + (dt.getMonth() + 1) + "" + dt.getFullYear() + "_" + dt.getHours() + "_" + dt.getMinutes() + "_" + dt.getSeconds() + ".pdf";
+        }
+        else {
+            FileName = $("#FNID").val();
+        }
+        if ($("#Coordinate").val() == "") {
+            Coordinate = "600,100,1300,50";
+        }
+        else {
+            Coordinate = $("#Coordinate").val();
+        }
+
+        $.ajax({
+            url: '@Url.Action("SaveNormalPdfFile", "DSCResponseVerify", new { Area = "OldDsc" })',
+            type: "POST",
+            data: { base64BinaryStr: $('#hfPdfFileBase64').val(), fileName: FileName },
+            async: false,
+            success: function (msg) {
+                if (msg.Message == "SUCCESS") {
+                    //alert(msg.FilePath);
+                    var FPath = msg.FilePath;
+                    var OutPath = "";
+                    var Postdata = 'action=signpdf' + "\n" + 'datatosign=' + FPath + '' + "\n" + 'signaction=2' + "\n" + 'outputpath=' + OutPath + '' + "\n" + 'signtype=sign' + "\n" + 'expirycheck=false' + "\n" + 'coordinate=' + Coordinate + "\n" + 'issuername=' + "\n" + 'certtype=ALL' + "\n" + 'certclass=0';
+                    connection.send(Postdata);
+                    connection.onerror = function (error) {
+                        //alert('Please check the server connection: ' + error);
+                        // alert(error);
+                        swal("", "Please check the server connection:" + error, "warning");
+                    };
+                    connection.onmessage = function (e) { // when DSC is success then following function executed.
+                        if (e.data.indexOf("subProtocol") == -1) {
+                            SignCompleted(e.data, msg.Message, msg.FileName);
+                        }
+                    }
+                }
+                else {
+                    // alert("Unable to signe/save pdf pdf!");
+                    swal("", "Unable to signe/save pdf pdf", "warning");
+                    //alert(msg);
+                    let msgFailed = { DSCResult: "FAILED" };
+                    // In production, DO NOT use '*', use toe target domain
+                    window.opener.postMessage(msgFailed, '*')// childwin is the targetWindow
+                    //window.opener.location.reload();
+                    window.close();
+                }
+            }
+        });
+    }
+
+    function SignCompleted(signedData, status, _fileName) {
+
+        $.ajax({
+            url: '@Url.Action("SavePdfFile", "NewDSC", new { Area = "NewDSC" })',
+            type: "POST",
+            async: false,
+            data: { base64BinaryStr: signedData, fileName: _fileName, ID: $("#TABLEID").val(), UpdateIn: $("#UPDATEIN").val() },
+            success: function (msg) {
+                if (msg == "SUCCESS") {
+                    //window.location.href = '@ViewBag.RedirectURL'
+                    let msgSuccess = { DSCResult: "SUCCESS", DSCFileName: _fileName };
+                    // In production, DO NOT use '*', use toe target domain
+                    window.opener.postMessage(msgSuccess, '*')// childwin is the targetWindow
+                    //window.opener.location.reload();
+                    window.close();
+                }
+                else {
+                    //alert(msg);
+                    let msgFailed = { DSCResult: "FAILED", DSCFileName: _fileName };
+                    // In production, DO NOT use '*', use toe target domain
+                    window.opener.postMessage(msgFailed, '*')// childwin is the targetWindow
+                    //window.opener.location.reload();
+                    window.close();
+                }
+            }
+        });
+    }
+</script>
