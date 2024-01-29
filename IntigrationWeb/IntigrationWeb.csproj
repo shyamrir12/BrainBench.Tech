@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Areas\NewDSC\Models\" />
     <Folder Include="Areas\OldDSC\Models\" />
-    <Folder Include="Areas\Payment\Data\" />
     <Folder Include="Areas\Payment\Models\" />
     <Folder Include="Areas\Payment\Views\" />
     <Folder Include="wwwroot\SupportDll\" />

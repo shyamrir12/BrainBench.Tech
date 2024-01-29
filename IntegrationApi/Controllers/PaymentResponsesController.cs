@@ -7,7 +7,9 @@ namespace IntegrationApi.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class PaymentResponsesController : ControllerBase
+
+   // Payment Response After Payment
+    public class PaymentResponsesController : ControllerBase
     {
         private readonly IPaymentResponsesProvider _paymentResponseProvider;
 

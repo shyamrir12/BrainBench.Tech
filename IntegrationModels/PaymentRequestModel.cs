@@ -23,5 +23,14 @@ namespace IntegrationModels
         public string PaymentRecieptId { get; set; }
         public decimal PaymentAmt { get; set; }
         public string PaymentType { get; set; }
+
+        //added for get payment getway
+        public string PaymentRefId { get; set; }
+        public string PrefixMineralConcession { get; set; }
+        public decimal? TotalPayment { get; set; }
+
+
     }
+
+   
 }

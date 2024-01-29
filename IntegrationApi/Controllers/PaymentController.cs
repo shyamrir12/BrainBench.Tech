@@ -11,20 +11,28 @@ namespace IntegrationApi.Controllers
 	[ApiController]
 	public class PaymentController : ControllerBase
 	{
-        private readonly IPaymentProvider _objILicenseeProvider;
+        private readonly IPaymentProvider _objILicenseProvider;
         public PaymentController(IPaymentProvider objILicenseeProvider)
         {
-            _objILicenseeProvider = objILicenseeProvider;
+            _objILicenseProvider = objILicenseeProvider;
         }
-        /// <summary>
-        /// Get License Payment Details
-        /// </summary>
-        /// <param name="licensePaymentDetail"></param>
-        /// <returns></returns>
+      
         [HttpPost]
-        public async Task<MessageEF> AddLicenseePayment(PaymentRequestModel obj)
+        public async Task<MessageEF> AddLicensePayment(PaymentRequestModel obj)
         {
-            return await _objILicenseeProvider.AddLicenseePayment(obj);
+            return await _objILicenseProvider.AddLicensePayment(obj);
+        }
+        [HttpPost]
+        public async Task<PaymentModel> GetPaymentGateway(PaymentRequestModel licensePaymentDetail)
+        {
+            return await _objILicenseProvider.GetPaymentGateway(licensePaymentDetail);
+        }
+
+      
+        [HttpPost]
+        public async Task<MessageEF> InsertPaymentRequest(PaymentModel model)
+        {
+            return await _objILicenseProvider.InsertPaymentRequest(model);
         }
     }
 }

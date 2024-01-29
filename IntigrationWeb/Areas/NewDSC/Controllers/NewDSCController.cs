@@ -103,7 +103,7 @@ namespace IntigrationWeb.Areas.NewDSC.Controllers
                     case "PKCSBulkSign":
                         string path = Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:FNDSCCreateFilePATH"));
                         PKCSBulkPdfHashSignRequest pKCSBulkPdfHashSignRequest = JsonConvert.DeserializeObject<PKCSBulkPdfHashSignRequest>(Data);
-                        pKCSBulkPdfHashSignRequest.TempFolder = Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:FNDSCReadFilePATH"););
+                        pKCSBulkPdfHashSignRequest.TempFolder = Path.Combine(_hostingEnvironment.WebRootPath, _configuration.GetValue<string>("KeyList:FNDSCReadFilePATH"));
                         List<emBridgeSignerInput> bulkInput = new List<emBridgeSignerInput>();
                         TestDSC testDSC = JsonConvert.DeserializeObject<TestDSC>(Data);
                         if (testDSC.PdfFileBase64.Length > 0)
