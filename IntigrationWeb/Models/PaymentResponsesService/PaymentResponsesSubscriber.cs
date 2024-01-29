@@ -1,5 +1,6 @@
 ﻿using IntegrationModels;
 using IntigrationWeb.Models.Utility;
+using LoginModels;
 using Newtonsoft.Json;
 
 namespace IntigrationWeb.Models.PaymentResponsesService
@@ -12,7 +13,7 @@ namespace IntigrationWeb.Models.PaymentResponsesService
 
             _objIHttpWebClients = objIHttpWebClients;
         }
-        public UserMasterModel AddLicenseResponcePayment(PaymentResponse paymentResponseDetails)
+        public UserMasterModel AddLicensePaymentResponce(PaymentResponse paymentResponseDetails)
         {
             UserMasterModel userMasterModel = new UserMasterModel();
             try
@@ -26,5 +27,21 @@ namespace IntigrationWeb.Models.PaymentResponsesService
                 throw ex;
             }
         }
+
+        public MessageEF GetPaymentResponseID(PaymentResponse paymentResponseDetails)
+        {
+            MessageEF messageEF = new MessageEF();
+            try
+            {
+                messageEF = JsonConvert.DeserializeObject<MessageEF>(_objIHttpWebClients.PostRequest("PaymentResponses/GetPaymentResponseID", JsonConvert.SerializeObject(paymentResponseDetails)));
+                return messageEF;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
     }
 }

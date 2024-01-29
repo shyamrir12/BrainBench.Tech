@@ -1,5 +1,6 @@
 ﻿using IntegrationApi.Data.PaymentResponsesServices;
 using IntegrationModels;
+using LoginModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,11 @@ namespace IntegrationApi.Controllers
         public async Task<UserMasterModel> AddLicenseePaymentResponse(PaymentResponse paymentResponseDetails)
         {
             return await _paymentResponseProvider.AddLicenseePaymentResponse(paymentResponseDetails);
+        }
+        [HttpPost]
+        public async Task<MessageEF> GetPaymentResponseID(PaymentResponse paymentResponseDetails)
+        {
+            return await _paymentResponseProvider.GetPaymentResponseID(paymentResponseDetails);
         }
     }
 }

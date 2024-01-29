@@ -5,6 +5,7 @@ using static Hangfire.Storage.JobStorageFeatures;
 using System.Data;
 using IntegrationApi.Repository;
 using IntegrationApi.Factory;
+using LoginModels;
 
 namespace IntegrationApi.Data.PaymentResponsesServices
 {
@@ -46,6 +47,30 @@ namespace IntegrationApi.Data.PaymentResponsesServices
             finally
             {
                 userMasterModel = null;
+            }
+        }
+        public async Task<MessageEF> GetPaymentResponseID(PaymentResponse paymentResponseDetails)
+        {
+            MessageEF messageEF = new MessageEF();
+            try
+            {
+                var p = new DynamicParameters();
+                p.Add("@SessionBank", paymentResponseDetails.SessionBank);
+                p.Add("@DocContent", paymentResponseDetails.DocContent);
+                p.Add("@PAYMENTFOR", 2);
+                IDataReader dr = await Connection.ExecuteReaderAsync("InsertUpdatePaymentRecords", p, commandType: System.Data.CommandType.StoredProcedure);
+                DataSet ds = new DataSet();
+                ds = ConvertDataReaderToDataSet(dr);
+                DataTable dt = ds.Tables[0];
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    messageEF.Satus = Convert.ToString(dt.Rows[0]["PaymentResponseID"]);
+                }
+                return messageEF;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         public DataSet ConvertDataReaderToDataSet(IDataReader data)
