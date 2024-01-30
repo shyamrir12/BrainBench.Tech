@@ -54,7 +54,7 @@ namespace IntigrationWeb.Areas.Payment.Controllers
             {
                 TempData["Status"] = "0";
                 TempData["Message"] = "Some error occured. Please try after sometime!";
-                return Redirect(_configuration.GetValue<string>("KeyList:RedirecToMaster") + "/LicenseeTransfer/TransferRequest/TransferRequestView");
+                return Redirect(_configuration.GetValue<string>("PaymentKeyList:RedirecToLincenseUrl") + "/LicenseePayment/PaymentRequest/PaymentRequestView");
             }
             else
             {
@@ -73,7 +73,7 @@ namespace IntigrationWeb.Areas.Payment.Controllers
                     var SBIRequestString = string.Empty;
 
 
-                    objRequestURL.TPSLService = Convert.ToString(_configuration.GetSection("Path").GetSection("SBIService").Value); //Convert.ToString(ConfigurationManager.AppSettings["SBIService"]);
+                    objRequestURL.TPSLService = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:SBIService") ); //Convert.ToString(ConfigurationManager.AppSettings["SBIService"]);
                     objRequestURL.LogFilePath = string.Empty;
                     objRequestURL.ErrorFile = string.Empty;
 
@@ -88,7 +88,7 @@ namespace IntigrationWeb.Areas.Payment.Controllers
                                                           + "|CLNT_TXN_NO=" + payment.MerchantTxnRefNumber.ToString() //CLNT_TXN_NO
                                                           + "|Amount=" + Convert.ToDecimal(obj.TotalPayable).ToString("0.00") //TXN_AMOUNT
                                                           + "|Payment_Bifurcation=" + payment.ITC
-                                                          + "|ReturnUrl=" + Convert.ToString(_configuration.GetSection("Path").GetSection("ReturnUrl").Value);
+                                                          + "|ReturnUrl=" + Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ReturnUrl"));
 
 
 
@@ -101,13 +101,13 @@ namespace IntigrationWeb.Areas.Payment.Controllers
                     SBIRequestString += "|checkSum=" + checksum;
                     string SBIPostRequest = _sbiIncriptDecript.EncryptWithKey(SBIRequestString);
 
-                    string SBIURL = Convert.ToString(_configuration.GetSection("Path").GetSection("SBIService").Value);
+                    string SBIURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:SBIService"));
 
                     #region Insert Payment Request Data
                     payment.UserId = userid != null ? Convert.ToInt32(userid) : 0; ;
-                    payment.returnURL = Convert.ToString(_configuration.GetSection("Path").GetSection("ReturnUrl").Value);
-                    payment.S2SReturnURL = Convert.ToString(_configuration.GetSection("Path").GetSection("S2SReturnURL").Value);
-                    payment.PropertyPath = Convert.ToString(_configuration.GetSection("Path").GetSection("SBIPropertyPath").Value);
+                    payment.returnURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ReturnUrl") );
+                    payment.S2SReturnURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:S2SReturnURL") );
+                    payment.PropertyPath = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:SBIPropertyPath") );
                     payment.PaymentEncryptedData = SBIPostRequest;
                     payment.Currencycode = "INR";
                     _paymentRequestSubscriber.InsertPaymentRequest(payment);
@@ -145,9 +145,9 @@ namespace IntigrationWeb.Areas.Payment.Controllers
                     }
 
 
-                    objRequestURL.TPSLService = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICITPSLService").Value);
-                    objRequestURL.LogFilePath = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICILogFilePath").Value);
-                    objRequestURL.ErrorFile = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICIErrorFile").Value);
+                    objRequestURL.TPSLService = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICITPSLService"));
+                    objRequestURL.LogFilePath = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICILogFilePath"));
+                    objRequestURL.ErrorFile = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICIErrorFile"));
 
 
 
@@ -167,7 +167,7 @@ namespace IntigrationWeb.Areas.Payment.Controllers
 
                         #region New ICICI Bank Code 
                         string GIB_URL = "https://gibtaxcug.icicibank.com/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=ICI&JS_ENABLED_FLAG=Y&ITC=00000015&CRN=INR&IS_GIB_SESSION=Y&MD=P&AppType=corporate&URLencoding=Y&CG=Y&STATFLG=H&CYBERR=Y&CATEGORY_ID=264&PID=220";
-                        string GIB_Parm = "Paymode=NEFT&DEP_CODE=MDGC&REF_NO=" + payment.MerchantTxnRefNumber + "&AMT=" + payment.Amount + "&RU=" + _configuration.GetSection("Path").GetSection("ReturnUrlICICI").Value.ToString() + "&SRC_ITC=" + payment.ITC + ",ApplicantName:" + payment.customerName.Trim();
+                        string GIB_Parm = "Paymode=NEFT&DEP_CODE=MDGC&REF_NO=" + payment.MerchantTxnRefNumber + "&AMT=" + payment.Amount + "&RU=" + _configuration.GetValue<string>("PaymentKeyList:ReturnUrlICICI") + "&SRC_ITC=" + payment.ITC + ",ApplicantName:" + payment.customerName.Trim();
                         string PlainString = GIB_URL + GIB_Parm;
                         string GIB_encrpt = objencdec.EncryptAES(GIB_Parm);
                         finalSent = GIB_URL + "&encdata=" + GIB_encrpt;
@@ -175,9 +175,9 @@ namespace IntigrationWeb.Areas.Payment.Controllers
 
                         #region Insert Payment Request Data
                         payment.UserId = userid != null ? Convert.ToInt32(userid) : 0;
-                        payment.returnURL = Convert.ToString(_configuration.GetSection("Path").GetSection("ReturnUrlICICI").Value);
-                        payment.S2SReturnURL = Convert.ToString(_configuration.GetSection("Path").GetSection("S2SReturnURLICICI").Value);
-                        payment.PropertyPath = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICIPropertyPath").Value);
+                        payment.returnURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ReturnUrlICICI"));
+                        payment.S2SReturnURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:S2SReturnURLICICI"));
+                        payment.PropertyPath = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICIPropertyPath"));
                         payment.PaymentEncryptedData = GIB_encrpt;
                         payment.Currencycode = "INR";
                         _paymentRequestSubscriber.InsertPaymentRequest(payment);
@@ -204,15 +204,15 @@ namespace IntigrationWeb.Areas.Payment.Controllers
                     {
 
                         //// Follwoing code for NetBanking
-                        var PID = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICIPID").Value);
-                        var ICICIreqString = "Action.ShoppingMall.Login.Init=Y&BankId=ICI&USER_LANG_ID=001&AppType=corporate&UserType=2?ShowOnSamePage=Y&MD=P&PID=" + PID + "&PRN=" + payment.ITC.Replace(" ", "") + ",REF_NO:" + payment.MerchantTxnRefNumber + "&ITC=" + Convert.ToString(_configuration.GetSection("Path").GetSection("ITC").Value) + "&AMT=" + payment.Amount + "&CRN=INR&CG=Y&CYBERR=Y&RU=" + Convert.ToString(_configuration.GetSection("Path").GetSection("ReturnUrlICICI").Value);
-                        var ICICINETBankingURL = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICITPSLService").Value) + ICICIreqString;
+                        var PID = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICIPID"));
+                        var ICICIreqString = "Action.ShoppingMall.Login.Init=Y&BankId=ICI&USER_LANG_ID=001&AppType=corporate&UserType=2?ShowOnSamePage=Y&MD=P&PID=" + PID + "&PRN=" + payment.ITC.Replace(" ", "") + ",REF_NO:" + payment.MerchantTxnRefNumber + "&ITC=" + Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ITC")) + "&AMT=" + payment.Amount + "&CRN=INR&CG=Y&CYBERR=Y&RU=" + Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ReturnUrlICICI"));
+                        var ICICINETBankingURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICITPSLService")) + ICICIreqString;
 
                         #region New ICICI Bank Code
                         ICICIreqString = "FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=ICI&JS_ENABLED_FLAG=Y&ITC=00000015&PRN=11&CRN=INR&MD=P&PID=220&IS_GIB_SESSION=Y&CATEGORY_ID=264&AppType=corporate&URLencoding=Y&CG=Y&CYBERR=Y";
-                        ICICINETBankingURL = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICITPSLService").Value) + ICICIreqString;
+                        ICICINETBankingURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICITPSLService")) + ICICIreqString;
                         string GIB_URL = ICICINETBankingURL;
-                        string GIB_Parm = "PRN=" + payment.ITC + ",REF_NO:" + payment.MerchantTxnRefNumber + ",ApplicantName:" + payment.customerName.Trim() + "&AMT=" + payment.Amount + "&RU=" + Convert.ToString(_configuration.GetSection("Path").GetSection("ReturnUrlICICI").Value);
+                        string GIB_Parm = "PRN=" + payment.ITC + ",REF_NO:" + payment.MerchantTxnRefNumber + ",ApplicantName:" + payment.customerName.Trim() + "&AMT=" + payment.Amount + "&RU=" + Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ReturnUrlICICI"));
                         string PlainURl = GIB_URL + GIB_Parm;
                         string GIB_encrpt = objencdec.EncryptAES(GIB_Parm);
                         ICICINETBankingURL = GIB_URL + "&encdata=" + GIB_encrpt;
@@ -221,9 +221,9 @@ namespace IntigrationWeb.Areas.Payment.Controllers
 
                         #region Insert Payment Request Data
                         payment.UserId = userid != null ? Convert.ToInt32(userid) : 0; ;
-                        payment.returnURL = Convert.ToString(_configuration.GetSection("Path").GetSection("ReturnUrlICICI").Value);
-                        payment.S2SReturnURL = Convert.ToString(_configuration.GetSection("Path").GetSection("S2SReturnURLICICI").Value);
-                        payment.PropertyPath = Convert.ToString(_configuration.GetSection("Path").GetSection("ICICIPropertyPath").Value);
+                        payment.returnURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ReturnUrlICICI"));
+                        payment.S2SReturnURL = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:S2SReturnURLICICI"));
+                        payment.PropertyPath = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:ICICIPropertyPath"));
                         payment.PaymentEncryptedData = GIB_encrpt;
                         payment.Currencycode = "INR";
                         _paymentRequestSubscriber.InsertPaymentRequest(payment);

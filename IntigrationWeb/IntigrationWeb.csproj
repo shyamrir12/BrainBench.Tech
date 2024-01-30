@@ -14,7 +14,6 @@
     <Folder Include="Areas\NewDSC\Models\" />
     <Folder Include="Areas\OldDSC\Models\" />
     <Folder Include="Areas\Payment\Models\" />
-    <Folder Include="Areas\Payment\Views\" />
     <Folder Include="wwwroot\SupportDll\" />
     <Folder Include="wwwroot\Upload\DSC\" />
     <Folder Include="wwwroot\Upload\UserPhoto\" />

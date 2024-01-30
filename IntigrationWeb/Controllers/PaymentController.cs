@@ -5,6 +5,7 @@ using IntigrationWeb.Models.PaymentResponsesService;
 using IntigrationWeb.Models.sbiIncriptDecript;
 using LoginModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Configuration;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Web;
@@ -40,14 +41,16 @@ namespace IntigrationWeb.Controllers
         string strPG_MerchantCode;
         string[] strSplitDecryptedResponse;
         string[] strArrPG_TxnDateTime;
-
+       
         #endregion
         private readonly IPaymentResponsesSubscriber _paymentResponsesSubscriber;
         private readonly IMailSMSSubscriber _mailSMSSubscriber;
         private readonly IsbiIncriptDecript _isbiIncriptDecript;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public PaymentController(IPaymentResponsesSubscriber paymentResponsesSubscriber, IMailSMSSubscriber mailSMSSubscriber, IsbiIncriptDecript isbiIncriptDecript, IHttpContextAccessor httpContextAccessor)
+        private readonly IConfiguration _configuration;
+        public PaymentController(IConfiguration configuration, IPaymentResponsesSubscriber paymentResponsesSubscriber, IMailSMSSubscriber mailSMSSubscriber, IsbiIncriptDecript isbiIncriptDecript, IHttpContextAccessor httpContextAccessor)
         {
+            _configuration = configuration;
             _paymentResponsesSubscriber = paymentResponsesSubscriber;
             _mailSMSSubscriber = mailSMSSubscriber;
             _isbiIncriptDecript = isbiIncriptDecript;
@@ -62,8 +65,7 @@ namespace IntigrationWeb.Controllers
 
             UserLoginSession profile = new UserLoginSession();//get hear user by id
             //ShyamSir
-            // List<MCPaymentUserDetails> objuserdeatils = new List<MCPaymentUserDetails>();
-            // MCPaymentUserDetails loginuserdetailsInfo = new MCPaymentUserDetails();
+           
             try
             {
                 string strPaymentResponseID = string.Empty;
@@ -343,6 +345,205 @@ namespace IntigrationWeb.Controllers
         #endregion
 
         #region----------------ICICI Bank Response Code------------------------------
+        public ActionResult PaymentResponseICICI()
+        {
+
+          
+            //ShyamSir
+            var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+            var userid = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            UserLoginSession profile = new UserLoginSession();//get hear user by id
+            //ShyamSir
+            try
+            {
+                PaymentTransaction response = new PaymentTransaction();
+                string strPaymentResponseID = string.Empty;
+                string strDecryptedVal = string.Empty;
+                //Decrypting the PG response
+                string strIsKey = string.Empty;
+                string strIsIv = string.Empty;
+                string documentContents = null;
+                string sessionUserName = string.Empty;
+                #region Insert Payment Response Received in request from the bank Site
+                try
+                {
+
+                    var bnk = "";
+                    using (Stream receiveStream = HttpContext.Request.Body)
+                    {
+                        using (StreamReader readStream = new StreamReader(receiveStream, System.Text.Encoding.UTF8))
+                        {
+                            documentContents = readStream.ReadToEnd();
+                        }
+                    }
+
+
+
+                    if (!string.IsNullOrEmpty(documentContents) && documentContents.Contains("encdata"))
+                    {
+                        bnk = "ICIC";
+                    }
+
+                    if (!string.IsNullOrEmpty(documentContents))
+                    {
+                       
+                        messageEF = _paymentResponsesSubscriber.GetPaymentResponseID(new PaymentResponse() { SessionBank = bnk, DocContent = documentContents });
+                        strPaymentResponseID = messageEF.Satus;
+                    }
+                }
+                catch { }
+                #endregion
+
+                #region NEW ICICI
+
+                response.TPSL_BANK_CD = "ICICI";
+
+                if (!string.IsNullOrEmpty(documentContents) && documentContents.Contains("encdata")) //// For Online Net Banking
+                {
+
+                    strDecryptedVal = objencdec.DecryptAES(HttpUtility.UrlDecode(documentContents.Replace("encdata=", "")));
+
+                    strSplitDecryptedResponse = strDecryptedVal.Split('|');
+
+                    ICICINETGetPGRespnseData(strSplitDecryptedResponse);
+                }
+                else  // For NEFT / RTGS
+                {
+                    strIsKey = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:NEFTICICIKey"));
+                    strIsIv = Convert.ToString(_configuration.GetValue<string>("PaymentKeyList:NEFTICICIIV"));
+
+                    strDecryptedVal = objencdec.DecryptAES(HttpUtility.UrlDecode(documentContents.Replace("encdata=", "")));
+
+                    strSplitDecryptedResponse = strDecryptedVal.Split('|');
+                    ICICIGetPGRespnseData(strSplitDecryptedResponse);
+                    strPG_TxnStatusDesc = strPG_TxnStatusDesc == "P" ? "NEFT" : strPG_TxnStatusDesc;
+                }
+
+
+                #endregion
+
+                #region Payment Data Updated on specific request
+
+                if (strPG_TxnStatusDesc.ToUpper().Contains("PENDING") || strPG_TxnStatusDesc.ToUpper().Contains("NEFT") || strPG_TxnStatusDesc.ToUpper() == "P" || strPG_TxnStatusDesc.ToUpper() == "RECEIVED" || strPG_TxnStatusDesc.ToUpper() == "H")
+                {
+                    strPG_TxnStatusDesc = "PENDING";
+                    response.TXN_STATUS = "PENDING";
+                }
+                //Note:Difference Sunil-change (compare with 1.0)
+                if (strPG_TxnStatusDesc.ToUpper().Contains("COMPLETED") || strPG_TxnStatusDesc.ToUpper().Contains("SUCCESS"))
+                {
+                    strPG_TxnStatusDesc = "SUCCESS";
+                    response.TXN_STATUS = "SUCCESS";
+                }
+                if (response.TXN_STATUS == "SUCCESS" || response.TXN_STATUS == "AWAITED" || strPG_TxnStatusDesc.ToUpper().Contains("PENDING") || strPG_TxnStatusDesc == "NEFT" || strPG_TxnStatusDesc.ToUpper() == "RECEIVED" || strPG_TxnStatusDesc.ToUpper() == "H") // if transaction is success then only update record for bulkpermit and sent sms and email.
+                {
+                    if (response.CLNT_TXN_REF.StartsWith("LP"))
+                    {
+                        string strLICTXNID = response.CLNT_TXN_REF.Trim();
+                        string paymentStatus = response.TXN_STATUS;
+                        userMasterModel = _paymentResponsesSubscriber.AddLicensePaymentResponce(
+                          new PaymentResponse()
+                          {
+                              PaymentRecieptId = strLICTXNID,
+                              UserId = profile.UserID,
+                              ChallanNumber = response.TPSL_TXN_ID,
+                              PaidAmount = response.TXN_AMT,
+                              PaymentStatus = paymentStatus
+                          });
+
+                    }
+                    if (strPG_TxnStatus == "SUCCESS" || strPG_TxnStatusDesc.ToUpper().Contains("COMPLETED"))//Success
+                    {
+                        #region Send SMS
+
+                        try
+                        {
+                            string message = "Dear " + userMasterModel.ApplicantName + Environment.NewLine + "Your payment has been proceed successfully and your payment status is " + response.TXN_STATUS
+                                                 + Environment.NewLine +
+                                                 "Your Transaction Reference Number is " + response.CLNT_TXN_REF + Environment.NewLine +
+                                                 "Use this for Future reference. Please login to Khanij Online portal for further. CHiMMS, GoCG";
+
+
+                            string templateid = "1307161883628029116";
+                            _mailSMSSubscriber.Main(new SMS() { mobileNo = userMasterModel.MobileNo, message = message, templateid = templateid });
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        #endregion
+
+                        #region Send Mail
+                        try
+                        {
+                            _mailSMSSubscriber.SendCommonMail(new CommonMail()
+                            {
+                                //PaymentReceiptID = profile.UserID.ToString(),
+                                //EmailID = userMasterModel.EMailId,
+                                //ForwardDate = DateTime.Now.ToString("dd/MM/yyyy"),
+                                //TransactionId = profile.UserID.ToString(),
+                                //ApplicantName = userMasterModel.ApplicantName,
+                                //PaymentType = "payment status is " + response.TXN_STATUS + " ",
+                                //PayableAmount = Convert.ToString(response.TXN_AMT)
+                            });
+                        }
+                        catch (Exception)
+                        {
+                            TempData["AckMessage"] = "0";
+                        }
+                        #endregion
+                    }
+                    else if (response.TXN_STATUS == "AWAITED" || strPG_TxnStatusDesc.ToUpper().Contains("PENDING") || strPG_TxnStatusDesc == "NEFT")//Awaited
+                    {
+                        #region Send SMS
+                        try
+                        {
+
+                            string message = "Dear " + userMasterModel.ApplicantName + Environment.NewLine + "Your payment has been proceed successfully and your payment status is " + response.TXN_STATUS
+                                                + Environment.NewLine +
+                                                "Your Transaction Reference Number is " + response.CLNT_TXN_REF + Environment.NewLine +
+                                                "Use this for Future reference. Please login to Khanij Online portal for further. CHiMMS, GoCG";
+
+
+                            string templateid = "1307161883628029116";
+                            _mailSMSSubscriber.Main(new SMS() { mobileNo = userMasterModel.MobileNo, message = message, templateid = templateid });
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                        #endregion
+
+                        #region Send Mail
+                        try
+                        {
+                            _mailSMSSubscriber.SendCommonMail(new CommonMail()
+                            {
+                                //EmailId = userMasterModel.EMailId,
+                                //CLNT_TXN_REF = response.CLNT_TXN_REF,
+                                //TransporterName = userMasterModel.ApplicantName
+                            });
+                        }
+                        catch (Exception)
+                        {
+                            TempData["AckMessage"] = "0";
+                        }
+                        #endregion
+                    }
+                }
+                #endregion
+                ViewBag.PaymentDetails = objList;
+               
+                return View(response);
+               
+            }
+            catch (Exception ex) { }
+
+            ViewBag.PaymentDetails = objList;
+
+            return View();
+
+        }
 
         #endregion--------------------------------------------------------------------
 
