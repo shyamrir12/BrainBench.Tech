@@ -3,6 +3,7 @@ using IntigrationWeb.Models.EncryptDecrypt;
 using IntigrationWeb.Models.MailSMSServices;
 using IntigrationWeb.Models.PaymentResponsesService;
 using IntigrationWeb.Models.sbiIncriptDecript;
+using IntigrationWeb.Models.UserAndErrorService;
 using LoginModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Configuration;
@@ -23,6 +24,9 @@ namespace IntigrationWeb.Controllers
         PaymentTransaction response = new PaymentTransaction();
         List<FinalPaymentModel> objList = new List<FinalPaymentModel>();
         UserMasterModel userMasterModel=new UserMasterModel ();
+        AuthenticationResponse jwtmodel = new AuthenticationResponse();
+        Result<UserLoginSession> profileresult = new Result<UserLoginSession>();
+        UserLoginSession profile = new UserLoginSession();
         string strHEX, strPGActualReponseWithChecksum, strPGActualReponseEncrypted, strPGActualReponseDecrypted, strPGresponseChecksum, strPGTxnStatusCode;
         string PayableRoyalty, TCS, Cess, eCess, DMF, NMET, MonthlyPeriodicAmount, LicenseAmount, GIB_TXN_NO;
         
@@ -48,13 +52,15 @@ namespace IntigrationWeb.Controllers
         private readonly IsbiIncriptDecript _isbiIncriptDecript;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-        public PaymentController(IConfiguration configuration, IPaymentResponsesSubscriber paymentResponsesSubscriber, IMailSMSSubscriber mailSMSSubscriber, IsbiIncriptDecript isbiIncriptDecript, IHttpContextAccessor httpContextAccessor)
+        private readonly IUserAndErrorSubscriber _userAndErrorSubscriber;
+        public PaymentController(IConfiguration configuration, IPaymentResponsesSubscriber paymentResponsesSubscriber, IMailSMSSubscriber mailSMSSubscriber, IsbiIncriptDecript isbiIncriptDecript, IHttpContextAccessor httpContextAccessor, IUserAndErrorSubscriber userAndErrorSubscriber)
         {
             _configuration = configuration;
             _paymentResponsesSubscriber = paymentResponsesSubscriber;
             _mailSMSSubscriber = mailSMSSubscriber;
             _isbiIncriptDecript = isbiIncriptDecript;
             _httpContextAccessor = httpContextAccessor;
+            _userAndErrorSubscriber = userAndErrorSubscriber;
         }
         #region----------------SBI Bank Response Code------------------------------
         public IActionResult PaymentResponse()
@@ -62,6 +68,8 @@ namespace IntigrationWeb.Controllers
             //ShyamSir
             var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
             var userid = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+
 
             UserLoginSession profile = new UserLoginSession();//get hear user by id
             //ShyamSir
@@ -345,15 +353,16 @@ namespace IntigrationWeb.Controllers
         #endregion
 
         #region----------------ICICI Bank Response Code------------------------------
-        public ActionResult PaymentResponseICICI()
+        public  Task< ActionResult> PaymentResponseICICI()
         {
 
           
             //ShyamSir
             var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-            var userid = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-            UserLoginSession profile = new UserLoginSession();//get hear user by id
+            var jwt = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value;
+            jwtmodel.Token = jwt;
+           // profileresult =  _userAndErrorSubscriber.GetUserByJWT(jwtmodel);
+             profile = profileresult.Data;//get hear user by id
             //ShyamSir
             try
             {

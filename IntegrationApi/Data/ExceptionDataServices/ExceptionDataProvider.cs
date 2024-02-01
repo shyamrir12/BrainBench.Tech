@@ -31,13 +31,14 @@ namespace IntegrationApi.Data.ExceptionDataServices
 					UserLoginID = objLogEntry.UserLoginID
 				};
 				var result = Connection.Execute("ReportErrorLog", paramList, commandType: System.Data.CommandType.StoredProcedure);
-				return "1";
+				
 			}
 			catch (Exception ex)
 			{
-				throw;
-			}
-		}
+                _logger.LogError(ex, ex.Message);
+            }
+            return "1";
+        }
 
 		public string ErrorLoger(Exception exception, HttpContext context)
 		{
