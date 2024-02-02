@@ -13,6 +13,7 @@ namespace IntegrationApi.Data.PaymentServices
         {
         }
 
+        //not requer due unique id for payment maintable id and amount and bank details are saved in  sp InsertUpdatePaymentRecords also
         public async Task<MessageEF> AddLicensePayment(PaymentRequestModel obj)
         {
             MessageEF messageEF = new MessageEF();
@@ -40,7 +41,7 @@ namespace IntegrationApi.Data.PaymentServices
                 throw ex;
             }
         }
-
+        //getting user detals marchant id and unique no for payment in sbi case only
         public async Task<PaymentModel> GetPaymentGateway(PaymentRequestModel PaymentDetail)
         {
             PaymentModel paymentResponseModel = new PaymentModel();
