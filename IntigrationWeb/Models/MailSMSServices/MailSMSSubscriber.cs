@@ -1,28 +1,50 @@
 ﻿using IntegrationModels;
+using IntigrationWeb.Models.Utility;
 using LoginModels;
+using Newtonsoft.Json;
 
 namespace IntigrationWeb.Models.MailSMSServices
 {
     public class MailSMSSubscriber : IMailSMSSubscriber
     {
-        private HttpClient _httpClient;
+        private readonly IHttpWebClients _objIHttpWebClients;
 
-        public MailSMSSubscriber(HttpClient httpClient)
+        public MailSMSSubscriber(IHttpWebClients objIHttpWebClients)
         {
-            _httpClient = httpClient;
+            _objIHttpWebClients = objIHttpWebClients;
         }
         public async Task<MessageEF> Main(SMS sMS)
         {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<SMS>($"/SMSService/Main", sMS);
+            MessageEF httpMessageReponse = new MessageEF();
+            try
+            {
+                httpMessageReponse = JsonConvert.DeserializeObject<MessageEF>(await _objIHttpWebClients.AwaitPostRequest("/SMSService/Main", JsonConvert.SerializeObject(sMS)));
+                return httpMessageReponse;
+            }
+            catch (Exception ex)
+            {
 
-            return await httpMessageReponse.Content.ReadFromJsonAsync<MessageEF>();
+                throw ex;
+            }
+
+
+           
         }
 
         public async Task<MessageEF> SendCommonMail(CommonMail obj)
         {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommonMail>($"/MailService/SendCommonMail", obj);
+            MessageEF httpMessageReponse = new MessageEF();
+            try
+            {
+                httpMessageReponse = JsonConvert.DeserializeObject<MessageEF>(await _objIHttpWebClients.AwaitPostRequest("/MailService/SendCommonMail", JsonConvert.SerializeObject(obj)));
+                return httpMessageReponse;
+            }
+            catch (Exception ex)
+            {
 
-            return await httpMessageReponse.Content.ReadFromJsonAsync<MessageEF>();
+                throw ex;
+            }
+  
         }
     }
 }

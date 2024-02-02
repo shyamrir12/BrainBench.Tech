@@ -1,30 +1,51 @@
 ﻿using IntegrationModels;
+using IntigrationWeb.Models.Utility;
 using LoginModels;
+using Newtonsoft.Json;
 using System.Net.Http.Json;
 
 namespace IntigrationWeb.Models.UserAndErrorService
 {
     public class UserAndErrorSubscriber : IUserAndErrorSubscriber
     {
-        private HttpClient _httpClient;
+        private readonly IHttpWebClients _objIHttpWebClients;
 
-        public UserAndErrorSubscriber(HttpClient httpClient)
+        public UserAndErrorSubscriber(IHttpWebClients objIHttpWebClients)
         {
-            _httpClient = httpClient;
+            _objIHttpWebClients = objIHttpWebClients;
         }
 
-        public async Task<string> AddExceptionData(LogEntry objLogEntry)
+        public string AddExceptionData(LogEntry objLogEntry)
         {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<LogEntry>($"ExceptionData/AddException", objLogEntry);
 
-            return await httpMessageReponse.Content.ReadFromJsonAsync<string>();
+            UserMasterModel userMasterModel = new UserMasterModel();
+            try
+            {
+                var httpMessageReponse = JsonConvert.DeserializeObject<string>(_objIHttpWebClients.PostRequest("PaymentResponses/AddLicenseResponcePayment", JsonConvert.SerializeObject(objLogEntry)));
+                return httpMessageReponse;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+          
         }
 
-        public async Task<Result<UserLoginSession>> GetUserByJWT(AuthenticationResponse model)
+        public  Result<UserLoginSession> GetUserByJWT(AuthenticationResponse model)
         {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<AuthenticationResponse>($"auth/GetUserByJWT", model);
+            UserMasterModel userMasterModel = new UserMasterModel();
+            try
+            {
+                var httpReponse = JsonConvert.DeserializeObject<Result<UserLoginSession>>(_objIHttpWebClients.PostRequest("PaymentResponses/AddLicenseResponcePayment", JsonConvert.SerializeObject(model)));
+                return httpReponse;
+            }
+            catch (Exception ex)
+            {
 
-            return await httpMessageReponse.Content.ReadFromJsonAsync<Result<UserLoginSession>>();
+                throw ex;
+            }
+           
         }
     }
 }

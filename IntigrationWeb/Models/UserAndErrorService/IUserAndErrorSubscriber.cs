@@ -5,7 +5,7 @@ namespace IntigrationWeb.Models.UserAndErrorService
 {
     public interface IUserAndErrorSubscriber
     {
-        public Task<string> AddExceptionData(LogEntry objLogEntry);
-        public Task<Result<UserLoginSession>> GetUserByJWT(AuthenticationResponse model);
+        public string AddExceptionData(LogEntry objLogEntry);
+        public Result<UserLoginSession> GetUserByJWT(AuthenticationResponse model);
     }
 }

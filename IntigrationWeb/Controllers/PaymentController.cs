@@ -67,13 +67,11 @@ namespace IntigrationWeb.Controllers
         {
             //ShyamSir
             var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-            var userid = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-
-
-            UserLoginSession profile = new UserLoginSession();//get hear user by id
+            jwtmodel.Token = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value;
+            profileresult = _userAndErrorSubscriber.GetUserByJWT(jwtmodel);
+            profile = profileresult.Data;//get hear user by id
             //ShyamSir
-           
+
             try
             {
                 string strPaymentResponseID = string.Empty;
@@ -353,15 +351,14 @@ namespace IntigrationWeb.Controllers
         #endregion
 
         #region----------------ICICI Bank Response Code------------------------------
-        public  Task< ActionResult> PaymentResponseICICI()
+        public   ActionResult PaymentResponseICICI()
         {
 
           
             //ShyamSir
             var claimsIdentity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-            var jwt = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value;
-            jwtmodel.Token = jwt;
-           // profileresult =  _userAndErrorSubscriber.GetUserByJWT(jwtmodel);
+            jwtmodel.Token = claimsIdentity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Authentication)?.Value;
+            profileresult =  _userAndErrorSubscriber.GetUserByJWT(jwtmodel);
              profile = profileresult.Data;//get hear user by id
             //ShyamSir
             try
