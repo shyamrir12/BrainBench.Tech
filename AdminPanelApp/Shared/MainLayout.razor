@@ -1,10 +1,17 @@
-﻿@using LoginModels;
+﻿@using Blazored.Toast.Configuration;
+@using LoginModels;
 @inherits LayoutComponentBase
 @inject NavigationManager _navigationManager
 @inject HttpClient _httpClient
 @inject IJSRuntime _jsRuntime
 @inject ILocalStorageService _localStorageService
 
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="3"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
 <MudThemeProvider />
 <MudDialogProvider Position="DialogPosition.Center" />
 <MudSnackbarProvider />
