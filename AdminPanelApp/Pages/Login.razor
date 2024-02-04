@@ -9,80 +9,76 @@
 @inject ILoginProvider _loginProvider
 @inject IToastService _toastService
 
-<MudTabs Elevation="3" Rounded="true" Class="mt-3">
-    <MudTabPanel Icon="@Icons.Material.Filled.Login" Text='"Login"'>
-        <EditForm Model="@loginef" OnValidSubmit="OnValidSubmit">
-            <DataAnnotationsValidator />
-            <MudGrid>
-                <MudItem xs="12" sm="12">
-                    <MudCard>
-                        <MudCardContent>
-                          
-                            <MudTextField Label="User Name" Class="mt-3"
-                            @bind-Value="loginef.UserName" For="@(() => loginef.UserName)" />
-                            <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                            @bind-Value="loginef.Password" For="@(() => loginef.Password)" InputType="InputType.Password" />
-                            
-                        </MudCardContent>
-                        <MudCardActions>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">login</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
+<EditForm Model="@loginef" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardHeader>
+                    
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Left"><b>User Login</b></MudText>
+                       
+                       @*  <MudImage Src="img/braibenchlogo.png" Width=300 Height=150 Alt="Login" Elevation="25" Class="rounded-lg" /> *@
+                       
 
-                <MudItem xs="12">
-                    <MudText Typo="Typo.body2" Align="Align.Center">
-                        Fill out the form correctly to see the success message.
-                    </MudText>
-                </MudItem>
-            </MudGrid>
-        </EditForm>
+                     </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Success" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
 
-    </MudTabPanel>
-    <MudTabPanel Icon="@Icons.Material.Filled.AppRegistration" Text='"Register"'>
-       
+                    <MudTextField Label="User Name" Class="mt-3"
+                    @bind-Value="loginef.UserName" For="@(() => loginef.UserName)" />
+                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
+                    @bind-Value="loginef.Password" For="@(() => loginef.Password)" InputType="InputType.Password" />
 
-        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-            <DataAnnotationsValidator />
-            <MudGrid>
-                <MudItem xs="12" sm="12">
-                    <MudCard>
-                        <MudCardContent>
-                            <MudTextField Label="First name" HelperText="Max. 8 characters"
-                            @bind-Value="model.Username" For="@(() => model.Username)" />
-                            <MudTextField Label="Email" Class="mt-3"
-                            @bind-Value="model.Email" For="@(() => model.Email)" />
-                            <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                            @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
-                            <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
-                            @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
-                        </MudCardContent>
-                        <MudCardActions>
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
-                        </MudCardActions>
-                    </MudCard>
-                </MudItem>
-               
-                <MudItem xs="12">
-                    <MudText Typo="Typo.body2" Align="Align.Center">
-                        Fill out the form correctly to see the success message.
-                    </MudText>
-                </MudItem>
-            </MudGrid>
-        </EditForm>
-      
+                </MudCardContent>
+                <MudCardActions>
 
-    </MudTabPanel>
-  @*   <MudTabPanel Icon="@Icons.Material.Filled.Password" Text='"Forgot Password"'></MudTabPanel> *@
-    
-</MudTabs>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto "  EndIcon="@Icons.Material.Filled.Login" FullWidth="true">login</MudButton>
+                                           
+                </MudCardActions>
+                <MudCardActions>
+              
+                
+                    <MudItem xs="6">
+                        <MudText Typo="Typo.body2" Align="Align.Left">
+                            <MudLink Href="/register">Create an account</MudLink>
+                        </MudText>
+                        
+                    </MudItem>
+                    <MudItem xs="6">
+                       
+                        <MudText Typo="Typo.body2" Align="Align.Right">
+                            <MudLink Href="/forgotpassword">Forgot password?</MudLink>
+                           @*  <MudLink  Href="/">Back to home</MudLink> *@
+                        </MudText>
+                    </MudItem>
+
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
 @code {
-    RegisterAccountForm model = new RegisterAccountForm();
+  
     LoginEF loginef = new LoginEF();
     bool success;
 
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,33 +88,12 @@
         if (user.Identity.IsAuthenticated)
         {
 
-            _navigationManager.NavigateTo("/register", true);
+            _navigationManager.NavigateTo("/index", true);
 
         }
 
 
     }
-
-    public class RegisterAccountForm
-    {
-        [Required]
-        [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
-        public string Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-
-    }
-
 
     public static string ComputeSha256Hash(string rawData)
     {
@@ -145,12 +120,12 @@
             if (authenticationResponse.Token != string.Empty)
             {
                 await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
-                 _navigationManager.NavigateTo("/register", true);
+            _navigationManager.NavigateTo("/index", true);
                
             }
             else
             {
-                _toastService.ShowError("Invalid username or password");
+                _toastService.ShowError("Invalid user-name or password");
             }
         success = true;
         StateHasChanged();

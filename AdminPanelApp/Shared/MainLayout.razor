@@ -1,5 +1,6 @@
 ﻿@using Blazored.Toast.Configuration;
 @using LoginModels;
+
 @inherits LayoutComponentBase
 @inject NavigationManager _navigationManager
 @inject HttpClient _httpClient
@@ -15,9 +16,13 @@
 <MudThemeProvider />
 <MudDialogProvider Position="DialogPosition.Center" />
 <MudSnackbarProvider />
-
+<MudOverlay @bind-Visible="@SpinnerVisible" DarkBackground="true" Absolute="true">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
 <MudLayout>
-    <MudAppBar Elevation="1">
+    @if(DroverTopBarVisible==true)
+    {
+    <MudAppBar Elevation="1" >
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudSpacer />
         <AuthorizeView>
@@ -33,26 +38,27 @@
         </AuthorizeView>
         @*<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />*@
     </MudAppBar>
-    <MudDrawer @bind-Open="@open" Elevation="1">
+    <MudDrawer @bind-Open="@open" Elevation="1" >
         <MudDrawerHeader>
-            <MudText Typo="Typo.h6" Class="ml-3">  Medical App</MudText>
+            <MudText Typo="Typo.h6" Class="ml-3"> Admin Panel</MudText>
         </MudDrawerHeader>
         <MudNavMenu>
             <NavMenu />
         </MudNavMenu>
     </MudDrawer>
+    }
     @*<MudDrawer @bind-Open="@open" ClipMode="DrawerClipMode.Docked" PreserveOpenState="@preserveOpenState" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
 
     <NavMenu />
     </MudDrawer>*@
     <MudMainContent>
         <MudContainer Class="mt-16" MaxWidth="MaxWidth.Medium">
-
-            @Body
+            <CascadingValue Value="event_spinner">
+             @Body
+            </CascadingValue>
             @*<MudScrollToTop >
             <MudFab Color="Color.Tertiary" Icon="@Icons.Filled.ArrowCircleUp" />
             </MudScrollToTop>*@
-
 
         </MudContainer>
     </MudMainContent>
@@ -82,7 +88,19 @@
     bool preserveOpenState = false;
     Breakpoint breakpoint = Breakpoint.Lg;
     DrawerClipMode clipMode = DrawerClipMode.Never;
+    public bool SpinnerVisible { get; set; } = false;
+    public bool DroverTopBarVisible { get; set; } = true;
 
+    EventCallback<NotifyMainLayout> event_spinner => EventCallback.Factory.Create(this, (Action<NotifyMainLayout>)notifyLayoutWithSpinner);
+    private void notifyLayoutWithSpinner(NotifyMainLayout _notifyLayout)
+    {
+        SpinnerVisible = _notifyLayout.SpinnerVisible;
+        // DroverTopBarVisible = _notifyLayout.DroverTopBarVisible;
+
+    }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
     void ToggleDrawer()
     {
         open = !open;
@@ -90,6 +108,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        
         //getting the current authenticated user for the app
         UserLoginSession currentUser = null;// await _httpClient.GetFromJsonAsync<User>("user/getcurrentuser");
         if (currentUser != null)
@@ -100,7 +119,16 @@
             //calling the JS function
             //var module = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
             //await module.InvokeVoidAsync("setTheme", themeName);
+
         }
+
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (!user.Identity.IsAuthenticated)
+        {
+            DroverTopBarVisible = false;
+        }
+       
         await base.OnInitializedAsync();
     }
 
