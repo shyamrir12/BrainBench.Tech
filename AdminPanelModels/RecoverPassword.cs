@@ -16,6 +16,7 @@ namespace AdminPanelModels
         public string EmailId { get; set; }
 
         [Required]
+        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
         [Display(Name = "Captcha")]
         public string captcha { get; set; }
     }
