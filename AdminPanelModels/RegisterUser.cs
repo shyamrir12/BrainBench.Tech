@@ -13,7 +13,7 @@ namespace AdminPanelModels
 		
 		[EmailAddress(ErrorMessage = "Invalid Email Address !")]
 		[Display(Name = "Email Id")]
-        [UniqueEmail(ErrorMessage = "Email already exists")]
+      //  [UniqueEmail(ErrorMessage = "Email already exists")]
         public string EmailId { get; set; }
 
         [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number !")]
@@ -56,7 +56,7 @@ namespace AdminPanelModels
 
         [Required]
 		[RegularExpression(@"^([0-9]{6})$", ErrorMessage = "Invalid OTP !")]
-        [VerifyOTP(ErrorMessage = "Input Correct OTP")] 
+      //  [VerifyOTP(ErrorMessage = "Input Correct OTP")] 
         public string otp { get; set; }
 
     }
@@ -68,7 +68,7 @@ namespace AdminPanelModels
             var email = (string)value;
 
             string userid = null;
-            // string userid = "1"; then  message will display
+            // string userid = "1"; //then  message will display
 
             var existingUser = userid;
 

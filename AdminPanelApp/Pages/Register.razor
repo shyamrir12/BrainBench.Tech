@@ -2,6 +2,7 @@
 @using AdminPanelApp.Data.AzureHelperServices;
 @using AdminPanelApp.Data.MailSMSServices;
 @using AdminPanelApp.Data.RegisterServices;
+
 @using AdminPanelModels;
 @inject IJSRuntime JSRuntime
 @inject IRegisterSubscriber _registerSubscriber
@@ -199,7 +200,7 @@
     }
     protected override void OnInitialized()
     {
-         
+
         // resultListApplicationType = await _registerSubscriber.GetApplicationType();
 
         // if (resultListApplicationType.Status = true)
@@ -207,6 +208,9 @@
         //     ListApplicationType = resultListApplicationType.Data;
         // }
     }
+
+
+   
 
     private async Task SendOTP(EditContext context)
     {
