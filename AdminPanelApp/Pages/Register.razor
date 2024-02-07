@@ -17,7 +17,7 @@
 </MudOverlay> *@
 
 <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-   
+
     <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12" sm="12">
@@ -26,10 +26,10 @@
 
                     <CardHeaderContent>
 
-                      
-                            <MudText Typo="Typo.h5" Align="Align.Start"><b>User Registration</b></MudText>
 
-                       
+                        <MudText Typo="Typo.h5" Align="Align.Start"><b>User Registration</b></MudText>
+
+
                         @*  <MudImage Src="img/braibenchlogo.png" Width=300 Height=150 Alt="Login" Elevation="25" Class="rounded-lg" /> *@
 
 
@@ -42,68 +42,68 @@
                     <MudTextField Label="Email Id" Class="mt-3" OnlyValidateIfDirty=true
                     @bind-Value="model.EmailId" For="@(() => model.EmailId)" />
 
-                 @*<MudTextField Label="User name" HelperText="Max. 8 characters"
+                    @*<MudTextField Label="User name" HelperText="Max. 8 characters"
                     @bind-Value="model.username" For="@(() => model.username)" /> *@
-                 
+
                     <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" OnlyValidateIfDirty=true
                                   Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonShowPasswordclick" AdornmentAriaLabel="Show Password"
-                    @bind-Value="model.Password" For="@(() => model.Password)" InputType="@PasswordInput"/>
+                    @bind-Value="model.Password" For="@(() => model.Password)" InputType="@PasswordInput" />
 
-                    <MudTextField Label="Repeat Password" HelperText="Repeat the password" Class="mt-3" OnlyValidateIfDirty=true 
+                    <MudTextField Label="Repeat Password" HelperText="Repeat the password" Class="mt-3" OnlyValidateIfDirty=true
                                   Adornment="Adornment.End" AdornmentIcon="@cPasswordInputIcon" OnAdornmentClick="cButtonShowPasswordclick" AdornmentAriaLabel="Show Password"
                     @bind-Value="model.PD_Reenterpwd" For="@(() => model.PD_Reenterpwd)" InputType="@cPasswordInput" />
 
-                  @*   <MudTextField Label="OrganizationName" HelperText="Organization Name" Class="mt-3"
+                    @*   <MudTextField Label="OrganizationName" HelperText="Organization Name" Class="mt-3"
                     @bind-Value="model.OrganizationName" For="@(() => model.OrganizationName)"  /> *@
 
 
-                   @*  <MudSelect T="string" Label="Application Type" AnchorOrigin="Origin.BottomCenter" @bind-Value="model.Iid">
-                        @foreach (var item in ListApplicationType)
-                        {
-                            <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
+                    @*  <MudSelect T="string" Label="Application Type" AnchorOrigin="Origin.BottomCenter" @bind-Value="model.Iid">
+                    @foreach (var item in ListApplicationType)
+                    {
+                    <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
 
-                        }
+                    }
                     </MudSelect>
 
 
                     <MudFileUpload T="IBrowserFile" Context="editformcontext"   FilesChanged="UploadFiles" >
-                        <ButtonTemplate >
-                            <MudFab HtmlTag="label"
-                                    Color="Color.Secondary"
-                                    Icon="@Icons.Material.Filled.Image"
-                                    Label="Load picture"
-                                    for="@editformcontext" />
-                        </ButtonTemplate>
+                    <ButtonTemplate >
+                    <MudFab HtmlTag="label"
+                    Color="Color.Secondary"
+                    Icon="@Icons.Material.Filled.Image"
+                    Label="Load picture"
+                    for="@editformcontext" />
+                    </ButtonTemplate>
                     </MudFileUpload>
                     @if (files != null)
                     {
-                        <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
-                        <MudList>
-                            @foreach (var file in files)
-                            {
-                                <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
-                                    @file.Name <code>@file.Size bytes</code>
-                                </MudListItem>
-                            }
-                        </MudList>
+                    <MudText Typo="@Typo.h6">@files.Count() File@(files.Count() == 1 ? "" : "s"):</MudText>
+                    <MudList>
+                    @foreach (var file in files)
+                    {
+                    <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                    @file.Name <code>@file.Size bytes</code>
+                    </MudListItem>
                     }
-                   *@
+                    </MudList>
+                    }
+                    *@
                     <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
                         <MudTextField Label="OTP" HelperText="Enter OTP" Class=" mt-3" @bind-Value="model.otp" For="@(() => model.otp)" OnlyValidateIfDirty=true />
                         <MudButton Class="ml-auto" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send"
                                    Disabled="@(context.GetValidationMessages(context.Field(nameof(model.EmailId))).Any()||SendOTPShow)"
                                    OnClick="@(e => SendOTP(context))" Color="Color.Secondary">@sendotpbuttontext</MudButton>
-                   </MudPaper>
-     
-                   
+                    </MudPaper>
+
+
                 </MudCardContent>
                 <MudCardActions>
-                    
-                       
+
+
 
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.AppRegistration" Color="Color.Primary" Class="ml-auto" Disabled="@(!context.IsModified() || !context.Validate())" FullWidth="true">Register</MudButton>
-                      
-                  
+
+
                 </MudCardActions>
                 <MudCardActions>
 
@@ -111,7 +111,7 @@
                     <MudItem xs="6">
                         <MudText Typo="Typo.body2" Align="Align.Left">
                             <MudLink Href="/">Back to login</MudLink>
-                            
+
                         </MudText>
 
                     </MudItem>
@@ -136,7 +136,8 @@
 
 
 @code {
-
+    MessageEF responce = new MessageEF();
+    Result<MessageEF> resresponce = new Result<MessageEF>();
     RegisterUser model = new RegisterUser();
 
     [CascadingParameter]
@@ -166,6 +167,7 @@
 
     string sendotpbuttontext = "Send OTP";
     bool SendOTPShow = false;
+    string otp = string.Empty;
 
     void ButtonShowPasswordclick()
     {
@@ -210,7 +212,16 @@
     }
 
 
-   
+    void GenerateOTP(int length)
+    {
+        Random random = new Random();
+        otp = string.Empty;
+        for (int i = 0; i < length; i++)
+        {
+            otp += random.Next(0, 9).ToString();
+        }
+
+    }
 
     private async Task SendOTP(EditContext context)
     {
@@ -219,24 +230,58 @@
             nml.SpinnerVisible = true;
             _notifyMainLayout.InvokeAsync(nml);
             SendOTPShow = true;
-            _toastService.ShowSuccess("!OTP is successfully sanded to your Email ID");
+            GenerateOTP(6);
+            string templateid = _configuration.GetValue<string>("KeyList:OTPTemplate");
+
+            // // For centralized SMS
+            // SMS obj = new SMS();
+            // DateTime currentDateTime = DateTime.Now;
+            // string formattedDateTime = currentDateTime.ToString("dd-MMM-yyyy HH:mm tt");
+            // obj.mobileNo = "9301789363";
+            // obj.templateid = templateid;
+            // obj.parameterlist = new List<string>() { model.otp };
+            // var res1 = _mailsmsSubscriber.Main(obj);
+
+
+            // For centralized Email
+            CommonMail commonMail = new CommonMail();
+            string Subject = _configuration.GetValue<string>("KeyList:OTPMailSubject");
+            commonMail.TemplateID = templateid;
+            commonMail.To = model.EmailId;
+            commonMail.Subject = Subject;
+            commonMail.ParameterList = new List<string>() { otp };
+            responce = await _mailsmsSubscriber.SendCommonMail(commonMail);
+
+            if (responce.Satus == "success")
+            {
+                _toastService.ShowSuccess("OTP is successfully sanded to your Email ID!");
+            }
+            else
+            {
+                _toastService.ShowError("Please try again after some time!");
+
+            }
             await Task.Delay(1000);
             nml.SpinnerVisible = false;
             _notifyMainLayout.InvokeAsync(nml);
+
+
+
+
 
             success = true;
             StateHasChanged();
 
             //disable button for  after successfully send OTP for next 30 second
-           
-            for (int i = 1; i <= 30; i++)
+
+            for (int i = 30; i >= 1; i--)
             {
                 await Task.Delay(1000);
-              
+
                 sendotpbuttontext = "(" + i + ") Resend OTP";
                 StateHasChanged();
 
-                if (i == 30)
+                if (i == 1)
                 {
                     SendOTPShow = false;
                     sendotpbuttontext = "Resend OTP";
@@ -244,36 +289,67 @@
                     break;
                 }
             }
-           
+
         }
         else
         {
             _toastService.ShowError("!Please fill the form correctly");
         }
     }
-
+   
 
     private async Task OnValidSubmit(EditContext context)
     {
         if (context.Validate())
         {
-            nml.SpinnerVisible = true;
-            _notifyMainLayout.InvokeAsync(nml);
-            _toastService.ShowSuccess("!Registration Successful");
-            _navigationManager.NavigateTo("/", true);//Navigate to login
-            await Task.Delay(5000);
-            nml.SpinnerVisible = false;
-            _notifyMainLayout.InvokeAsync(nml);
-            success = true;
-            StateHasChanged();
-            // Model is valid, proceed with submission
-            // Your logic here
+            if (model.otp == otp)
+            {
+
+                nml.SpinnerVisible = true;
+                _notifyMainLayout.InvokeAsync(nml);
+
+                resresponce = await _registerSubscriber.CheckUserExist(model);
+
+                if (resresponce.Data.Satus == "1")
+                {
+                   // model.PD_Reenterpwd = ComputeSha256Hash(model.PD_Reenterpwd);
+                    resresponce =await _registerSubscriber.RegisterUser(model);
+
+                    if (resresponce.Status=true)
+                    {
+                        _toastService.ShowSuccess(resresponce.Data.Msg);
+
+                    }
+                    else
+                    {
+                        _toastService.ShowError("Please try again after some time!");
+                        
+                    }
+
+                    
+                    _navigationManager.NavigateTo("/", true);//Navigate to login
+                }
+                else
+                {
+                    _toastService.ShowError(resresponce.Data.Msg);
+                }
+                nml.SpinnerVisible = false;
+                _notifyMainLayout.InvokeAsync(nml);
+                success = true;
+                StateHasChanged();
+                // Model is valid, proceed with submission
+                // Your logic here
+            }
+            else
+            {
+                _toastService.ShowError("!Please input correct OTP");
+            }
         }
         else
         {
             _toastService.ShowError("!Please fill the form correctly");
         }
-      
+
         // var folderpath = _configuration.GetValue<string>("KeyList:ProfilePhoto");
 
         // if(model.userphoto!=null&&model.userphoto.Size>0)
@@ -321,14 +397,14 @@
         //                             commonMail.Subject = Subject;
         //         commonMail.ParameterList = new List<string>() { model.otp };
         //         var res = _mailsmsSubscriber.SendCommonMail(commonMail);
-               
+
 
         //     }
 
         // }
-       
+
     }
-  
+
 
 
 }
