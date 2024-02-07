@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace LoginModels
 {
@@ -6,11 +7,14 @@ namespace LoginModels
 	{
 		public int? UserTypeId { get; set; }
 		public string? UserType { get; set; }
-        [Required]
+       
+		[Required]
+        [EmailOrUsername(ErrorMessage = "Invalid email or user name format.")]
+        [Display(Name = "Email Id / User Name")]
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(200, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
+       // [StringLength(200, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
         public string Password { get; set; }
        
         [EmailAddress]
@@ -21,11 +25,44 @@ namespace LoginModels
 		public string? Localip { get; set; }
 		public string? Browserinfo { get; set; }
 
+        [Required]
+        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
+        [Display(Name = "Captcha")]
+        public string captcha { get; set; }
 
-   
     }
 
-	public class MenuEF
+    public class EmailOrUsernameAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+            {
+                return new ValidationResult("Email or username is required.");
+            }
+
+            var emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            var usernamePattern = @"^[a-zA-Z0-9._%+-]+$";
+
+            var input = value.ToString();
+
+            if (Regex.IsMatch(input, emailPattern))
+            {
+                return ValidationResult.Success;
+            }
+            else if (Regex.IsMatch(input, usernamePattern))
+            {
+                return ValidationResult.Success;
+            }
+            else
+            {
+                return new ValidationResult("Invalid email or user name format.");
+            }
+        }
+    }
+
+
+    public class MenuEF
 	{
 
 		public MenuEF()

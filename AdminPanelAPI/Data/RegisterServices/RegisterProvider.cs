@@ -91,22 +91,10 @@ namespace AdminPanelAPI.Data.RegisterServices
             return res;
         }
 
-        public static string ComputeSha256Hash(string rawData)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-                StringBuilder builder = new StringBuilder();
-
-                for (int i = 0; i <= bytes.Length - 1; i++)
-                    builder.Append(bytes[i].ToString("x2"));
-
-                return builder.ToString();
-            }
-        }
+       
         public async Task<Result<MessageEF>> RegisterUser(RegisterUser model)
         {
-             model.PD_Reenterpwd = ComputeSha256Hash(model.PD_Reenterpwd);
+             model.PD_Reenterpwd =MyUtility. ComputeSha256Hash(model.PD_Reenterpwd);
 
             Result<MessageEF> res = new Result<MessageEF>();
             try

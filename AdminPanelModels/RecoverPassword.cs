@@ -19,5 +19,10 @@ namespace AdminPanelModels
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
         [Display(Name = "Captcha")]
         public string captcha { get; set; }
+
+        [Required]
+        [RegularExpression(@"^([0-9]{6})$", ErrorMessage = "Invalid OTP !")]
+        //  [VerifyOTP(ErrorMessage = "Input Correct OTP")] 
+        public string otp { get; set; }
     }
 }

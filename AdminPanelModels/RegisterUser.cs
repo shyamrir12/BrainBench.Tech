@@ -10,8 +10,8 @@ namespace AdminPanelModels
 {
 	public class RegisterUser
 	{
-		
-		[EmailAddress(ErrorMessage = "Invalid Email Address !")]
+        [Required]
+        [EmailAddress(ErrorMessage = "Invalid Email Address !")]
 		[Display(Name = "Email Id")]
       //  [UniqueEmail(ErrorMessage = "Email already exists")]
         public string EmailId { get; set; }

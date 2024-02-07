@@ -89,6 +89,46 @@ namespace LoginModels
 			}
 			return ds;
 		}
+        public static CaptchaResponse GenerateCaptcha()
+        {
+            Random random = new Random();
+            int operand1 = random.Next(1, 10);
+            int operand2 = random.Next(1, 10);
 
-	}
+            CaptchaResponse captchaResponse = new CaptchaResponse();
+            captchaResponse.CaptchaSolution = operand1 + operand2;
+            captchaResponse.CaptchaText = $"{operand1} + {operand2} = ?";
+            return captchaResponse;
+        }
+        public static string GenerateOTP(int length)
+        {
+            Random random = new Random();
+            string otp = string.Empty;
+            for (int i = 0; i < length; i++)
+            {
+                otp += random.Next(0, 9).ToString();
+            }
+            return otp;
+
+        }
+        public static string ComputeSha256Hash(string rawData)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = 0; i <= bytes.Length - 1; i++)
+                    builder.Append(bytes[i].ToString("x2"));
+
+                return builder.ToString();
+            }
+        }
+        public class CaptchaResponse
+        {
+            public string CaptchaText { get; set; }
+            public int CaptchaSolution { get; set; }
+        }
+
+    }
 }
