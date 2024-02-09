@@ -22,15 +22,6 @@ namespace AdminPanelModels.UserMangment
         public string username { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
-
-        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,15}$", ErrorMessage = "Please follow password policy.minimum of 1 lower case letter,a minimum of 1 upper case letter, a minimum of 1 numeric character,a minimum of 1 special character")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string PD_Reenterpwd { get; set; }
-
-
-        [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string designation { get; set; }
         [Required]
