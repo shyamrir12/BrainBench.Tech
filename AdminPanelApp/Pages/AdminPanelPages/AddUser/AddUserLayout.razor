@@ -1,0 +1,172 @@
+﻿@page "/adduserlayout"
+@implements IBrowserViewportObserver
+@implements IAsyncDisposable
+@using MudBlazor.Services
+<style>
+    .container {
+        position: relative;
+        /* Add any other styling you need for your container */
+    }
+
+    .btn {
+        position: fixed;
+        bottom: 10px; /* Adjust as needed */
+        right: 10px; /* Adjust as needed */
+        /* Add any other styling you need for your button */
+    }
+
+</style>
+<MudContainer Class="container">
+
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="btn" OnClick="@(e => adduserevent(new AddUserModel{name="",email="",designation=""}))" />
+
+
+
+    <MudGrid>
+
+
+        <MudItem xs="@xsListVal" Class="@displayList">
+            <div style="overflow-y: auto; max-height: 500px;">
+                <AddUserList adduserparam=@uum OnUserSelection="SlectedUser"></AddUserList>
+            </div>
+        </MudItem>
+
+        <MudItem xs="@xsFormVal" Class="@displayForm">
+
+            <MudPaper Height="500px">
+                <MudAppBar Color="Color.Primary" Class="@displayBack">
+                    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Inherit" Edge="Edge.Start" OnClick="backtolist" />
+                </MudAppBar>
+                <AddUser adduserparam="@aum" OnUserUpdation="UpdatedUser"></AddUser>
+            </MudPaper>
+
+        </MudItem>
+
+    </MudGrid>
+
+
+
+
+</MudContainer>
+
+@code {
+    [Parameter]
+    public bool isMobile { get; set; }
+    public int xsListVal = 6;
+    public int xsFormVal = 6;
+    public string displayForm = "d-block";
+    public string displayList = "d-block";
+    public string displayBack = "d-none";
+
+    AddUserModel aum = new AddUserModel();
+    AddUserModel uum = new AddUserModel();
+
+    [Inject]
+    private IBrowserViewportService BrowserViewportService { get; set; }
+
+    private int _width = 0;
+    private int _height = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await BrowserViewportService.SubscribeAsync(this, fireImmediately: true);
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async ValueTask DisposeAsync() => await BrowserViewportService.UnsubscribeAsync(this);
+
+    Guid IBrowserViewportObserver.Id { get; } = Guid.NewGuid();
+
+    ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
+        {
+            ReportRate = 50,
+            NotifyOnBreakpointOnly = false
+        };
+
+    Task IBrowserViewportObserver.NotifyBrowserViewportChangeAsync(BrowserViewportEventArgs browserViewportEventArgs)
+    {
+        _width = browserViewportEventArgs.BrowserWindowSize.Width;
+        _height = browserViewportEventArgs.BrowserWindowSize.Height;
+
+        if (_width < 768)//mobile View
+        {
+
+            xsListVal = 12;
+            xsFormVal = 12;
+            displayList = "d-block";
+            displayForm = "d-none";
+            isMobile = true;
+
+        }
+        else//Desktop View
+        {
+
+            xsListVal = 6;
+            xsFormVal = 6;
+            displayList = "d-block";
+            displayForm = "d-block";
+            isMobile = false;
+        }
+
+
+
+
+        return InvokeAsync(StateHasChanged);
+    }
+
+
+    public void backtolist()
+    {
+        if (isMobile == true)
+        {
+            displayList = "d-block";
+
+            displayBack = "d-none";
+            displayForm = "d-none";
+        }
+    }
+
+    private void adduserevent(AddUserModel? aum)
+    {
+
+        SlectedUser(aum);
+        
+    }
+    //2 selected item accessed by parent using define the event created in child
+    void SlectedUser(AddUserModel _aum)
+    {
+        if (isMobile == true)
+        {
+            xsListVal = 12;
+            xsFormVal = 12;
+            displayList = "d-none";
+
+            displayBack = "d-block";
+            displayForm = "d-block";
+
+        }
+        else
+        {
+            xsListVal = 6;
+            xsFormVal = 6;
+            displayList = "d-block";
+            displayBack = "d-none";
+            displayForm = "d-block";
+
+        }
+        //2.now item is pass to the next parent by using parameter
+        aum = _aum;
+        _aum = null;
+    }
+    void UpdatedUser(AddUserModel _aum)
+    {
+        //5.now added or updated item is pass to the add user list 
+        uum = _aum;
+        _aum = null;
+    }
+
+}

@@ -1,191 +1,90 @@
-﻿@page "/adduserlist"
-@implements IBrowserViewportObserver
-@implements IAsyncDisposable
-@using MudBlazor.Services
-<style>
-    .container {
-        position: relative;
-        /* Add any other styling you need for your container */
-    }
+﻿
+@foreach (var item in adduserlist)
+{
+    <div style="margin-bottom: 5px;">
+        <MudCard>
 
-    .btn {
-        position: fixed;
-        bottom: 10px; /* Adjust as needed */
-        right: 10px; /* Adjust as needed */
-        /* Add any other styling you need for your button */
-    }
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Secondary">I</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@item.name</MudText>
+                    <MudText Typo="Typo.body2">@item.email</MudText>
+                    @* Browser window is @(_width)x@(_height)px *@
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopLeft">
+                        <MudStack>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(e => edituserevent(item))"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(e => deleteuserevent(item))"></MudIconButton>
+                        </MudStack>
+                    </MudMenu>
+                </CardHeaderActions>
+            </MudCardHeader>
 
-   
-   
-</style>
-
-<MudContainer Class="container">
-    
- <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="btn" />
-
-   
-  
- <MudGrid >
-
-       
-        <MudItem xs="@xsval" >
-            <div style="overflow-y: auto; max-height: 500px;">
-            @foreach(var item in people){
-                <div style="margin-bottom: 20px;">
-                <MudCard  >
-                
-                    <MudCardHeader>
-                        <CardHeaderAvatar>
-                            <MudAvatar Color="Color.Secondary">I</MudAvatar>
-                        </CardHeaderAvatar>
-                        <CardHeaderContent>
-                                <MudText Typo="Typo.body1">@item.Name</MudText>
-                            <MudText Typo="Typo.body2">@item.surnasme</MudText>
-                                @* Browser window is @(_width)x@(_height)px *@
-                        </CardHeaderContent>
-                        <CardHeaderActions>
-                            <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopLeft">
-                                <MudMenuItem> <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" /></MudMenuItem>
-                                <MudMenuItem> <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Default" /></MudMenuItem>
-                            </MudMenu>
-                        </CardHeaderActions>
-                    </MudCardHeader>
-                
-               </MudCard>
-               </div>
-               
-           
-            }
-            </div>
-        </MudItem>
-       
-            <MudHidden Breakpoint="@breakpoint" Invert="true">
-            <MudItem xs="6" Class="object-right-top">
-                <MudPaper Height="500px" Width="100%">
-                    <MudContainer Fixed="true">
-                        <MudPaper Height="500px" Width="100%" Square="true" Class="mud-theme-primary"></MudPaper>
-                    </MudContainer>
-                </MudPaper>
-             
-                 </MudItem>
-            </MudHidden>
-      
- </MudGrid>
- 
+        </MudCard>
+    </div>
 
 
-
-</MudContainer>
+}
 
 @code {
-    public int xsval = 6;
-    public Breakpoint breakpoint = Breakpoint.Lg;
-  
-    [Inject]
-    private IBrowserViewportService BrowserViewportService { get; set; }
 
-    private int _width = 0;
-    private int _height = 0;
+    //1 for pass item to parent add event for selected edit item
+    [Parameter]
+    public EventCallback<AddUserModel> OnUserSelection { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    //6.declare parameter for the parent 
+    [Parameter]
+    public AddUserModel adduserparam { get; set; }
+
+    private List<AddUserModel> adduserlist = new List<AddUserModel>
     {
-        if (firstRender)
-        {
-            await BrowserViewportService.SubscribeAsync(this, fireImmediately: true);
-        }
+        new  AddUserModel{name="Shyam",email="Shyam@gmail.com"},
+        new  AddUserModel{name="umang",email="umang@gmail.com"},
+        new  AddUserModel{name="Shyamn",email="Shyam@gmailn.com"},
+        new  AddUserModel{name="umangl",email="umang@gmaill.com"}
 
-        await base.OnAfterRenderAsync(firstRender);
-    }
-
-    public async ValueTask DisposeAsync() => await BrowserViewportService.UnsubscribeAsync(this);
-
-    Guid IBrowserViewportObserver.Id { get; } = Guid.NewGuid();
-
-    ResizeOptions IBrowserViewportObserver.ResizeOptions { get; } = new()
-        {
-            ReportRate = 50,
-            NotifyOnBreakpointOnly = false
-        };
-
-    Task IBrowserViewportObserver.NotifyBrowserViewportChangeAsync(BrowserViewportEventArgs browserViewportEventArgs)
-    {
-        _width = browserViewportEventArgs.BrowserWindowSize.Width;
-        _height = browserViewportEventArgs.BrowserWindowSize.Height;
-
-        if (_width < 768)
-        {
-            
-            xsval = 12;
-            breakpoint = Breakpoint.Lg;
-        }
-        else if (_width >= 768 && _width < 992)
-        {
-          
-            xsval = 12;
-            breakpoint = Breakpoint.Md;
-        }
-        else
-        {
-           
-            xsval = 6;
-            breakpoint = Breakpoint.Lg;
-        }
-
-
-        
-
-        return InvokeAsync(StateHasChanged);
-    }
-    public class Person
-    {
-       
-        public string Name { get; set; }
-        public string surnasme { get; set; }
-    }
-
-    private List<Person> people = new List<Person>
-    {
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-          new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person { Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" },
-        new Person {  Name = "Istra Croatia", surnasme = "Peninsula in Europe" }
     };
+
+    //6. setting parent (added or edited item) parameter to list item 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+
+        if (adduserparam.designation == "Save")
+        {
+            adduserlist.Add(adduserparam);
+        }
+
+
+        StateHasChanged();
+    }
+
+
+
+
+    private void deleteuserevent(AddUserModel? aum)
+    {
+        adduserlist.Remove(aum);
+        StateHasChanged();
+    }
+
+    private void edituserevent(AddUserModel? aum)
+    {
+        //1 by invoking this method inside edit event passing value to parent
+        OnUserSelection.InvokeAsync(aum);
+        StateHasChanged();
+      
+    }
+
+   
+
+
+  
+
    
 
 }

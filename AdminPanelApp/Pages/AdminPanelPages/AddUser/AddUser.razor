@@ -1,5 +1,73 @@
-﻿<h3>AddUser</h3>
+﻿@inject IToastService _toastService
+
+<MudContainer Fixed="true">
+
+    <MudForm>
+        <MudTextField T="string" Label="Username" Required="true" @bind-Value=adduser.name RequiredError="User name is required!"></MudTextField>
+        <MudTextField T="string" Label="Email" Required="true" @bind-Value=adduser.email RequiredError="User name is required!"></MudTextField>
+
+
+    </MudForm>
+    <MudCardActions>
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto "
+                   FullWidth="true" OnClick="saveaddeduser">@buttonText</MudButton>
+
+    </MudCardActions>
+</MudContainer>
 
 @code {
+    //3.declare parameter for the parent
+    [Parameter]
+    public AddUserModel adduserparam { get; set; }
+    public AddUserModel adduser = new AddUserModel();
+    public string buttonText = "Save";
+
+    //3. setting parent parameter to local variable 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        adduser = adduserparam;
+        if (String.IsNullOrEmpty(adduserparam.name))
+        {
+            
+            buttonText = "Save";
+            adduser.designation = "Save";
+        }
+        else
+        {
+            buttonText = "Update";
+            adduser.designation = "Update";
+        }
+        adduserparam = null;
+
+    }
+
+    //4 for pass item to parent add event for updated or saved item
+    [Parameter]
+    public EventCallback<AddUserModel> OnUserUpdation { get; set; }
+
+
+    private void saveaddeduser()
+    {
+        if (!String.IsNullOrEmpty(adduser.name))
+        {
+            if (buttonText == "Save")
+            {
+               
+                _toastService.ShowSuccess("Data Save");
+            }
+            else if (buttonText == "Update")
+            {
+              
+                _toastService.ShowSuccess("Data Updated");
+            }
+
+        }
+
+        //4 by invoking this method sending back updated or added user
+        OnUserUpdation.InvokeAsync(adduser);
+        StateHasChanged();
+    }
 
 }
