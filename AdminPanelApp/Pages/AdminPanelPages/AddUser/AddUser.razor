@@ -12,6 +12,8 @@
 
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto "
                    FullWidth="true" OnClick="saveaddeduser">@buttonText</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto "
+                   FullWidth="true" OnClick="clearmodel">Clear</MudButton>
 
     </MudCardActions>
 </MudContainer>
@@ -30,12 +32,13 @@
         adduser = adduserparam;
         if (String.IsNullOrEmpty(adduserparam.name))
         {
-            
+
             buttonText = "Save";
             adduser.designation = "Save";
         }
         else
         {
+
             buttonText = "Update";
             adduser.designation = "Update";
         }
@@ -54,12 +57,12 @@
         {
             if (buttonText == "Save")
             {
-               
+
                 _toastService.ShowSuccess("Data Save");
             }
             else if (buttonText == "Update")
             {
-              
+
                 _toastService.ShowSuccess("Data Updated");
             }
 
@@ -67,7 +70,18 @@
 
         //4 by invoking this method sending back updated or added user
         OnUserUpdation.InvokeAsync(adduser);
-        StateHasChanged();
+        // StateHasChanged();
+
+        
+       
+
+    }
+    private void clearmodel()
+    {
+        adduser = new AddUserModel { name = "", email = "", designation = "Save" };
+        adduserparam = new AddUserModel { name = "", email = "", designation = "" };
+        buttonText = "Save";
+
     }
 
 }
