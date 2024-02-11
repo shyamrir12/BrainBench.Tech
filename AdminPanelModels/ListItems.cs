@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LoginModels
+namespace AdminPanelModels
 {
-    
     public class ListItems
     {
         public string Value { get; set; }

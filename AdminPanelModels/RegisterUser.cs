@@ -43,9 +43,9 @@ namespace AdminPanelModels
 
 
         //[Required]
-        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [RegularExpression("^[a-zA-Z]\\w+|[0-9][0-9_]*[a-zA-Z]+\\w*$", ErrorMessage = "Please follow username policy.")]
-        [Display(Name = "Organization Name")]
+        //[StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        //[RegularExpression("^[a-zA-Z]\\w+|[0-9][0-9_]*[a-zA-Z]+\\w*$", ErrorMessage = "Please follow username policy.")]
+        //[Display(Name = "Organization Name")]
         public string? OrganizationName { get; set; }
 
         //[Required]
@@ -56,7 +56,7 @@ namespace AdminPanelModels
 
         [Required]
 		[RegularExpression(@"^([0-9]{6})$", ErrorMessage = "Invalid OTP !")]
-      //  [VerifyOTP(ErrorMessage = "Input Correct OTP")] 
+      //[VerifyOTP(ErrorMessage = "Input Correct OTP")] 
         public string otp { get; set; }
 
     }

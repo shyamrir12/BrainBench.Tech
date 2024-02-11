@@ -9,48 +9,48 @@ namespace AdminPanelModels.UserMangment
 {
     public class AddUserModel
     {
+        public IEnumerable<ListItems> Roletype { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
 
-        public string roledesc { get; set; }
-       // [Required]
+
+        [Display(Name = "Role")]
+        public string roleval { get; set; }
+
+        [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string name { get; set; }
-       // [Required]
-        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        //[Remote("CheckUserExist", "AddUser", ErrorMessage = "Username already exist try another name !")]
-        [RegularExpression("^[a-zA-Z]\\w+|[0-9][0-9_]*[a-zA-Z]+\\w*$", ErrorMessage = "Please follow username policy.")]
-        [Display(Name = "User Name")]
-        public string username { get; set; }
+       
 
-       // [Required]
+        [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         public string designation { get; set; }
-     //   [Required]
+       [Required]
         [EmailAddress(ErrorMessage = "Invalid Email Address !")]
         [Display(Name = "Email Id")]
-        public string email { get; set; }
+        public string EmailId { get; set; }
         public int userid { get; set; }
 
-      //  [Required]
+        [Required]
         [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number !")]
         [Display(Name = "Mobile No")]
         public string mobile_no { get; set; }
         public string createdate { get; set; }
         public string photo { get; set; }
-        [DataType(DataType.Upload)]
-        [Display(Name = "Upload File")]
-        //  [Required(ErrorMessage = "Please choose file to upload.")]
-        public string filex { get; set; }
+
+        public IEnumerable<ListItems> ApplicatonList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        [Display(Name = "Applicaton")]
+        public string? Iid { get; set; }
+
+        public IEnumerable<ListItems> WorkspaceList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        [Display(Name = "Workspace")]
+        public string? Did { get; set; }
 
 
-        public string saveddocumentpath { get; set; }
-        public string documentpath { get; set; }
-        public int documentsize { get; set; }
-        public string documentextension { get; set; }
-
-
-
-     //   [Required]
+        public IEnumerable<ListItems> OutletList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        [Display(Name = "Outlet")]
+        public string? Cid { get; set; }
+        [Required]
+        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
         [Display(Name = "Captcha")]
-        public string captcha { get; set; }
+         public string captcha { get; set; }
     }
 }

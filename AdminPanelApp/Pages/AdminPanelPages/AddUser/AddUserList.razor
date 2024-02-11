@@ -14,7 +14,7 @@
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.body1">@singleuser.name</MudText>
-                    <MudText Typo="Typo.body2">@singleuser.email</MudText>
+                    <MudText Typo="Typo.body2">@singleuser.EmailId</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
                     <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopLeft">
@@ -57,17 +57,17 @@
 
     private List<AddUserModel> adduserlist = new List<AddUserModel>
     {
-        new  AddUserModel{name="Shyam",email="Shyam@gmail.com"},
-        new  AddUserModel{name="umang",email="umang@gmail.com"},
-        new  AddUserModel{name="Shyamn",email="Shyam@gmailn.com"},
-        new  AddUserModel{name="umangl",email="umang@gmaill.com"}
+        new  AddUserModel{name="Shyam",EmailId="Shyam@gmail.com"},
+        new  AddUserModel{name="umang",EmailId="umang@gmail.com"},
+        new  AddUserModel{name="Shyamn",EmailId="Shyam@gmailn.com"},
+        new  AddUserModel{name="umangl",EmailId="umang@gmaill.com"}
 
     };
     protected override async Task OnInitializedAsync()
     {
         for (int i = 1; i <= 20000; i++)
         {
-            AddUserModel dummyuser = new AddUserModel { name = "Test uaer" + i, email = "Shyam@gmail.com" + i };
+            AddUserModel dummyuser = new AddUserModel { name = "Test uaer" + i, EmailId = "Shyam@gmail.com" + i };
             adduserlist.Add(dummyuser);
         }
     }
