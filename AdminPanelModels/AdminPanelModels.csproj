@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.25" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LoginModels\LoginModels.csproj" />
+  </ItemGroup>
+
 </Project>
