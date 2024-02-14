@@ -11,7 +11,13 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-                      
+                        <MudSelect T="string" Label="User Role" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.roleval">
+                            @foreach (var item in adduser.Roletype)
+                            {
+                                <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
+
+                            }
+                        </MudSelect>
                         <MudTextField Label="Applicant Name" HelperText="Max. 8 characters"
                         @bind-Value="adduser.name" For="@(() => adduser.name)" />
 
@@ -20,49 +26,7 @@
 
                         <MudTextField Label="Email Id" Class="mt-3"
                         @bind-Value="adduser.EmailId" For="@(() => adduser.EmailId)" />
-                         <MudGrid>
-                    
-                        <MudItem xs="6" sm="6">
-                            <MudSelect T="string" Label="User Role" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.roleval">
-                                @foreach (var item in adduser.Roletype)
-                                {
-                                    <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
-
-                                }
-                            </MudSelect>
-                            </MudItem>
-                                <MudItem xs="6" sm="6">
-                            <MudSelect T="string" Label="Application" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.Iid">
-
-                                @foreach (var item in adduser.ApplicatonList)
-                                {
-                                    <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
-
-                                }
-                            </MudSelect>
-                        </MudItem>
-                         <MudItem xs="6" sm="6">
-                            <MudSelect T="string" Label="Workspace" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.Did">
-
-                                @foreach (var item in adduser.WorkspaceList)
-                                {
-                                    <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
-
-                                }
-                            </MudSelect>
-                            </MudItem>
-                            <MudItem xs="6" sm="6">
-                            <MudSelect T="string" Label="Outlet" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.Cid">
-
-                                @foreach (var item in adduser.OutletList)
-                                {
-                                    <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
-
-                                }
-                            </MudSelect>
-                        </MudItem>
-                       
-                        </MudGrid>
+                     
                        
                         <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
                             <MudTextField Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="adduser.captcha" For="@(() => adduser.captcha)" OnlyValidateIfDirty=true />

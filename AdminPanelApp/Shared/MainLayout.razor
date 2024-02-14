@@ -1,12 +1,13 @@
 ﻿@using Blazored.Toast.Configuration;
 @using LoginModels;
-
+@using AdminPanelApp.Data.UserSessionIndexDB;
 @inherits LayoutComponentBase
 @inject NavigationManager _navigationManager
 @inject HttpClient _httpClient
 @inject IJSRuntime _jsRuntime
 @inject ILocalStorageService _localStorageService
 
+@inject UserDb _usermanager;
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="3"
                 IconType="IconType.FontAwesome"
@@ -25,10 +26,36 @@
     <MudAppBar Elevation="1" >
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
         <MudSpacer />
-        
+
+            <MudMenu>
+                <ActivatorContent>
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"></MudIcon>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudCard Elevation="0">
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                <MudAvatar Image="img/userimg.jpg" />
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">@context.User.Identity.Name </MudText>
+                            </CardHeaderContent>
+                           
+                        </MudCardHeader>
+                        <MudCardActions>
+                             <MudButton Variant="Variant.Text" Color="Color.Primary">Profile</MudButton>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary">Change Password</MudButton>
+                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="eventLogout">Logout</MudButton>
+                            
+                             </MudCardActions>
+                    </MudCard>
+                    
+
+                </ChildContent>
+            </MudMenu>
             @* <Authorized> *@
-                <MudIconButton Class="ml-3" Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
-                <MudText Typo="Typo.h6">Hello, @context.User.Identity.Name</MudText>
+             @*    <MudIconButton Class="ml-3" Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
+                <MudText Typo="Typo.h6">Hello, @context.User.Identity.Name</MudText> *@
            @*  </Authorized> *@
 
            
@@ -40,9 +67,12 @@
     </MudAppBar>
     <MudDrawer @bind-Open="@open" Elevation="1" >
         <MudDrawerHeader>
+
             <MudText Typo="Typo.h6" Class="ml-3"> Admin Panel</MudText>
+           
         </MudDrawerHeader>
         <MudNavMenu>
+               
             <NavMenu />
         </MudNavMenu>
     </MudDrawer>
@@ -127,12 +157,14 @@
        
         await base.OnInitializedAsync();
     }
-
-
-
-    private void LoginUser()
+    private async Task eventLogout()
     {
+          await _usermanager.DeleteAllAsync();
+        await _localStorageService.RemoveItemAsync("jwt_token");
         _navigationManager.NavigateTo("/", true);
     }
+    
+
+   
 }
 
