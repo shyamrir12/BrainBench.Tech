@@ -12,7 +12,7 @@
         {
             if (item.ChildMenuItems.Any())
             {
-                <MudNavGroup Title="@item.MenuName" Expanded="false" Icon="@Icons.Material.Filled.PersonAdd">
+                <MudNavGroup Title="@item.MenuName" Expanded="false" Icon="@GetIconValue( item.GifIcon)">
                     @foreach (var childitem in item.ChildMenuItems)
                     {
                         if (childitem.ChildMenuItems.Any())
@@ -35,7 +35,7 @@
             }
             else
             {
-                <MudNavLink Href="@item.MenuItemPath" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">@item.MenuName</MudNavLink>
+                <MudNavLink Href="@item.MenuItemPath" Match="NavLinkMatch.All" Icon="@GetIconValue( item.GifIcon)">@item.MenuName</MudNavLink>
             }
 
         }
@@ -151,4 +151,45 @@
     // {
     //     collapseNavMenu = !collapseNavMenu;
     // }
+    public string GetIconValue(string IconName)
+    {
+        string cicon = "";
+
+        switch (IconName)
+        {
+            case "PersonAdd":
+                cicon = Icons.Material.Filled.PersonAdd;
+                break;
+            case "Dashboard":
+                cicon = Icons.Material.Filled.Dashboard;
+                break;
+            case "Password":
+                cicon = Icons.Material.Filled.Password;
+                break;
+            case "BarChart":
+                cicon = Icons.Material.Filled.BarChart;
+                break;
+            case "AccountCircle":
+                cicon = Icons.Material.Filled.AccountCircle;
+                break;
+            case "Logout":
+                cicon = Icons.Material.Filled.Logout;
+                break;
+            case "PostAdd":
+                cicon = Icons.Material.Filled.PostAdd;
+                break;
+            case "Settings":
+                cicon = Icons.Material.Filled.Settings;
+                break;
+            case "AddChart":
+                cicon = Icons.Material.Filled.AddChart;
+                break;
+            default:
+                cicon = Icons.Material.Filled.Home;
+                break;
+        }
+
+
+        return cicon;
+    }
 }

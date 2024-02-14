@@ -211,11 +211,11 @@ namespace AuthServer.Services
 								ParentItemId= item2.ParentCategoryId,
 							}); 
 						}
-						if (_google.MenuName.Equals("Dashboard"))
-							objListMenuEF.Insert(0, _google);
-						else if (_google.MenuName.Equals("Master"))
-							objListMenuEF.Insert(1, _google);
-						else
+						//if (_google.MenuName.Equals("Dashboard"))
+						//	objListMenuEF.Insert(0, _google);
+						//else if (_google.MenuName.Equals("Master"))
+						//	objListMenuEF.Insert(1, _google);
+						//else
 							objListMenuEF.Add(_google);
 					}
 				}
