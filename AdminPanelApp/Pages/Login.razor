@@ -37,7 +37,7 @@
                     @bind-Value="loginef.Password" For="@(() => loginef.Password)" InputType="@PasswordInput" />
 
                     <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
-                        <MudTextField Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="loginef.captcha" For="@(() => loginef.captcha)" OnlyValidateIfDirty=true />
+                        <MudTextField Immediate=true Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="loginef.captcha" For="@(() => loginef.captcha)" OnlyValidateIfDirty=true />
                         <MudChip Icon="@Icons.Material.Filled.QuestionAnswer" Label="true" Color="Color.Primary">@CaptchaText</MudChip>
                     </MudPaper>
                     </MudFocusTrap>
@@ -122,7 +122,7 @@
         if (user.Identity.IsAuthenticated)
         {
 
-            _navigationManager.NavigateTo("/index", true);
+            _navigationManager.NavigateTo("/dashboard", true);
 
         }
 
@@ -154,7 +154,7 @@
                 {
                     await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
                    
-                    _navigationManager.NavigateTo("/index", true);
+                    _navigationManager.NavigateTo("/dashboard", true);
 
                 }
                 else
