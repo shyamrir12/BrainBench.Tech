@@ -54,7 +54,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ActivationUser", Controller = "AddUser", ReturnType = "AdminPanel", UserID = model.userid.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ActivationUser", Controller = "AddUser", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
                 return res;
             }
             return res;
