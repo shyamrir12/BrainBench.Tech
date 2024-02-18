@@ -37,7 +37,7 @@ namespace AdminPanelAPI.Data.RegisterServices
 
                     res.Data = result.FirstOrDefault();
                     res.Status = true;
-                    res.Message = new List<string>() { "Successfull!" };
+                    res.Message = new List<string>() { "Successful!" };
                 }
                 else
                 {
@@ -50,7 +50,7 @@ namespace AdminPanelAPI.Data.RegisterServices
             catch (Exception ex)
             {
                 res.Data = null;
-                res.Message.Add("Exception Occured! - " + ex.Message.ToString());
+                res.Message.Add("Exception Occurred! - " + ex.Message.ToString());
                 return res;
             }
             return res;
