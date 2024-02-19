@@ -54,7 +54,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ActivationUser", Controller = "AddUser", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ActivationUser", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
                 return res;
             }
             return res;
@@ -103,7 +103,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddUser", Controller = "AddUser", ReturnType = "AdminPanel", UserID = model.userid.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddUpdateUser", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.userid.ToString() });
                 return res;
             }
             return res;
@@ -143,7 +143,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry {ErrorMessage=ex.Message,StackTrace=ex.StackTrace,Action= "GetRole",Controller="AddUser", ReturnType="AdminPanel",UserID=model.UserID.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry {ErrorMessage=ex.Message,StackTrace=ex.StackTrace,Action= "GetRole",Controller= "AddUserProvider", ReturnType="AdminPanel",UserID=model.UserID.ToString() });
                 return res;
             }
             return res;
@@ -183,7 +183,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetUserByID", Controller = "AddUser", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetUserByID", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
                 return res;
             }
             return res;
@@ -223,7 +223,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetUserList", Controller = "AddUser", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetUserList", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
                 return res;
             }
             return res;
