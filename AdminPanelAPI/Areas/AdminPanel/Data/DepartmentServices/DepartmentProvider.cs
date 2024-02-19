@@ -25,7 +25,13 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             {
                 var paramList = new
                 {
-
+                    DepartmentName = model.deptname,
+                    DepartmentNameHindi = model.deptnamehindi,
+                    loginid = model.loginid,
+                    ipaddress = model.ipadress,
+                    Description = model.Description,
+                    Image = model.Image,
+                    Imagethumbnail = model.Imagethumbnail
                 };
 
 
@@ -64,7 +70,8 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             {
                 var paramList = new
                 {
-
+                    Deptid=model.Deptid,
+                    UserId = model.UserID
 
                 };
 
@@ -104,7 +111,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
                 var paramList = new
                 {
 
-
+                    UserId = model.UserID
 
                 };
 
@@ -143,6 +150,9 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             {
                 var paramList = new
                 {
+                    Deptid=model.Deptid,
+                    isactive = model.Active,
+                    UserId = model.UserID
 
 
                 };
@@ -182,7 +192,14 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             {
                 var paramList = new
                 {
-
+                    Deptid=model.deptid,
+                    DepartmentName = model.deptname,
+                    DepartmentNameHindi = model.deptnamehindi,
+                    loginid = model.loginid,
+                    ipaddress = model.ipadress,
+                    Description = model.Description,
+                    Image = model.Image,
+                    Imagethumbnail = model.Imagethumbnail
                 };
 
 

@@ -24,6 +24,13 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             {
                 var paramList = new
                 {
+                    categoryName=model.categoryname,
+                    categoryNameHindi=model.categorynamehindi,
+                    loginid = model.loginid,
+                    ipaddress = model.ipadress,
+                    Description = model.Description,
+                    Image = model.Image,
+                    Imagethumbnail = model.Imagethumbnail
 
                 };
 
@@ -63,7 +70,8 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             {
                 var paramList = new
                 {
-
+                    hecid= model.Cid,
+                    UserId = model.UserID
 
                 };
 
@@ -103,7 +111,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
                 var paramList = new
                 {
 
-
+                    UserId = model.UserID
 
                 };
 
@@ -142,7 +150,9 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             {
                 var paramList = new
                 {
-
+                    hecid = model.Cid,
+                    isactive = model.Active,
+                    UserId = model.UserID
 
                 };
 
@@ -181,6 +191,14 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             {
                 var paramList = new
                 {
+                    hecid=model.hecatid,
+                    categoryName = model.categoryname,
+                    categoryNameHindi = model.categorynamehindi,
+                    loginid = model.loginid,
+                    ipaddress = model.ipadress,
+                    Description = model.Description,
+                    Image = model.Image,
+                    Imagethumbnail = model.Imagethumbnail
 
                 };
 

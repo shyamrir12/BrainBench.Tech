@@ -9,12 +9,14 @@ namespace AdminPanelModels.UserMangment
 {
 	public class Department
     {
-        public Department()
-        {
-            departmentList = new List<Department>();
-        }
-        public IEnumerable<ListItems> Documentissuedby { get; set; }
-        public IEnumerable<ListItems> UlbTypeList { get; set; }
+        //public Department()
+        //{
+        //    departmentList = new List<Department>();
+        //}
+        //public IEnumerable<ListItems> Documentissuedby { get; set; }
+        //public IEnumerable<ListItems> UlbTypeList { get; set; }
+        public int loginid { get; set; }
+        public string? ipadress { get; set; }
         public int deptid { get; set; }
 
         [Required]
@@ -29,12 +31,16 @@ namespace AdminPanelModels.UserMangment
         [Display(Name = "captcha")]
         public string captcha { get; set; }
 
-        public List<Department> departmentList { get; set; }
+      //  public List<Department> departmentList { get; set; }
         [Required]
         [Display(Name = "Document IssuedBy")]
         public int documentissuedval { get; set; }
 
         public string issuenameenglish { get; set; }
         public string ULBType { get; set; }
+
+        public string? Description { get; set; }
+        public string? Image { get; set; }
+        public string? Imagethumbnail { get; set; }
     }
 }

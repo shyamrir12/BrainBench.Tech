@@ -5,6 +5,8 @@ using AdminPanelModels;
 using AdminPanelModels.UserMangment;
 using Dapper;
 using LoginModels;
+using static System.Net.Mime.MediaTypeNames;
+using System.Net;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
 {
@@ -23,7 +25,13 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                   
+                   issuedByName=model.issuedbyname ,
+                   issuedByNameHindi=model.issuedbynamehindi ,
+                   loginid=model.loginid,
+                   ipaddress=model.ipadress,
+                   Description =model.Description ,
+                   Image =model.Image ,
+                   Imagethumbnail =model.Imagethumbnail
                 };
 
 
@@ -62,8 +70,9 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                   
 
+                    IssuedByid =model.Iid,
+                    UserId =model.UserID
                 };
 
                 var result = await Connection.QueryAsync<DmsIssuedBy>("Proc_Get_DMSIssuedBy_ById", paramList, commandType: System.Data.CommandType.StoredProcedure);
@@ -101,7 +110,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                  
+                    UserId=model.UserID
 
 
                 };
@@ -141,7 +150,9 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                    
+                    issuedbyid =model.Iid,
+                    isactive =model.Active,
+                    UserId =model.UserID
 
                 };
 
@@ -180,6 +191,14 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
+                    issuebyid=model.issuedid,
+                    issuedByName = model.issuedbyname,
+                    issuedByNameHindi = model.issuedbynamehindi,
+                    loginid = model.loginid,
+                    ipaddress = model.ipadress,
+                    Description = model.Description,
+                    Image = model.Image,
+                    Imagethumbnail = model.Imagethumbnail
 
                 };
 

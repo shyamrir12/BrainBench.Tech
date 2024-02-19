@@ -9,12 +9,14 @@ namespace AdminPanelModels.UserMangment
 {
 	public class DmsHECategory
 	{
-        public DmsHECategory()
-        {
-            hecategoryList = new List<DmsHECategory>();
-        }
-        public IEnumerable<ListItems> Documentcategory { get; set; }
-        public IEnumerable<ListItems> Documentissuedby { get; set; }
+        //public DmsHECategory()
+        //{
+        //    hecategoryList = new List<DmsHECategory>();
+        //}
+        //public IEnumerable<ListItems> Documentcategory { get; set; }
+        //public IEnumerable<ListItems> Documentissuedby { get; set; }
+        public int loginid { get; set; }
+        public string? ipadress { get; set; }
         public int hecatid { get; set; }
 
         [Required]
@@ -42,6 +44,10 @@ namespace AdminPanelModels.UserMangment
 
         public string issuenameenglish { get; set; }
         public string documentnameenglish { get; set; }
-        public List<DmsHECategory> hecategoryList { get; set; }
+      //  public List<DmsHECategory> hecategoryList { get; set; }
+
+        public string? Description { get; set; }
+        public string? Image { get; set; }
+        public string? Imagethumbnail { get; set; }
     }
 }

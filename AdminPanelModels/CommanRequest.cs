@@ -17,6 +17,9 @@ namespace AdminPanelModels
         public string? Deptids { get; set; }
         public string? Iids { get; set; }
         public string? Cids { get; set; }
+        public int? Deptid { get; set; }
+        public int? Iid { get; set; }
+        public int? Cid { get; set; }
 
     }
 }
