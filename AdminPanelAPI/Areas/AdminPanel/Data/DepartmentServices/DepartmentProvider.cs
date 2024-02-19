@@ -3,6 +3,7 @@ using AdminPanelAPI.Factory;
 using AdminPanelAPI.Repository;
 using AdminPanelModels;
 using AdminPanelModels.UserMangment;
+using Dapper;
 using LoginModels;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
@@ -17,29 +18,200 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             _exceptionDataProvider = exceptionDataProvider;
         }
 
-        public Task<Result<MessageEF>> AddWorkspace(Department model)
+        public async Task<Result<MessageEF>> AddWorkspace(Department model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_Add_Department", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddWorkspace", Controller = "DepartmentProvider", ReturnType = "AdminPanel", UserID = "" });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<Department>> GetWorkspaceBYID(CommanRequest model)
+        public async Task<Result<Department>> GetWorkspaceBYID(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<Department> res = new Result<Department>();
+            try
+            {
+                var paramList = new
+                {
+
+
+                };
+
+                var result = await Connection.QueryAsync<Department>("Proc_Get_Department_ById", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetWorkspaceBYID", Controller = "DepartmentProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<List<Department>>> GetWorkspaceList(CommanRequest model)
+        public async Task<Result<List<Department>>> GetWorkspaceList(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<List<Department>> res = new Result<List<Department>>();
+            try
+            {
+                var paramList = new
+                {
+
+
+
+                };
+
+                var result = await Connection.QueryAsync<Department>("Proc_Get_Department_ById", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.ToList();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetWorkspaceList", Controller = "DepartmentProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<MessageEF>> ModifyStatusWorkspace(CommanRequest model)
+        public async Task<Result<MessageEF>> ModifyStatusWorkspace(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+
+                };
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_ModifyStatus_Department", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ModifyStatusWorkspace", Controller = "DepartmentProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<MessageEF>> UpdateWorkspace(Department model)
+        public async Task<Result<MessageEF>> UpdateWorkspace(Department model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_Update_Department", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "UpdateWorkspace", Controller = "DepartmentProvider", ReturnType = "AdminPanel", UserID = "" });
+                return res;
+            }
+            return res;
         }
     }
 }

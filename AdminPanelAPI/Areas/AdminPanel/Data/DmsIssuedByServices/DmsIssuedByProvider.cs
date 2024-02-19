@@ -3,6 +3,7 @@ using AdminPanelAPI.Factory;
 using AdminPanelAPI.Repository;
 using AdminPanelModels;
 using AdminPanelModels.UserMangment;
+using Dapper;
 using LoginModels;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
@@ -15,29 +16,200 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             _exceptionDataProvider = exceptionDataProvider;
         }
 
-        public Task<Result<MessageEF>> AddApplication(DmsIssuedBy model)
+        public async Task<Result<MessageEF>> AddApplication(DmsIssuedBy model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+                   
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_Add_DMSIssuedby", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddApplication", Controller = "DmsIssuedByProvider", ReturnType = "AdminPanel", UserID = "" });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<DmsIssuedBy>> GetApplicationBYID(CommanRequest model)
+        public async Task<Result<DmsIssuedBy>> GetApplicationBYID(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<DmsIssuedBy> res = new Result<DmsIssuedBy>();
+            try
+            {
+                var paramList = new
+                {
+                   
+
+                };
+
+                var result = await Connection.QueryAsync<DmsIssuedBy>("Proc_Get_DMSIssuedBy_ById", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetApplicationBYID", Controller = "DmsIssuedByProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<List<DmsIssuedBy>>> GetApplicationList(CommanRequest model)
+        public async Task<Result<List<DmsIssuedBy>>> GetApplicationList(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<List<DmsIssuedBy>> res = new Result<List<DmsIssuedBy>>();
+            try
+            {
+                var paramList = new
+                {
+                  
+
+
+                };
+
+                var result = await Connection.QueryAsync<DmsIssuedBy>("Proc_Get_DMSIssuedBy_ById", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.ToList();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetApplicationList", Controller = "DmsIssuedByProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<MessageEF>> ModifyStatusApplication(CommanRequest model)
+        public async Task<Result<MessageEF>> ModifyStatusApplication(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+                    
+
+                };
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_ModifyStatus_DMSIssuedBy", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ModifyStatusApplication", Controller = "DmsIssuedByProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<MessageEF>> UpdateApplication(DmsIssuedBy model)
+        public async Task<Result<MessageEF>> UpdateApplication(DmsIssuedBy model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_Update_DMSIssuedby", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "UpdateApplication", Controller = "DmsIssuedByProvider", ReturnType = "AdminPanel", UserID = "" });
+                return res;
+            }
+            return res;
         }
     }
 }

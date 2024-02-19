@@ -3,6 +3,7 @@ using AdminPanelAPI.Factory;
 using AdminPanelAPI.Repository;
 using AdminPanelModels;
 using AdminPanelModels.UserMangment;
+using Dapper;
 using LoginModels;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
@@ -16,29 +17,200 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             _exceptionDataProvider = exceptionDataProvider;
         }
 
-        public Task<Result<MessageEF>> AddOutlet(DmsHECategory model)
+        public async Task<Result<MessageEF>> AddOutlet(DmsHECategory model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_Add_DMSHECategory", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddOutlet", Controller = "DmsHECategoryProvider", ReturnType = "AdminPanel", UserID = "" });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<DmsHECategory>> GetOutletBYID(CommanRequest model)
+        public async Task<Result<DmsHECategory>> GetOutletBYID(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<DmsHECategory> res = new Result<DmsHECategory>();
+            try
+            {
+                var paramList = new
+                {
+
+
+                };
+
+                var result = await Connection.QueryAsync<DmsHECategory>("Proc_Get_TBL_Document_HECategory_Master", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetOutletBYID", Controller = "DmsHECategoryProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<List<DmsHECategory>>> GetOutletList(CommanRequest model)
+        public async Task<Result<List<DmsHECategory>>> GetOutletList(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<List<DmsHECategory>> res = new Result<List<DmsHECategory>>();
+            try
+            {
+                var paramList = new
+                {
+
+
+
+                };
+
+                var result = await Connection.QueryAsync<DmsHECategory>("Proc_Get_TBL_Document_HECategory_Master", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.ToList();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetOutletList", Controller = "DmsHECategoryProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<MessageEF>> ModifyStatusOutlet(CommanRequest model)
+        public async Task<Result<MessageEF>> ModifyStatusOutlet(CommanRequest model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+
+                };
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_ModifyStatus_DMSHECategory", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "ModifyStatusOutlet", Controller = "DmsHECategoryProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
         }
 
-        public Task<Result<MessageEF>> UpdateOutlet(DmsHECategory model)
+        public async Task<Result<MessageEF>> UpdateOutlet(DmsHECategory model)
         {
-            throw new NotImplementedException();
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("Proc_Update_DMSHECategory", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "UpdateOutlet", Controller = "DmsHECategoryProvider", ReturnType = "AdminPanel", UserID = "" });
+                return res;
+            }
+            return res;
         }
     }
 }
