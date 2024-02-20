@@ -70,7 +70,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             {
                 var paramList = new
                 {
-                    hecid= model.Cid,
+                    hecid= model.id,
                     UserId = model.UserID
 
                 };
@@ -150,7 +150,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices
             {
                 var paramList = new
                 {
-                    hecid = model.Cid,
+                    hecid = model.id,
                     isactive = model.Active,
                     UserId = model.UserID
 

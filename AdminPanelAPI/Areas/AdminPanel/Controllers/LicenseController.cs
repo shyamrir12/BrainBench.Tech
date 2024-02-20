@@ -49,7 +49,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
         {
             return _licenseProvider.UnSubscribeLicense(model);
         }
-        public Task<Result<MessageEF>> UpdatePaymentStatus(CommanRequest model)
+        public Task<Result<MessageEF>> UpdatePaymentStatus(LicenseTranModel model)
         {
             return _licenseProvider.UpdatePaymentStatus(model);
         }

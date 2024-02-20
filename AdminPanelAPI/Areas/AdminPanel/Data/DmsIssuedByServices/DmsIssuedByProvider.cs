@@ -71,7 +71,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
                 var paramList = new
                 {
 
-                    IssuedByid =model.Iid,
+                    IssuedByid =model.id,
                     UserId =model.UserID
                 };
 
@@ -150,7 +150,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                    issuedbyid =model.Iid,
+                    issuedbyid =model.id,
                     isactive =model.Active,
                     UserId =model.UserID
 

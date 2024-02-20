@@ -70,7 +70,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             {
                 var paramList = new
                 {
-                    Deptid=model.Deptid,
+                    Deptid=model.id,
                     UserId = model.UserID
 
                 };
@@ -150,7 +150,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices
             {
                 var paramList = new
                 {
-                    Deptid=model.Deptid,
+                    Deptid=model.id,
                     isactive = model.Active,
                     UserId = model.UserID
 

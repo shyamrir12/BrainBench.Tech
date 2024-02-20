@@ -226,9 +226,9 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.Adduser_rightsServices
                 var paramList = new
                 {
                     loginId = model.SubRoleId,
-                   RoleId =model.RoleId,
+                   RoleId =model.id,
                    UserID = model.UserID,
-                   MenuId =model.MenuID
+                   MenuId =model.ids
                 };
                 var result = await Connection.QueryAsync<MessageEF>("Proc_Insert_Master_Role_Menu_Mvc", paramList, commandType: System.Data.CommandType.StoredProcedure);
 

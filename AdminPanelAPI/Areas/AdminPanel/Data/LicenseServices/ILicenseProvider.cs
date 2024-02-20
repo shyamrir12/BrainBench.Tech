@@ -15,7 +15,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.LicenseServices
         Task<Result<MessageEF>> ModifyStatusLicense(CommanRequest model);
         Task<Result<MessageEF>> SubscribeLicense(LicenseTranModel model);
         Task<Result<MessageEF>> UnSubscribeLicense(CommanRequest model);
-        Task<Result<MessageEF>> UpdatePaymentStatus(CommanRequest model);
+        Task<Result<MessageEF>> UpdatePaymentStatus(LicenseTranModel model);
 
 
     }

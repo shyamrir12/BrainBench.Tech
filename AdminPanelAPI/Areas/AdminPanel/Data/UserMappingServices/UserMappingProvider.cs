@@ -25,7 +25,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices
                 {
                     loginId = model.SubRoleId,
                     UserID = model.UserID,
-                    Iids = model.Iids
+                    Iids = model.ids
                 };
                 var result = await Connection.QueryAsync<MessageEF>("Proc_Insert_UserMapping", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
@@ -64,7 +64,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices
                 {
                     loginId = model.SubRoleId,
                     UserID = model.UserID,
-                    Cids = model.Cids
+                    Cids = model.ids
                 };
                 var result = await Connection.QueryAsync<MessageEF>("Proc_Insert_UserMapping", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
@@ -103,7 +103,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices
                 {
                     loginId = model.SubRoleId,
                     UserID = model.UserID,
-                    Deptids = model.Deptids
+                    Deptids = model.ids
                 };
                 var result = await Connection.QueryAsync<MessageEF>("Proc_Insert_UserMapping", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
