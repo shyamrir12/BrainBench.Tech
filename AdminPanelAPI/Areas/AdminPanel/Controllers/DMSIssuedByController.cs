@@ -12,6 +12,12 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 	public class DMSIssuedByController : ControllerBase
 	{
 		private readonly IDmsIssuedByProvider _dmsIssuedByProvider;
+
+        public DMSIssuedByController(IDmsIssuedByProvider dmsIssuedByProvider)
+        {
+            _dmsIssuedByProvider = dmsIssuedByProvider;
+        }
+
         public Task<Result<MessageEF>> AddApplication(DmsIssuedBy model)
         {
             return _dmsIssuedByProvider.AddApplication(model);

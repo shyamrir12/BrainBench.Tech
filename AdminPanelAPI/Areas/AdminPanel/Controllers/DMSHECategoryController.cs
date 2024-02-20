@@ -5,6 +5,7 @@ using AdminPanelModels;
 using LoginModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
@@ -13,6 +14,20 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 	public class DMSHECategoryController : ControllerBase
     {
         private readonly IDmsHECategoryProvider  _dmsHECategoryProvider;
+        private readonly IUserMappingProvider _userMappingProvider;
+        public DMSHECategoryController(IDmsHECategoryProvider dmsHECategoryProvider, IUserMappingProvider userMappingProvider)
+        {
+            _dmsHECategoryProvider = dmsHECategoryProvider;
+            _userMappingProvider = userMappingProvider;
+        }
+        public Task<Result<List<ListItems>>> GetApplication(CommanRequest model)
+        {
+            return _userMappingProvider.GetApplication(model);
+        }
+        public Task<Result<List<ListItems>>> GetWorkspace(CommanRequest model)
+        {
+            return _userMappingProvider.GetWorkspace(model);
+        }
         public Task<Result<MessageEF>> AddOutlet(DmsHECategory model)
         {
             return _dmsHECategoryProvider.AddOutlet(model);

@@ -4,6 +4,7 @@ using AdminPanelModels;
 using LoginModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
@@ -12,7 +13,18 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 	public class DepartmentController : ControllerBase
 	{
         private readonly IDepartmentProvider _departmentProvider;
+        private readonly IUserMappingProvider _userMappingProvider;
 
+        public DepartmentController(IDepartmentProvider departmentProvider, IUserMappingProvider userMappingProvider)
+        {
+            _departmentProvider = departmentProvider;
+            _userMappingProvider = userMappingProvider;
+        }
+
+        public Task<Result<List<ListItems>>> GetApplication(CommanRequest model)
+        {
+            return _userMappingProvider.GetApplication(model);
+        }
         public Task<Result<MessageEF>> AddWorkspace(Department model)
         {
             return _departmentProvider.AddWorkspace(model);
