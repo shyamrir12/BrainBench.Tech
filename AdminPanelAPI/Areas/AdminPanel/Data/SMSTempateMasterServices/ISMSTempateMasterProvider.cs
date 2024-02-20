@@ -6,10 +6,10 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.SMSTempateMasterServices
 {
 	public interface ISMSTempateMasterProvider
 	{
-	Result<MessageEF> AddSMSTemplateMaster(SMSTemplateMaster objStatemaster);
-		Result<List<SMSTemplateMaster>> ViewSMSTemplateMaster(SMSTemplateMaster objStatemaster);
-		Result<SMSTemplateMaster> EditSMSTemplatemaster(SMSTemplateMaster objStatemaster);
-		Result<MessageEF> DeleteSMSTemplatemaster(SMSTemplateMaster objStatemaster);
-		Result<MessageEF> UpdateSMSTemplatemaster(SMSTemplateMaster objStatemaster);
+        Task< Result<MessageEF>> AddSMSTemplateMaster(SMSTemplateMaster model);
+        Task<Result<List<SMSTemplateMaster>>> ViewSMSTemplateMaster(CommanRequest model);
+		 Task<Result<SMSTemplateMaster>> EditSMSTemplatemaster(CommanRequest model);
+		 Task<Result<MessageEF>> DeleteSMSTemplatemaster(CommanRequest model);
+		 Task<Result<MessageEF>> UpdateSMSTemplatemaster(SMSTemplateMaster model);
 	}
 }
