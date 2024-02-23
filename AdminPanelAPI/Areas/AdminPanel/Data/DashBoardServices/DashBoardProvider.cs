@@ -1,6 +1,6 @@
 ﻿namespace AdminPanelAPI.Areas.AdminPanel.Data.DashBoardServices
 {
-	public class DashBoardProvider
-	{
+	public class DashBoardProvider: IDashBoardProvider
+    {
 	}
 }

@@ -2,11 +2,10 @@
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
-	public class DashBoardController : Controller
-	{
-		public IActionResult Index()
-		{
-			return View();
-		}
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DashBoardController : ControllerBase
+    {
+		
 	}
 }

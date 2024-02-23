@@ -28,8 +28,9 @@
 		public string DivisionId { get; set; }
 		public string? WardId { get; set; }
 		public string? RasoiId { get; set; }
-
-		public List<MenuItem> Items { get; set; }
+        public string? jwttoken { get; set; }
+        public DateTime validTo { get; set; }
+        public List<MenuItem> Items { get; set; }
 
 
 		//int? userId;

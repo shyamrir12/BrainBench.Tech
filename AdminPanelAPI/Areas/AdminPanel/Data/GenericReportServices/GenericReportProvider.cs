@@ -1,6 +1,6 @@
 ﻿namespace AdminPanelAPI.Areas.AdminPanel.Data.GenericReportServices
 {
-	public class GenericReportProvider
-	{
+	public class GenericReportProvider: IGenericReportProvider
+    {
 	}
 }

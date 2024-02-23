@@ -1,8 +1,22 @@
+
 using AdminPanelAPI.Factory;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AdminPanelAPI.Data.RegisterServices;
+using AdminPanelAPI.Data.ExceptionDataServices;
+using AdminPanelAPI.Data.RecoverPasswordServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.Adduser_rightsServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.DepartmentServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.DmsHECategoryServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.LicenseServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.SMSTempateMasterServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.ChangePasswordServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.DashBoardServices;
+using AdminPanelAPI.Areas.AdminPanel.Data.GenericReportServices;
 
 var builder = WebApplication.CreateBuilder(args);
 //from 5.0 auth app
@@ -47,6 +61,23 @@ IConnectionFactory connectionFactoryAuthDB = new ConnectionFactory(builder.Confi
 
 builder.Services.AddSingleton(connectionFactoryAuthDB);
 builder.Services.AddScoped<IRegisterProvider, RegisterProvider>();
+builder.Services.AddScoped<IExceptionDataProvider, ExceptionDataProvider>();
+//builder.Services.AddScoped<IRecoverPasswordProvider, RecoverPasswordProvider>();
+builder.Services.AddScoped<IAddUserProvider, AddUserProvider>();
+builder.Services.AddScoped<IAdduser_rightsProvider, Adduser_rightsProvider>();
+builder.Services.AddScoped<IUserMappingProvider, UserMappingProvider>();
+builder.Services.AddScoped<IDmsIssuedByProvider, DmsIssuedByProvider>();
+builder.Services.AddScoped<IDepartmentProvider, DepartmentProvider>();
+builder.Services.AddScoped<IDmsHECategoryProvider, DmsHECategoryProvider>();
+builder.Services.AddScoped<ILicenseProvider, LicenseProvider>();
+builder.Services.AddScoped<ISMSTempateMasterProvider, SMSTempateMasterProvider>();
+
+//Pending
+//builder.Services.AddScoped<IRecoverPasswordProvider, RecoverPasswordProvider>();
+//builder.Services.AddScoped<IChangePasswordProvider, ChangePasswordProvider>();
+//builder.Services.AddScoped<IDashBoardProvider, DashBoardProvider>();
+//builder.Services.AddScoped<IGenericReportProvider, GenericReportProvider>();
+
 // Add services to the container.
 
 builder.Services.AddControllers();

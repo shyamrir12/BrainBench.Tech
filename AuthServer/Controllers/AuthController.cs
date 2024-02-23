@@ -154,8 +154,9 @@ namespace AuthServer.Controllers
 					LoginEF model = new LoginEF();
 					model.UserID = int.Parse(userId);
 					model.UserType = UserType.ToString();
-					//model.UserName = UserName.ToString();
-					res.Data = await _usercontext.GetUserById(model);
+					model.validTo= validTo;
+                    //model.UserName = UserName.ToString();
+                    res.Data = await _usercontext.GetUserById(model);
 					res.Status = true;
 					res.Message = new System.Collections.Generic.List<string>() { "Success" };
 				}

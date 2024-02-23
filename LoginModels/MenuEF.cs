@@ -29,6 +29,7 @@ namespace LoginModels
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
         [Display(Name = "Captcha")]
         public string captcha { get; set; }
+        public DateTime validTo { get; set; }
 
     }
 

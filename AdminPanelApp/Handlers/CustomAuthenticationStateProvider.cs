@@ -3,9 +3,11 @@
 using Blazored.LocalStorage;
 using LoginModels;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text;
 using static MudBlazor.Defaults;
 
 
@@ -16,13 +18,19 @@ namespace AdminPanelApp.Handlers
 		private readonly HttpClient _httpClient;
 		private readonly ILocalStorageService _localStorageService;
 		private readonly UserDb _usermanager;
+        private readonly IConfiguration _configuration;
 
-        public CustomAuthenticationStateProvider(HttpClient httpClient, ILocalStorageService localStorageService,UserDb usermanager)
+        double seconds = 0;
+        int secondsInt = 0;
+
+        public CustomAuthenticationStateProvider(HttpClient httpClient, ILocalStorageService localStorageService,UserDb usermanager, IConfiguration configuration)
 		{
 			_httpClient = httpClient;
 			_localStorageService = localStorageService;
 			_usermanager = usermanager;
-          
+            _configuration=configuration;
+
+
 
         }
 		public async override Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -31,16 +39,36 @@ namespace AdminPanelApp.Handlers
            
             if (currentUser != null && currentUser.EmailId != null)
 			{
-				//create a claims
-				var claimEmailAddress = new Claim(ClaimTypes.Name, currentUser.EmailId);
+
+                var jwtToken = await _localStorageService.GetItemAsStringAsync("jwt_token");
+                if (jwtToken != null && jwtToken.Length > 0)
+                {
+                   
+                   
+                    DateTime validTo = currentUser.validTo;
+                    DateTime currentUTC = DateTime.UtcNow;
+                    var diffInSeconds = (validTo - currentUTC).TotalSeconds;
+                    seconds = diffInSeconds;
+                    secondsInt = (int)seconds;
+
+                }
+                if(secondsInt>0)
+                {
+                //create a claims
+                var claimEmailAddress = new Claim(ClaimTypes.Name, currentUser.EmailId);
 				var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(currentUser.UserID));
 				var claimRole = new Claim(ClaimTypes.Role, currentUser.Role == null ? "" : currentUser.Role);
-				//create claimsIdentity
-				var claimsIdentity = new ClaimsIdentity(new[] { claimEmailAddress, claimNameIdentifier, claimRole }, "serverAuth");
+                var claimauth = new Claim(ClaimTypes.Authentication, jwtToken);
+                var claimvalidTo = new Claim(ClaimTypes.Expiration, currentUser.validTo.ToString());
+                //create claimsIdentity
+                var claimsIdentity = new ClaimsIdentity(new[] { claimEmailAddress, claimNameIdentifier, claimRole, claimauth, claimvalidTo }, "serverAuth");
 				//create claimsPrincipal
 				var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 				return new AuthenticationState(claimsPrincipal);
-			}
+                }
+                else
+                    return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            }
 			else
 				return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 		}
@@ -77,10 +105,12 @@ namespace AdminPanelApp.Handlers
                     var responseStatusCode = response.StatusCode;
                     var returnedUser = await response.Content.ReadFromJsonAsync<Result<UserLoginSession>>();
 
+                    
                     //returning the user if found
                     if (returnedUser != null)
                     {
-                        await AddCustomers(response);
+                        //returnedUser.Data.jwttoken = jwtToken;
+                        await AddCustomers(response);                        
                         return await Task.FromResult(returnedUser.Data);
 
                     }

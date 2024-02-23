@@ -5,6 +5,7 @@ using Dapper;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuthServer.Services
 {
@@ -101,9 +102,8 @@ namespace AuthServer.Services
 
 		public async Task<UserLoginSession> GetUserById(LoginEF model)
 		{
-
-
-			UserLoginSession objUserLoginSession = new UserLoginSession();
+         
+            UserLoginSession objUserLoginSession = new UserLoginSession();
 			try
 			{
 				
@@ -122,7 +122,9 @@ namespace AuthServer.Services
 
 					
 					objUserLoginSession.Items = MenuList(objUserLoginSession.UserID, objUserLoginSession.RoleId);
-				}
+                    objUserLoginSession.validTo=model.validTo;
+
+                }
 
 				return objUserLoginSession;
 
