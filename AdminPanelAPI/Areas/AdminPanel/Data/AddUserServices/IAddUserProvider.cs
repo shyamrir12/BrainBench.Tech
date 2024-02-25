@@ -11,5 +11,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
         Task<Result<List<AddUserModel>>> GetUserList(CommanRequest model);
         Task<Result<AddUserModel>> GetUserByID(CommanRequest model);
         Task<Result<List<ListItems>>> GetRole(CommanRequest model);
+        Task<Result<MessageEF>> UpdatePassword(CommanRequest model);
+       
     }
 }

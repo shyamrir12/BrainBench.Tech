@@ -6,6 +6,6 @@ namespace AdminPanelAPI.Data.RecoverPasswordServices
 {
 	public interface IRecoverPasswordProvider
     {
-        Task<Result<string>> RecoverPassword(RecoverPassword model);
+        Task<Result<MessageEF>> GetRecoverPassword(RecoverPassword model);
     }
 }

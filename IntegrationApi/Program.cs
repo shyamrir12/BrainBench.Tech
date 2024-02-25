@@ -3,6 +3,7 @@ using IntegrationApi.Data.DSCResponseVerifyServices;
 using IntegrationApi.Data.EncryptionServices;
 using IntegrationApi.Data.ExceptionDataServices;
 using IntegrationApi.Data.MailServices;
+using IntegrationApi.Data.RabitMQServices;
 using IntegrationApi.Data.SchedulerMailSMSServices;
 using IntegrationApi.Data.SMSServices;
 using IntegrationApi.ExceptionFilter;
@@ -76,6 +77,7 @@ builder.Services.AddScoped<IExceptionDataProvider, ExceptionDataProvider>();
 builder.Services.AddScoped<IMailProvider, MailProvider>();
 builder.Services.AddScoped<ISchedulerMailSMSProvider, SchedulerMailSMSProvider>();
 builder.Services.AddScoped<ISMSProvider, SMSProvider>();
+builder.Services.AddScoped<IRabitMQService, RabitMQService>();
 // Add services to the container.
 
 builder.Services.AddControllers();

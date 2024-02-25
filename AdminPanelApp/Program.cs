@@ -56,6 +56,7 @@ builder.Services.AddSubtleCrypto(opt =>
     opt.Key = "ELE9xOyAyJHCsIPLMbbZHQ7pVy7WUlvZ60y5WkKDGMSw5xh5IM54kUPlycKmHF9VGtYUilglL8iePLwr" //Use another key
 );
 builder.Services.AddScoped<IEncryptDecrypt, EncryptDecrypt>();
+
 await builder.Build().RunAsync();
 
  void AddHttpClients(WebAssemblyHostBuilder builder,string baseurl)

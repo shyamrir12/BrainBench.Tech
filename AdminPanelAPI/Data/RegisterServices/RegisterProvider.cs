@@ -6,13 +6,16 @@ using Dapper;
 using System.Security.Cryptography;
 using System.Reflection;
 using System.Text;
+using AdminPanelAPI.Data.ExceptionDataServices;
 
 namespace AdminPanelAPI.Data.RegisterServices
 {
     public class RegisterProvider : RepositoryBase, IRegisterProvider
     {
-        public RegisterProvider(IConnectionFactory connectionFactoryAuthDB) : base(connectionFactoryAuthDB)
+        private readonly IExceptionDataProvider _exceptionDataProvider;
+        public RegisterProvider(IConnectionFactory connectionFactoryAuthDB, IExceptionDataProvider exceptionDataProvider) : base(connectionFactoryAuthDB)
         {
+            _exceptionDataProvider = exceptionDataProvider;
         }
 
         public async Task<Result<MessageEF>> CheckUserExist(RegisterUser model)
@@ -91,7 +94,7 @@ namespace AdminPanelAPI.Data.RegisterServices
             return res;
         }
 
-       
+      
         public async Task<Result<MessageEF>> RegisterUser(RegisterUser model)
         {
              model.PD_Reenterpwd =MyUtility. ComputeSha256Hash(model.PD_Reenterpwd);

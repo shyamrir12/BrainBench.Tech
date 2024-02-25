@@ -20,6 +20,8 @@ namespace AdminPanelModels
         [Display(Name = "Captcha")]
         public string captcha { get; set; }
 
+        public string Password { get; set; }
+
         [Required]
         [RegularExpression(@"^([0-9]{6})$", ErrorMessage = "Invalid OTP !")]
         //  [VerifyOTP(ErrorMessage = "Input Correct OTP")] 

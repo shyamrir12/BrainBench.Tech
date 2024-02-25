@@ -228,5 +228,49 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
             }
             return res;
         }
+
+        public async Task<Result<MessageEF>> UpdatePassword(CommanRequest model)
+        {
+            Result<MessageEF> res = new Result<MessageEF>();
+            try
+            {
+                var paramList = new
+                {
+                    UserID = model.UserID,
+                    OldPassword = model.OldPassword,
+                    Password = model.Password,
+                    Check = 2
+                   
+
+                };
+
+
+                var result = await Connection.QueryAsync<MessageEF>("changepassword", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.FirstOrDefault();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "UpdatePassword", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
+        }
     }
 }

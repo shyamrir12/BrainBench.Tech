@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
+    [Route("api/[controller]/[action]")]
+    [ApiController]
 	public class AddUserController : ControllerBase
     {
         private readonly IAddUserProvider _objIAddUserProvider;
@@ -36,6 +36,11 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
         public Task<Result<AddUserModel>> GetUserByID(CommanRequest model)
         {
             return _objIAddUserProvider.GetUserByID(model);
+        }
+
+        public Task<Result<MessageEF>> UpdatePassword(CommanRequest model)
+        {
+            return _objIAddUserProvider.UpdatePassword(model);
         }
 
     }

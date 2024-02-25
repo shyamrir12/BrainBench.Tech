@@ -14,7 +14,8 @@ namespace AdminPanelModels
         public bool? Active { get; set; }
         public int? id { get; set; }
         public string? ids { get; set; }
-
+        public string? Password { get; set; }
+        public string? OldPassword { get; set; }
 
         //public string? Deptids { get; set; }
         //public string? Iids { get; set; }
@@ -24,7 +25,7 @@ namespace AdminPanelModels
         //public int? Cid { get; set; }
         //public int? LicenseID { get; set;
         //public int? LicenseTransactionID { get; set; }
-        
+
 
 
 
