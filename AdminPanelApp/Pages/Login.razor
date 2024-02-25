@@ -4,6 +4,7 @@
 @using LoginModels;
 @using System.Security.Cryptography;
 @using System.Text;
+
 @inject NavigationManager _navigationManager
 @inject ILocalStorageService _localStorageService
 @inject ILoginProvider _loginProvider
@@ -137,7 +138,7 @@
         {
             if (Convert.ToInt32(loginef.captcha) == CaptchaSolution)
             {
-                 nml.SpinnerVisible = true;
+                nml.SpinnerVisible = true;
                 _notifyMainLayout.InvokeAsync(nml);
 
                 Random randcls = new Random();
@@ -146,15 +147,16 @@
                 loginef.Password = MyUtility.ComputeSha256Hash(loginef.UserID + MyUtility.ComputeSha256Hash(loginef.Password));
                 loginef.Mail = "test1234@gail.com";
                 AuthenticationResponse authenticationResponse = await _loginProvider.AuthenticateJWT(loginef);
-              
+
                 nml.SpinnerVisible = false;
                 _notifyMainLayout.InvokeAsync(nml);
-               
+
                 if (authenticationResponse.Token != string.Empty)
                 {
                     await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
-                   
+
                     _navigationManager.NavigateTo("/dashboard", true);
+                  
 
                 }
                 else

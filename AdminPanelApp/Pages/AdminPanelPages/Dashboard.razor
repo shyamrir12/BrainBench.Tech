@@ -1,6 +1,58 @@
 ﻿@page "/dashboard"
+
+@using AdminPanelApp.Data.EncryptDecryptServices;
+@using AdminPanelApp.Data.UserSessionIndexDB;
+
+
+@inject IEncryptDecrypt _crypto
+@inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorageService
+@inject UserDb _usermanager
+
 <h3>Dashboard</h3>
 
 @code {
 
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        
+
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var jwtToken = await _localStorageService.GetItemAsStringAsync("jwt_token");
+            if (user.IsInRole("Admin"))
+            {
+                var list = await _usermanager.GetAllAsync();
+                string param1 = await _crypto.Encrypt(list.FirstOrDefault().Email);
+                string param2 = await _crypto.Encrypt(jwtToken);
+                //CryptoResult param1 = await _crypto.EncryptAsync("Hello");
+                //CryptoResult param2 = await _crypto.EncryptAsync("Sir");
+
+                string medicalurl = "http://localhost:5277/";
+                string url = _navigationManager.ToAbsoluteUri(medicalurl + "?param1=" + param1 + "&param2=" + param2).ToString();
+              //  _navigationManager.NavigateTo(url);
+            }
+
+
+
+        }
+
+       
+
+        // else
+        // {
+        //     await _usermanager.DeleteAllAsync();
+        //     await _localStorageService.RemoveItemAsync("jwt_token");
+        //     _navigationManager.NavigateTo("/", true);
+        // }
+
+
+    }
 }

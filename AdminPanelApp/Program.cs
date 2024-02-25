@@ -1,10 +1,12 @@
 using AdminPanelApp;
 using AdminPanelApp.Data.AzureHelperServices;
+using AdminPanelApp.Data.EncryptDecryptServices;
 using AdminPanelApp.Data.LoginServices;
 using AdminPanelApp.Data.MailSMSServices;
 using AdminPanelApp.Data.RegisterServices;
 using AdminPanelApp.Data.UserSessionIndexDB;
 using AdminPanelApp.Handlers;
+using Blazor.SubtleCrypto;
 using BlazorDB;
 using Blazored.LocalStorage;
 using Blazored.Toast;
@@ -50,7 +52,10 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddTransient<CustomAuthorizationHandler>();
 builder.Services.AddBlazoredToast();
 builder.Services.AddMudServices();
-
+builder.Services.AddSubtleCrypto(opt =>
+    opt.Key = "ELE9xOyAyJHCsIPLMbbZHQ7pVy7WUlvZ60y5WkKDGMSw5xh5IM54kUPlycKmHF9VGtYUilglL8iePLwr" //Use another key
+);
+builder.Services.AddScoped<IEncryptDecrypt, EncryptDecrypt>();
 await builder.Build().RunAsync();
 
  void AddHttpClients(WebAssemblyHostBuilder builder,string baseurl)

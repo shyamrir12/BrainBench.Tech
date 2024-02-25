@@ -6,3 +6,4 @@
     downloadLink.download = fileName;
     downloadLink.click();
 }
+

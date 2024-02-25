@@ -2,6 +2,7 @@
 
 using Blazored.LocalStorage;
 using LoginModels;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -67,7 +68,12 @@ namespace AdminPanelApp.Handlers
 				return new AuthenticationState(claimsPrincipal);
                 }
                 else
+                {
+                    await _usermanager.DeleteAllAsync();
+                    await _localStorageService.RemoveItemAsync("jwt_token");
                     return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                }
+                  
             }
 			else
 				return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
