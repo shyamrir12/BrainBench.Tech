@@ -10,7 +10,7 @@ namespace AdminPanelAPI.Data.RecoverPasswordServices
     public class RecoverPasswordProvider : RepositoryBase, IRecoverPasswordProvider
     {
         private readonly IExceptionDataProvider _exceptionDataProvider;
-        protected RecoverPasswordProvider(IConnectionFactory connectionFactoryAuthDB, IExceptionDataProvider exceptionDataProvider) : base(connectionFactoryAuthDB)
+        public RecoverPasswordProvider(IConnectionFactory connectionFactoryAuthDB, IExceptionDataProvider exceptionDataProvider) : base(connectionFactoryAuthDB)
         {
             _exceptionDataProvider = exceptionDataProvider;
         }

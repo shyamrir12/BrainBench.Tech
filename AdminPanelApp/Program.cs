@@ -1,8 +1,18 @@
 using AdminPanelApp;
+using AdminPanelApp.Data.AdminPanelServices.Adduser_rightsServices;
+using AdminPanelApp.Data.AdminPanelServices.AddUserServices;
+using AdminPanelApp.Data.AdminPanelServices.ApplicationServices;
+using AdminPanelApp.Data.AdminPanelServices.DashBoardServices;
+using AdminPanelApp.Data.AdminPanelServices.LicenseServices;
+using AdminPanelApp.Data.AdminPanelServices.OutletServices;
+using AdminPanelApp.Data.AdminPanelServices.SMSTempateMasterServices;
+using AdminPanelApp.Data.AdminPanelServices.UserMappingServices;
+using AdminPanelApp.Data.AdminPanelServices.WorkspaceServices;
 using AdminPanelApp.Data.AzureHelperServices;
 using AdminPanelApp.Data.EncryptDecryptServices;
 using AdminPanelApp.Data.LoginServices;
 using AdminPanelApp.Data.MailSMSServices;
+using AdminPanelApp.Data.RecoverPasswordServices;
 using AdminPanelApp.Data.RegisterServices;
 using AdminPanelApp.Data.UserSessionIndexDB;
 using AdminPanelApp.Handlers;
@@ -66,16 +76,34 @@ await builder.Build().RunAsync();
 	//authentication http clients RegisterUserServiceClient
 	builder.Services.AddHttpClient<IRegisterSubscriber, RegisterSubscriber>
 		("RegisterViewModelClient", client => client.BaseAddress = new Uri(baseurl));
-	builder.Services.AddHttpClient<ILoginProvider, LoginProvider>
+    builder.Services.AddHttpClient<IRecoverPasswordSubscriber, RecoverPasswordSubscriber>
+        ("RecoverPasswordModelClient", client => client.BaseAddress = new Uri(baseurl));
+    builder.Services.AddHttpClient<ILoginProvider, LoginProvider>
 		("LoginViewModelClient", client => client.BaseAddress = new Uri(baseurl));
     builder.Services.AddHttpClient<IMailSMSSubscriber, MailSMSSubscriber>
         ("MAILSMSViewModelClient", client => client.BaseAddress = new Uri(baseurl));
     builder.Services.AddHttpClient<IAzureFileSubscriber, AzureFileSubscriber>
         ("FilesViewModelClient", client => client.BaseAddress = new Uri(baseurl));
 
-    //	builder.Services.AddHttpClient<IMedicineServiceClient, MedicineServiceClient>
-    //	  ("MedicineServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
-
+    builder.Services.AddHttpClient<IAddUserSubscriber, AddUserSubscriber>
+      ("AddUserServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<IAdduser_rightsSubscriber, Adduser_rightsSubscriber>
+     ("Adduser_rightServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<IUserMappingSubscriber, UserMappingSubscriber>
+        ("UserMappingServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<IApplicationSubscriber, ApplicationSubscriber>
+     ("ApplicationServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<IWorkspaceSubscriber, WorkspaceSubscriber>
+   ("WorkspaceServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<IOutletSubscriber, OutletSubscriber>
+   ("OutletServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<ILicenseSubscriber, LicenseSubscriber>
+   ("LicenseServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<ISMSTempateMasterSubscriber, SMSTempateMasterSubscriber>
+   ("SMSTempateMasterServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+    builder.Services.AddHttpClient<IDashboardSubscriber, DashboardSubscriber>
+       ("DashboardServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+   
 }
 
 

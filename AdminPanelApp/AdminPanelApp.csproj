@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\AdminPanelServices\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
