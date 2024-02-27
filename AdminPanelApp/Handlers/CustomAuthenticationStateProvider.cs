@@ -56,13 +56,14 @@ namespace AdminPanelApp.Handlers
                 if(secondsInt>0)
                 {
                 //create a claims
-                var claimEmailAddress = new Claim(ClaimTypes.Name, currentUser.EmailId);
-				var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(currentUser.UserID));
+                var claimEmailAddress = new Claim(ClaimTypes.Email, currentUser.EmailId);
+                var UserName = new Claim(ClaimTypes.Name, currentUser.Name == null ? currentUser.EmailId : currentUser.Name);
+                var claimUserid = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(currentUser.UserID));
 				var claimRole = new Claim(ClaimTypes.Role, currentUser.Role == null ? "" : currentUser.Role);
                 var claimauth = new Claim(ClaimTypes.Authentication, jwtToken);
                 var claimvalidTo = new Claim(ClaimTypes.Expiration, currentUser.validTo.ToString());
                 //create claimsIdentity
-                var claimsIdentity = new ClaimsIdentity(new[] { claimEmailAddress, claimNameIdentifier, claimRole, claimauth, claimvalidTo }, "serverAuth");
+                var claimsIdentity = new ClaimsIdentity(new[] { claimEmailAddress, UserName, claimUserid, claimRole, claimauth, claimvalidTo }, "serverAuth");
 				//create claimsPrincipal
 				var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 				return new AuthenticationState(claimsPrincipal);

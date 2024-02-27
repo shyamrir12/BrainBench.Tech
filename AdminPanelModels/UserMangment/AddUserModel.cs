@@ -13,28 +13,28 @@ namespace AdminPanelModels.UserMangment
 
 
         [Display(Name = "Role")]
-        public string roleval { get; set; }
+        public string? roleval { get; set; }
 
-        [Required]
+       // [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
-        public string name { get; set; }
+        public string? name { get; set; }
        
 
-        [Required]
+      //  [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
-        public string designation { get; set; }
-       [Required]
+        public string? designation { get; set; }
+     //  [Required]
         [EmailAddress(ErrorMessage = "Invalid Email Address !")]
         [Display(Name = "Email Id")]
-        public string EmailId { get; set; }
-        public int userid { get; set; }
+        public string? EmailId { get; set; }
+        public int? userid { get; set; }
 
-        [Required]
+      //  [Required]
         [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number !")]
         [Display(Name = "Mobile No")]
-        public string mobile_no { get; set; }
-        public string createdate { get; set; }
-        public string photo { get; set; }
+        public string? mobile_no { get; set; }
+        public string? createdate { get; set; }
+        public string? photo { get; set; }
 
         public IEnumerable<ListItems> ApplicatonList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
         [Display(Name = "Applicaton")]
@@ -48,9 +48,9 @@ namespace AdminPanelModels.UserMangment
         public IEnumerable<ListItems> OutletList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
         [Display(Name = "Outlet")]
         public string? Cid { get; set; }
-        [Required]
+      //  [Required]
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
         [Display(Name = "Captcha")]
-         public string captcha { get; set; }
+         public string? captcha { get; set; }
     }
 }

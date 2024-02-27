@@ -6,6 +6,7 @@ using AdminPanelModels.UserMangment;
 using Dapper;
 using LoginModels;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Data;
 using System.Net;
 using System.Reflection;
 
@@ -192,23 +193,26 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
         public async Task<Result<List<AddUserModel>>> GetUserList(CommanRequest model)
         {
             Result<List<AddUserModel>> res = new Result<List<AddUserModel>>();
+            int TotalRecord = 0;
             try
             {
-                var paramList = new
-                {
-                    UserID = model.UserID,
-                  
-
-                };
+               
+                var paramList = new DynamicParameters();
+                paramList.Add("UserID", model.UserID);
+                paramList.Add("PageSize", model.PageSize);
+                paramList.Add("PageIndex", model.PageIndex);
+                paramList.Add("Filter", model.Filter);
+                paramList.Add("TotalRecord", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
                 var result = await Connection.QueryAsync<AddUserModel>("Proc_Get_All_User", paramList, commandType: System.Data.CommandType.StoredProcedure);
+                 TotalRecord = paramList.Get<int>("TotalRecord");
 
                 if (result.Count() > 0)
                 {
 
                     res.Data = result.ToList();
                     res.Status = true;
-                    res.Message = new List<string>() { "Successful!" };
+                    res.Message = new List<string>() { "Successful!", TotalRecord.ToString() };
                 }
                 else
                 {

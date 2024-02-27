@@ -3,14 +3,16 @@ using AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices;
 using AdminPanelModels;
 using AdminPanelModels.UserMangment;
 using LoginModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/{controller}/{action}")]
     [ApiController]
-	public class AddUserController : ControllerBase
+    [Authorize]
+    public class AddUserController : ControllerBase
     {
         private readonly IAddUserProvider _objIAddUserProvider;
         public AddUserController(IAddUserProvider objIAddUserProvider)

@@ -86,23 +86,23 @@ await builder.Build().RunAsync();
         ("FilesViewModelClient", client => client.BaseAddress = new Uri(baseurl));
 
     builder.Services.AddHttpClient<IAddUserSubscriber, AddUserSubscriber>
-      ("AddUserServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+      ("AddUserServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IAdduser_rightsSubscriber, Adduser_rightsSubscriber>
-     ("Adduser_rightServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+     ("Adduser_rightServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IUserMappingSubscriber, UserMappingSubscriber>
-        ("UserMappingServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+        ("UserMappingServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IApplicationSubscriber, ApplicationSubscriber>
-     ("ApplicationServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+     ("ApplicationServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IWorkspaceSubscriber, WorkspaceSubscriber>
-   ("WorkspaceServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+   ("WorkspaceServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IOutletSubscriber, OutletSubscriber>
-   ("OutletServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+   ("OutletServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<ILicenseSubscriber, LicenseSubscriber>
-   ("LicenseServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+   ("LicenseServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<ISMSTempateMasterSubscriber, SMSTempateMasterSubscriber>
-   ("SMSTempateMasterServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+   ("SMSTempateMasterServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IDashboardSubscriber, DashboardSubscriber>
-       ("DashboardServiceClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
+       ("DashboardServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
    
 }
 

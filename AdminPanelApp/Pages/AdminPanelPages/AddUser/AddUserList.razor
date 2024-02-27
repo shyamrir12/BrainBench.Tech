@@ -1,5 +1,7 @@
-﻿
+﻿@using System.Security.Claims;
 
+@inject IAddUserSubscriber _adduser
+ <div style="overflow-y: auto; max-height: 100px;">
 <MudTextField @bind-Value="searchText" Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearch" AdornmentAriaLabel="Search">
 
 </MudTextField>
@@ -39,8 +41,10 @@
 
 
 </Virtualize>
-
+</div>
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
 
     //1 for pass item to parent add event for selected edit item
     [Parameter]
@@ -50,25 +54,29 @@
     [Parameter]
     public AddUserModel adduserparam { get; set; }
 
-    private Virtualize<AddUserModel>? virtualizeComponent;
+    public Virtualize<AddUserModel>? virtualizeComponent;
+    List<AddUserModel> adduserlist = new List<AddUserModel>();
+    public string searchText;
+    int totalrows =3;
 
-    private string searchText;
-
-
-    private List<AddUserModel> adduserlist = new List<AddUserModel>
-    {
-        new  AddUserModel{name="Shyam",EmailId="Shyam@gmail.com"},
-        new  AddUserModel{name="umang",EmailId="umang@gmail.com"},
-        new  AddUserModel{name="Shyamn",EmailId="Shyam@gmailn.com"},
-        new  AddUserModel{name="umangl",EmailId="umang@gmaill.com"}
-
-    };
     protected override async Task OnInitializedAsync()
     {
-        for (int i = 1; i <= 20000; i++)
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
         {
-            AddUserModel dummyuser = new AddUserModel { name = "Test uaer" + i, EmailId = "Shyam@gmail.com" + i };
-            adduserlist.Add(dummyuser);
+            var identity = user.Identity as ClaimsIdentity;
+
+            // Find the NameIdentifier claim
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            // Get the value of the NameIdentifier claim
+            CommanRequest request = new CommanRequest();
+            request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            // var userlist =await _adduser.GetUserList(request);
+            //adduserlist = userlist.Data;
+            // totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count - 1]);
         }
     }
 
@@ -80,9 +88,25 @@
 
     private async ValueTask<ItemsProviderResult<AddUserModel>> loadOnlyVisibleItems(ItemsProviderRequest itemsProviderRequest)
     {
-        //itemsProviderRequest.StartIndex;
-        //itemsProviderRequest.Count;
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+        int PageIndex  = itemsProviderRequest.StartIndex;
+        int PageSize = itemsProviderRequest.Count;
+
+        CommanRequest request = new CommanRequest();
         List<AddUserModel> RengList = new List<AddUserModel>();
+        request.Filter = searchText;
+        request.PageSize = PageSize;
+        request.PageIndex = PageIndex;
+        request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+        var userlist =await _adduser.GetUserList(request);
+
+        RengList = userlist.Data;
+        totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count-1]);
+
 
         if (String.IsNullOrEmpty(searchText))
         {
@@ -95,7 +119,7 @@
         }
 
         //await Task.Delay(1000);
-        return new ItemsProviderResult<AddUserModel>(RengList, 20000);
+        return new ItemsProviderResult<AddUserModel>(RengList, totalrows);
     }
 
     //6. setting parent (added or edited item) parameter to list item
@@ -107,7 +131,7 @@
 
         if (adduserparam.designation == "Save")
         {
-            adduserlist.Add(adduserparam);
+           // adduserlist.Add(adduserparam);
         }
 
 
@@ -119,7 +143,7 @@
 
     private void deleteuserevent(AddUserModel? aum)
     {
-        adduserlist.Remove(aum);
+        //adduserlist.Remove(aum);
         // StateHasChanged();
     }
 

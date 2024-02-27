@@ -48,22 +48,12 @@ namespace AuthServer.Controllers
 
 			//create claims
 			var claimEmail = new Claim(ClaimTypes.Email, user.EmailId);
-			string UserSubUserid = "";
-			if (user.subroleid!=null&&user.subroleid>0)
-			{
-				UserSubUserid = user.subroleid.ToString();
-			}
-			else
-			{
-				UserSubUserid = user.UserID.ToString();
-			}
-			var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, UserSubUserid);
-
+			var claimUserid = new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString());
 			var claimRole = new Claim(ClaimTypes.Role, user.Role == null ? "" : user.Role);
 			var UserName = new Claim(ClaimTypes.Name, user.Name == null ? "" : user.Name);
 
 			//create claimsIdentity
-			var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimRole, UserName }, "serverAuth");
+			var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimUserid, claimRole, UserName }, "serverAuth");
 
 			// generate token that is valid for 7 days
 			var tokenDescriptor = new SecurityTokenDescriptor

@@ -35,14 +35,14 @@ builder.Services.AddCors(options =>
 //add auth
 var audienceConfig = builder.Configuration.GetSection("Audience");
 var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(audienceConfig["Secret"]));
-
+var authenticationProviderKey = "Bearer";
 builder.Services.AddAuthentication(options =>
 {
     //options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-               .AddJwtBearer(jwtBearerOptions =>
+               .AddJwtBearer(authenticationProviderKey,jwtBearerOptions =>
                {
                    jwtBearerOptions.RequireHttpsMetadata = true;
                    jwtBearerOptions.SaveToken = true;
