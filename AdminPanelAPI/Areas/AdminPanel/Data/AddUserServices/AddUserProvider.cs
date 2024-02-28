@@ -70,14 +70,14 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
             {
                 var paramList = new
                 {
-                    UserID  = model.userid,
-                    RoleId  = model.roleval,
-                    Name  = model.name,
+                    UserID  = model.UserID,
+                    RoleId  = model.RoleId,
+                    Name  = model.Name,
                     //Ipaddress  = model.Ipaddress,
-                    Designation  = model.designation,
+                    Designation  = model.Designation,
                     Email  = model.EmailId,
-                    Mobile  = model.mobile_no,
-                    Check =model.userid==null? 1: 2,
+                    Mobile  = model.Mobile_No,
+                    Check =model.UserID == null? 1: 2,
 
                 };
 
@@ -104,7 +104,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 res.Data = null;
                 res.Status = false;
                 res.Message.Add("Exception Occur! - " + ex.Message.ToString());
-                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddUpdateUser", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.userid.ToString() });
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "AddUpdateUser", Controller = "AddUserProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
                 return res;
             }
             return res;
@@ -118,11 +118,11 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
                 var paramList = new
                 {
                     UserID = model.UserID,
-                    Check = 1,
+                    //Check = 1,
 
                 };
 
-                var result = await Connection.QueryAsync<ListItems>("Proc_Get_All_DropDown", paramList, commandType: System.Data.CommandType.StoredProcedure);
+                var result = await Connection.QueryAsync<ListItems>("Proc_Get_Master_Role", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
                 if (result.Count() > 0)
                 {

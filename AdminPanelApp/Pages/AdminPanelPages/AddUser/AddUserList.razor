@@ -1,7 +1,7 @@
 ﻿@using System.Security.Claims;
 
 @inject IAddUserSubscriber _adduser
- <div style="overflow-y: auto; max-height: 100px;">
+ <div style="overflow-y: auto; max-height: 500px;">
 <MudTextField @bind-Value="searchText" Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearch" AdornmentAriaLabel="Search">
 
 </MudTextField>
@@ -15,7 +15,7 @@
                     <MudAvatar Color="Color.Secondary">I</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
-                    <MudText Typo="Typo.body1">@singleuser.name</MudText>
+                    <MudText Typo="Typo.body1">@singleuser.Name</MudText>
                     <MudText Typo="Typo.body2">@singleuser.EmailId</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
@@ -97,24 +97,30 @@
 
         CommanRequest request = new CommanRequest();
         List<AddUserModel> RengList = new List<AddUserModel>();
-        request.Filter = searchText;
-        request.PageSize = PageSize;
-        request.PageIndex = PageIndex;
-        request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
 
-        var userlist =await _adduser.GetUserList(request);
-
-        RengList = userlist.Data;
-        totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count-1]);
 
 
         if (String.IsNullOrEmpty(searchText))
         {
-            RengList = adduserlist.GetRange(itemsProviderRequest.StartIndex, itemsProviderRequest.Count);
+
+            request.PageSize = PageSize;
+            request.PageIndex = PageIndex;
+            request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            var userlist = await _adduser.GetUserList(request);
+
+            RengList = userlist.Data;
+            totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count - 1]);
         }
         else
         {
-            RengList = adduserlist.Where(item => item.name.Contains(searchText, StringComparison.OrdinalIgnoreCase)).ToList();
+            request.Filter = searchText;
+            request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            var userlist = await _adduser.GetUserList(request);
+
+            RengList = userlist.Data;
+            totalrows = userlist.Data.Count();
 
         }
 
@@ -129,7 +135,7 @@
 
         //call API to reload the data from data base
 
-        if (adduserparam.designation == "Save")
+        if (adduserparam.Designation == "Save")
         {
            // adduserlist.Add(adduserparam);
         }

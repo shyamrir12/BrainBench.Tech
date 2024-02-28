@@ -9,46 +9,47 @@ namespace AdminPanelModels.UserMangment
 {
     public class AddUserModel
     {
-        public IEnumerable<ListItems> Roletype { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        //public IEnumerable<ListItems> Roletype { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
 
 
         [Display(Name = "Role")]
-        public string? roleval { get; set; }
+        public string? RoleId { get; set; }
 
        // [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
-        public string? name { get; set; }
+        public string? Name { get; set; }
        
 
       //  [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
-        public string? designation { get; set; }
+        public string? Designation { get; set; }
      //  [Required]
         [EmailAddress(ErrorMessage = "Invalid Email Address !")]
         [Display(Name = "Email Id")]
         public string? EmailId { get; set; }
-        public int? userid { get; set; }
+        public int? UserID { get; set; }
 
       //  [Required]
         [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Mobile Number !")]
         [Display(Name = "Mobile No")]
-        public string? mobile_no { get; set; }
-        public string? createdate { get; set; }
-        public string? photo { get; set; }
+        public string? Mobile_No { get; set; }
+        public string? CreateDate { get; set; }
+        public string? Photo { get; set; }
 
-        public IEnumerable<ListItems> ApplicatonList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
-        [Display(Name = "Applicaton")]
+        //public IEnumerable<ListItems> ApplicatonList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        //[Display(Name = "Applicaton")]
         public string? Iid { get; set; }
+        public string? ApplicationName { get; set; }
+        //public IEnumerable<ListItems> WorkspaceList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        //[Display(Name = "Workspace")]
+        public string? Deptid { get; set; }
+        public string? WorkspaceName { get; set; }
 
-        public IEnumerable<ListItems> WorkspaceList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
-        [Display(Name = "Workspace")]
-        public string? Did { get; set; }
-
-
-        public IEnumerable<ListItems> OutletList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
-        [Display(Name = "Outlet")]
+        //public IEnumerable<ListItems> OutletList { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+        //[Display(Name = "Outlet")]
         public string? Cid { get; set; }
-      //  [Required]
+        public string? OutletName { get; set; }
+        //  [Required]
         [RegularExpression(@"^[0-9]*$", ErrorMessage = "Input number only!")]
         [Display(Name = "Captcha")]
          public string? captcha { get; set; }

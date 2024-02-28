@@ -1,4 +1,7 @@
-﻿@inject IToastService _toastService
+﻿
+@inject IToastService _toastService
+@inject IAddUserSubscriber _adduser
+@inject NavigationManager _navigationManager
 <EditForm Model="@adduser" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
     <MudGrid>
@@ -11,18 +14,18 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
-                        <MudSelect T="string" Label="User Role" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.roleval">
-                            @foreach (var item in adduser.Roletype)
+                        <MudSelect T="string" Label="User Role" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.RoleId">
+                            @foreach (var item in Roletype)
                             {
                                 <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
 
                             }
                         </MudSelect>
                         <MudTextField Label="Applicant Name" HelperText="Max. 8 characters"
-                        @bind-Value="adduser.name" For="@(() => adduser.name)" />
+                        @bind-Value="adduser.Name" For="@(() => adduser.Name)" />
 
                         <MudTextField Label="Mobile No" HelperText="Mobile No" Class="mt-3"
-                        @bind-Value="adduser.mobile_no" For="@(() => adduser.mobile_no)" />
+                        @bind-Value="adduser.Mobile_No" For="@(() => adduser.Mobile_No)" />
 
                         <MudTextField Label="Email Id" Class="mt-3"
                         @bind-Value="adduser.EmailId" For="@(() => adduser.EmailId)" />
@@ -58,6 +61,8 @@
 
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
     private string CaptchaText;
     private int CaptchaSolution;
     //3.declare parameter for the parent
@@ -65,28 +70,26 @@
     public AddUserModel adduserparam { get; set; }
     public AddUserModel adduser = new AddUserModel();
     public string buttonText = "Save";
-
-
+    public int userid { get; set; }
+    public IEnumerable<ListItems> Roletype { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
 
     //3. setting parent parameter to local variable
     protected override void OnParametersSet()
     {
+       if( adduserparam.UserID!=null)
+       {
         base.OnParametersSet();
         adduser = adduserparam;
-        if (String.IsNullOrEmpty(adduserparam.name))
+            if (adduserparam.UserID > 0)
         {
-
-            buttonText = "Save";
-            adduser.designation = "Save";
+            buttonText = "Update";
         }
         else
         {
-
-            buttonText = "Update";
-            adduser.designation = "Update";
+            buttonText = "Save";
         }
         adduserparam = null;
-
+        }
     }
 
     //4 for pass item to parent add event for updated or saved item
@@ -96,7 +99,7 @@
 
     private void OnValidSubmit()
     {
-        if (!String.IsNullOrEmpty(adduser.name))
+        if (adduser.UserID>0)
         {
             if (buttonText == "Save")
             {
@@ -121,9 +124,27 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        var captcharesponce = MyUtility.GenerateCaptcha();
-        CaptchaSolution = captcharesponce.CaptchaSolution;
-        CaptchaText = captcharesponce.CaptchaText;
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (identity.IsAuthenticated)
+        {
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+            userid = Convert.ToInt32(nameIdentifierClaim.Value);
+            var rolelist = await _adduser.GetRole(new CommanRequest { UserID = userid });
+            Roletype = rolelist.Data;
+         
+            var captcharesponce = MyUtility.GenerateCaptcha();
+            CaptchaSolution = captcharesponce.CaptchaSolution;
+            CaptchaText = captcharesponce.CaptchaText;
+
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+
+       
     }
 
 }
