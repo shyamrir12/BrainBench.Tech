@@ -1,22 +1,24 @@
 ﻿@using System.Security.Claims;
-
+@inject NavigationManager _navigationManager
 @inject IAddUserSubscriber _adduser
+@inject IToastService _toastService
  <div style="overflow-y: auto; max-height: 500px;">
 <MudTextField @bind-Value="searchText" Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearch" AdornmentAriaLabel="Search">
 
 </MudTextField>
 
-<Virtualize ItemsProvider="loadOnlyVisibleItems" Context="singleuser" @ref="virtualizeComponent">
+    <Virtualize ItemsProvider="loadOnlyVisibleItems" Context="singleuser" @ref="virtualizeComponent" OverscanCount="4">
     <ItemContent>
         <MudCard style="margin-bottom: 5px;">
 
             <MudCardHeader>
                 <CardHeaderAvatar>
-                    <MudAvatar Color="Color.Secondary">I</MudAvatar>
+                        <MudAvatar Color="Color.Secondary">@singleuser.Name[0]</MudAvatar>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.body1">@singleuser.Name</MudText>
                     <MudText Typo="Typo.body2">@singleuser.EmailId</MudText>
+                        <MudText Typo="Typo.caption">@singleuser.CreateDate ,@singleuser.Designation</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
                     <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopLeft">
@@ -43,8 +45,13 @@
 </Virtualize>
 </div>
 @code {
+    //USer Auth
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
+    //Loader
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
 
     //1 for pass item to parent add event for selected edit item
     [Parameter]
@@ -55,10 +62,11 @@
     public AddUserModel adduserparam { get; set; }
 
     public Virtualize<AddUserModel>? virtualizeComponent;
-    List<AddUserModel> adduserlist = new List<AddUserModel>();
+    List<AddUserModel> RengList = new List<AddUserModel>();
+    //List<AddUserModel> adduserlist = new List<AddUserModel>();
     public string searchText;
-    int totalrows =3;
-
+    int totalrows =0;
+    int userid = 0;
     protected override async Task OnInitializedAsync()
     {
         var authState = await authenticationState;
@@ -71,8 +79,8 @@
             var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
 
             // Get the value of the NameIdentifier claim
-            CommanRequest request = new CommanRequest();
-            request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            userid = Convert.ToInt32(nameIdentifierClaim?.Value);
 
             // var userlist =await _adduser.GetUserList(request);
             //adduserlist = userlist.Data;
@@ -83,22 +91,30 @@
     private void HandleSearch()
     {
         virtualizeComponent?.RefreshDataAsync();
+
         StateHasChanged();
+
     }
 
     private async ValueTask<ItemsProviderResult<AddUserModel>> loadOnlyVisibleItems(ItemsProviderRequest itemsProviderRequest)
     {
         var authState = await authenticationState;
         var identity = authState.User.Identity as ClaimsIdentity;
+        if (!identity.IsAuthenticated)
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+
         var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
 
         int PageIndex  = itemsProviderRequest.StartIndex;
         int PageSize = itemsProviderRequest.Count;
 
         CommanRequest request = new CommanRequest();
-        List<AddUserModel> RengList = new List<AddUserModel>();
 
 
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
 
         if (String.IsNullOrEmpty(searchText))
         {
@@ -109,8 +125,12 @@
 
             var userlist = await _adduser.GetUserList(request);
 
+
             RengList = userlist.Data;
-            totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count - 1]);
+            if(RengList!=null)
+                totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count - 1]); 
+
+
         }
         else
         {
@@ -120,10 +140,14 @@
             var userlist = await _adduser.GetUserList(request);
 
             RengList = userlist.Data;
-            totalrows = userlist.Data.Count();
+            if (RengList != null)
+                totalrows = userlist.Data.Count();
+
 
         }
 
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
         //await Task.Delay(1000);
         return new ItemsProviderResult<AddUserModel>(RengList, totalrows);
     }
@@ -135,22 +159,52 @@
 
         //call API to reload the data from data base
 
-        if (adduserparam.Designation == "Save")
+        if (adduserparam.UserID >0)
         {
-           // adduserlist.Add(adduserparam);
+            AddUserModel finduser = RengList.FirstOrDefault(x => x.UserID == adduserparam.UserID);
+            if (finduser == null )
+            {
+
+               // RengList.Add(adduserparam);
+               // totalrows = RengList.Count;
+                StateHasChanged();
+               
+                adduserparam = null;
+
+
+            }
+            // else
+            // {
+            //     int index = RengList.IndexOf(finduser);
+            //     if (index != -1)
+            //     {
+            //         RengList[index] = finduser;
+            //     }
+            // }
+
         }
 
 
-        //StateHasChanged();
+
     }
 
 
 
 
-    private void deleteuserevent(AddUserModel? aum)
+    private async Task deleteuserevent(AddUserModel? aum)
     {
-        //adduserlist.Remove(aum);
-        // StateHasChanged();
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
+
+        var responce=  await _adduser.ActivationUser(new CommanRequest { UserID = aum.UserID, Active = false, SubRoleId = userid });
+        if (responce.Status==true)
+        {
+            _toastService.ShowSuccess(responce.Data.Msg);
+             StateHasChanged();
+        }
+       
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
     }
 
     private void edituserevent(AddUserModel? aum)

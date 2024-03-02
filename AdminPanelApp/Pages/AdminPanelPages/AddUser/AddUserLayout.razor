@@ -18,7 +18,7 @@
 </style>
 <MudContainer Class="container">
 
-    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="btn" OnClick="@(e => adduserevent(new AddUserModel{Name="",EmailId="",Designation=""}))" />
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="btn" OnClick="@(e => adduserevent(new AddUserModel{UserID=null}))" />
 
 
 
@@ -134,7 +134,7 @@
     {
 
         SlectedUser(aum);
-        
+
     }
     //2 selected item accessed by parent using define the event created in child
     void SlectedUser(AddUserModel _aum)
@@ -162,11 +162,11 @@
         aum = _aum;
         _aum = null;
     }
-    void UpdatedUser(AddUserModel _aum)
+    void UpdatedUser(AddUserModel _aumm)
     {
         //5.now added or updated item is pass to the add user list 
-        uum = _aum;
-        _aum = null;
+        uum = _aumm;
+        _aumm = null;
     }
 
 }

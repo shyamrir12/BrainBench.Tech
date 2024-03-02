@@ -63,21 +63,23 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
 
         public async Task<Result<MessageEF>> AddUpdateUser(AddUserModel model)
         {
-           // model.PD_Reenterpwd = MyUtility.ComputeSha256Hash(model.PD_Reenterpwd);
+          //MyUtility.ComputeSha256Hash(model.PD_Reenterpwd);
 
             Result<MessageEF> res = new Result<MessageEF>();
             try
             {
                 var paramList = new
                 {
-                    UserID  = model.UserID,
-                    RoleId  = model.RoleId,
-                    Name  = model.Name,
+                    UserID = model.UserID,
+                    SubRoleId = model.ParentID,
+                    RoleId = model.RoleId,
+                    Name = model.Name,
                     //Ipaddress  = model.Ipaddress,
-                    Designation  = model.Designation,
-                    Email  = model.EmailId,
-                    Mobile  = model.Mobile_No,
-                    Check =model.UserID == null? 1: 2,
+                    Designation = model.Designation,
+                    Email = model.EmailId,
+                    Mobile = model.Mobile_No,
+                    password = MyUtility.ComputeSha256Hash("Test@123"),
+                    Check =model.UserID == null? 4: 2,
 
                 };
 
@@ -162,7 +164,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.AddUserServices
 
                 };
 
-                var result = await Connection.QueryAsync<AddUserModel>("Proc_Get_All_User", paramList, commandType: System.Data.CommandType.StoredProcedure);
+                var result = await Connection.QueryAsync<AddUserModel>("Proc_Get_User_By_Id", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
                 if (result.Count() > 0)
                 {
