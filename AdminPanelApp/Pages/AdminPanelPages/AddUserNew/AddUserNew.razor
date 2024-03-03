@@ -33,9 +33,9 @@
                         <MudTextField Label="Designation " Class="mt-3"
                         @bind-Value="adduser.Designation" For="@(() => adduser.Designation)" />
 
-                      @*   <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
-                            <MudTextField Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="adduser.captcha" For="@(() => adduser.captcha)" OnlyValidateIfDirty=true />
-                            <MudChip Icon="@Icons.Material.Filled.QuestionAnswer" Label="true" Color="Color.Primary">@CaptchaText</MudChip>
+                        @*   <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
+                        <MudTextField Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="adduser.captcha" For="@(() => adduser.captcha)" OnlyValidateIfDirty=true />
+                        <MudChip Icon="@Icons.Material.Filled.QuestionAnswer" Label="true" Color="Color.Primary">@CaptchaText</MudChip>
                         </MudPaper> *@
 
                     </MudFocusTrap>
@@ -60,8 +60,6 @@
         </MudItem>
     </MudGrid>
 </EditForm>
-
-
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> authenticationState { get; set; }
@@ -69,23 +67,30 @@
     public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
     NotifyMainLayout nml = new NotifyMainLayout();
 
-
-    private string CaptchaText;
-    private int CaptchaSolution;
-    //3.declare parameter for the parent
-    [Parameter]
-    public AddUserModel adduserparam { get; set; }
     public AddUserModel adduser = new AddUserModel();
     public string buttonText = "Save";
     public int parentid { get; set; }
     public IEnumerable<ListItems> Roletype { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
 
-    //3. setting parent parameter to local variable
-    protected override void OnParametersSet()
+    [Parameter]
+    public AddUserModel adduserparam { get; set; }
+
+    // [Parameter]
+    // public EventCallback<int> OnUserAdd { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        if( adduserparam.UserID!=null)
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (identity.IsAuthenticated)
         {
-            base.OnParametersSet();
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+            parentid = Convert.ToInt32(nameIdentifierClaim.Value);
+            adduser.ParentID = parentid;
+            var rolelist = await _adduser.GetRole(new CommanRequest { UserID = parentid });
+            Roletype = rolelist.Data;
+
+
             adduser = adduserparam;
             if (adduserparam.UserID > 0)
             {
@@ -96,19 +101,13 @@
                 buttonText = "Save";
             }
             adduserparam = null;
+
         }
         else
         {
-            adduser = new AddUserModel();
-            buttonText = "Save";
+            _navigationManager.NavigateTo("/", true);
         }
     }
-
-    //4 for pass item to parent add event for updated or saved item
-    [Parameter]
-    public EventCallback<int> OnUserUpdation { get; set; }
-
-
     private async void OnValidSubmit(EditContext context)
     {
 
@@ -118,60 +117,49 @@
             await _notifyMainLayout.InvokeAsync(nml);
             adduser.ParentID = parentid;
 
-            var resresponce =await _adduser.AddUpdateUser(adduser);
-            if(resresponce.Status==true)
+            var resresponce = await _adduser.AddUpdateUser(adduser);
+            if (resresponce.Status == true)
             {
-                _toastService.ShowSuccess(resresponce.Data.Msg);
-                //var singleuser = await _adduser.GetUserByID(new CommanRequest { UserID =Convert.ToInt32( resresponce.Data .Data)});
-                //4 by invoking this method sending back updated or added user
-                if( buttonText == "Save")
-                {
-                    await OnUserUpdation.InvokeAsync(Convert.ToInt32(resresponce.Data.Data));
-                    // StateHasChanged();
-                }
-              
-              
+                _toastService.ShowSuccess(resresponce.Data.Msg);  
+                // if (buttonText == "Save")
+                // {
+                    
+                //     await OnUserAdd.InvokeAsync(Convert.ToInt32(resresponce.Data.Data));
+                // }
 
             }
-            
-           else
+
+            else
                 _toastService.ShowSuccess(resresponce.Message.FirstOrDefault());
 
             nml.SpinnerVisible = false;
             await _notifyMainLayout.InvokeAsync(nml);
-          
-        }
-        else
-              _toastService.ShowError("!Please fill the form correctly");
-
-
-       
-
-
-    }
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await authenticationState;
-        var identity = authState.User.Identity as ClaimsIdentity;
-        if (identity.IsAuthenticated)
-        {
-            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
-            parentid = Convert.ToInt32(nameIdentifierClaim.Value);
-            var rolelist = await _adduser.GetRole(new CommanRequest { UserID = parentid });
-            Roletype = rolelist.Data;
-         
-            var captcharesponce = MyUtility.GenerateCaptcha();
-            CaptchaSolution = captcharesponce.CaptchaSolution;
-            CaptchaText = captcharesponce.CaptchaText;
-
 
         }
         else
-        {
-            _navigationManager.NavigateTo("/", true);
-        }
-
-       
+            _toastService.ShowError("!Please fill the form correctly");
     }
+    // protected override void OnParametersSet()
+    // {
+    //     if (adduserparam.UserID != null)
+    //     {
+    //         base.OnParametersSet();
+    //         adduser = adduserparam;
+    //         if (adduserparam.UserID > 0)
+    //         {
+    //             buttonText = "Update";
+    //         }
+    //         else
+    //         {
+    //             buttonText = "Save";
+    //         }
+    //         adduserparam = null;
+    //     }
+    //     else
+    //     {
+    //         adduser = new AddUserModel();
+    //         buttonText = "Save";
+    //     }
+    // }
 
 }

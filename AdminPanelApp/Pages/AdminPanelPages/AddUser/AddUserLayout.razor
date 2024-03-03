@@ -1,4 +1,4 @@
-﻿@page "/adduserlayout"
+﻿@page "/adduserlayoutold"
 @implements IBrowserViewportObserver
 @implements IAsyncDisposable
 @using MudBlazor.Services
@@ -26,8 +26,8 @@
 
 
         <MudItem xs="@xsListVal" Class="@displayList">
-           
-                <AddUserList adduserparam=@uum OnUserSelection="SlectedUser"></AddUserList>
+
+            <AddUserList id=@id OnUserSelection="SlectedUser"></AddUserList>
             
         </MudItem>
 
@@ -59,7 +59,7 @@
     public string displayBack = "d-none";
 
     AddUserModel aum = new AddUserModel();
-    AddUserModel uum = new AddUserModel();
+    int id =0;
 
     [Inject]
     private IBrowserViewportService BrowserViewportService { get; set; }
@@ -162,11 +162,11 @@
         aum = _aum;
         _aum = null;
     }
-    void UpdatedUser(AddUserModel _aumm)
+    void UpdatedUser(int _id)
     {
         //5.now added or updated item is pass to the add user list 
-        uum = _aumm;
-        _aumm = null;
+        id = _id;
+        _id = 0;
     }
 
 }

@@ -1,0 +1,225 @@
+﻿@page "/adduserlayout"
+@using System.Security.Claims;
+@inject NavigationManager _navigationManager
+@inject IAddUserSubscriber _adduser
+@inject IToastService _toastService
+
+
+    <MudTabs Elevation="3" Rounded="true" Class="mt-3" @ref="tabs">
+       
+        <MudTabPanel Text='Add User'>
+            <AddUserNew adduserparam="@aum"></AddUserNew>
+        </MudTabPanel>
+    <MudTabPanel Text='User List'>
+        <div style="overflow-y: auto; max-height: 500px;">
+
+            <MudTextField @bind-Value="searchText" Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearch" AdornmentAriaLabel="Search">
+
+            </MudTextField>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">CreateDate</th>
+                        <th scope="col">Designation</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Virtualize ItemsProvider="loadOnlyVisibleItems" Context="singleuser" @ref="virtualizeComponent">
+                        <ItemContent>
+                            <tr>
+                                <td>
+                                    @singleuser.Name
+                                </td>
+                                <td>
+                                    @singleuser.EmailId
+                                </td>
+                                <td>
+                                    @singleuser.CreateDate
+                                </td>
+                                <td>
+                                    @singleuser.Designation
+                                </td>
+                                <td>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(e => edituserevent(singleuser))"></MudIconButton>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(e => deleteuserevent(singleuser))"></MudIconButton>
+                                </td>
+                            </tr>
+                        </ItemContent>
+                        <Placeholder>
+                            <MudCard style="margin-bottom: 5px;">
+
+                                <MudCardHeader>
+                                    Loading...
+                                </MudCardHeader>
+                            </MudCard>
+                        </Placeholder>
+                    </Virtualize>
+                </tbody>
+            </table>
+
+
+        </div>
+    </MudTabPanel>
+        
+    </MudTabs>
+
+  
+
+
+@code {
+    //USer Auth
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    //Loader
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+
+    public Virtualize<AddUserModel>? virtualizeComponent;
+    List<AddUserModel> RengList = new List<AddUserModel>();
+
+    public string searchText;
+    int totalrows = 0;
+    int userid = 0;
+
+    AddUserModel aum = new AddUserModel();
+
+    MudTabs tabs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var identity = user.Identity as ClaimsIdentity;
+
+            // Find the NameIdentifier claim
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            // Get the value of the NameIdentifier claim
+
+            userid = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+    }
+    private async  void HandleSearch()
+    {
+        await virtualizeComponent?.RefreshDataAsync();
+
+        StateHasChanged();
+
+    }
+
+    private async ValueTask<ItemsProviderResult<AddUserModel>> loadOnlyVisibleItems(ItemsProviderRequest itemsProviderRequest)
+    {
+        RengList= await LoadList(itemsProviderRequest.Count, itemsProviderRequest.StartIndex);
+
+        return new ItemsProviderResult<AddUserModel>(RengList, totalrows);
+    }
+
+    public async Task<List<AddUserModel>> LoadList(int PageSize, int PageIndex)
+    {
+        List<AddUserModel> userlist = new List<AddUserModel>();
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (!identity.IsAuthenticated)
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+
+        var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
+
+        if (String.IsNullOrEmpty(searchText))
+        {
+
+            var userlistresp = await _adduser.GetUserList(new CommanRequest { PageSize = PageSize, PageIndex = PageIndex, UserID = Convert.ToInt32(nameIdentifierClaim?.Value) });
+
+
+            userlist = userlistresp.Data;
+            if (userlist != null)
+                totalrows = Convert.ToInt32(userlistresp.Message[userlistresp.Message.Count - 1]);
+
+
+        }
+        else
+        {
+
+
+            var userlistresp = await _adduser.GetUserList(new CommanRequest { Filter = searchText, UserID = Convert.ToInt32(nameIdentifierClaim?.Value) });
+
+            userlist = userlistresp.Data;
+            if (RengList != null)
+                totalrows = userlistresp.Data.Count();
+
+
+        }
+
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
+
+
+
+
+        return userlist;
+    }
+
+    private async Task deleteuserevent(AddUserModel? _aum)
+    {
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
+
+        var responce = await _adduser.ActivationUser(new CommanRequest { UserID = _aum.UserID, Active = false, SubRoleId = userid });
+        if (responce.Status == true)
+        {
+            _toastService.ShowSuccess(responce.Data.Msg);
+            StateHasChanged();
+        }
+
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
+    }
+
+    private void edituserevent(AddUserModel? _aum)
+    {
+        aum = _aum;
+        tabs.ActivatePanel(0);
+
+    }
+    private void adduserevent(AddUserModel? _aum)
+    {
+        aum = _aum;
+        tabs.ActivatePanel(0);
+    }
+    // async void AddedUser(int id)
+    // {
+
+    //     //not requer if tab is used
+    //      // await  virtualizeComponent?.RefreshDataAsync();
+    //      // StateHasChanged();
+
+    //      //not working
+    //     // nml.SpinnerVisible = true;
+    //     // await _notifyMainLayout.InvokeAsync(nml);
+    //     // var singleuser = await _adduser.GetUserByID(new CommanRequest { UserID = id });
+    //     // if (singleuser.Status == true )
+    //     // {
+    //     //     RengList.Add(singleuser.Data);
+           
+    //     //     StateHasChanged();
+    //     // }
+    //     // nml.SpinnerVisible = false;
+    //     // await _notifyMainLayout.InvokeAsync(nml);
+       
+    // }
+}

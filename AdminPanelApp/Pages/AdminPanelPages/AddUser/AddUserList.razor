@@ -59,7 +59,7 @@
 
     //6.declare parameter for the parent
     [Parameter]
-    public AddUserModel adduserparam { get; set; }
+    public int id { get; set; }
 
     public Virtualize<AddUserModel>? virtualizeComponent;
     List<AddUserModel> RengList = new List<AddUserModel>();
@@ -88,9 +88,9 @@
         }
     }
 
-    private void HandleSearch()
+    private async void HandleSearch()
     {
-        virtualizeComponent?.RefreshDataAsync();
+        await virtualizeComponent?.RefreshDataAsync();
 
         StateHasChanged();
 
@@ -153,35 +153,31 @@
     }
 
     //6. setting parent (added or edited item) parameter to list item
-    protected override void OnParametersSet()
+    protected async override void OnParametersSet()
     {
         base.OnParametersSet();
 
         //call API to reload the data from data base
 
-        if (adduserparam.UserID >0)
+        if (id > 0)
         {
-            AddUserModel finduser = RengList.FirstOrDefault(x => x.UserID == adduserparam.UserID);
-            if (finduser == null )
-            {
+            // await virtualizeComponent?.RefreshDataAsync();
 
-               // RengList.Add(adduserparam);
-               // totalrows = RengList.Count;
-                StateHasChanged();
-               
-                adduserparam = null;
+            // StateHasChanged();
 
 
-            }
-            // else
+            // nml.SpinnerVisible = true;
+            // await _notifyMainLayout.InvokeAsync(nml);
+            // var singleuser = await _adduser.GetUserByID(new CommanRequest { UserID = id });
+            // if (singleuser.Status == true )
             // {
-            //     int index = RengList.IndexOf(finduser);
-            //     if (index != -1)
-            //     {
-            //         RengList[index] = finduser;
-            //     }
-            // }
+            //     RengList.Add(singleuser.Data);
 
+            //     StateHasChanged();
+            // }
+            // nml.SpinnerVisible = false;
+            // await _notifyMainLayout.InvokeAsync(nml);
+            // id = 0;
         }
 
 
