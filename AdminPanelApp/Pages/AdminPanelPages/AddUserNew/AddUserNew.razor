@@ -7,11 +7,11 @@
     <MudGrid>
         <MudItem xs="12" sm="12">
             <MudCard>
-                <MudCardHeader>
+             @*    <MudCardHeader>
                     <CardHeaderContent>
                         <MudText Typo="Typo.h5" Align="Align.Start"><b>Add User</b></MudText>
                     </CardHeaderContent>
-                </MudCardHeader>
+                </MudCardHeader> *@
                 <MudCardContent>
                     <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
                         <MudSelect T="string" Label="User Role" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.RoleId">
@@ -120,12 +120,15 @@
             var resresponce = await _adduser.AddUpdateUser(adduser);
             if (resresponce.Status == true)
             {
-                _toastService.ShowSuccess(resresponce.Data.Msg);  
+                _toastService.ShowSuccess(resresponce.Data.Msg);
+                adduser = new AddUserModel();
+                adduser.ParentID = parentid;
                 // if (buttonText == "Save")
                 // {
-                    
+
                 //     await OnUserAdd.InvokeAsync(Convert.ToInt32(resresponce.Data.Data));
                 // }
+               
 
             }
 

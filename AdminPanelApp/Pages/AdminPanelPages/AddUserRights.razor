@@ -1,6 +1,212 @@
 ﻿@page "/adduserrights"
-<h3>AddUserRights</h3>
+@inject NavigationManager _navigationManager
+@inject IToastService _toastService
+@inject IAdduser_rightsSubscriber _adduser_rights
+<MudPaper >
+<MudAutocomplete T="@ListItems" Label="Search User" @bind-Value="selecteduser" SearchFunc="@LodefilterList" ToStringFunc="@(e=> e==null?null : $"{e.Text}")" />
 
+<MudPaper  Height="400px" Class="overflow-y-auto" Elevation="0">
+    <MudTreeView Items="@TreeItems" Dense=true >
+        <ItemTemplate>
+            <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems">
+                <Content>
+                    <MudTreeViewItemToggleButton @bind-Expanded="@context.IsExpanded" Visible="@context.HasChild" />
+                    <MudCheckBox T="bool?" Checked="@(context.HasPartialChildSelection() ? null : context.IsChecked)" CheckedChanged="@((e) => CheckedChanged(context))"></MudCheckBox>
+                    <MudText>@context.Text</MudText>
+                </Content>
+            </MudTreeViewItem>
+        </ItemTemplate>
+    </MudTreeView>
+</MudPaper>
+    <div style="width: 100%">
+
+    <MudText Typo="@Typo.subtitle1">Sum of selected items: @GetSelected(),  @slecteduserid</MudText>
+    </div>
+</MudPaper>
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
 
-}
+    int loginid = 0;
+    private HashSet<TreeItemData> TreeItems { get; set; } = new HashSet<TreeItemData>();
+    private ListItems _selectedItem { get; set; }
+    string slecteduserid = "0";
+    public List<ListItems> UserList { get; set; }
+
+
+    protected void CheckedChanged(TreeItemData item)
+    {
+        item.IsChecked = !item.IsChecked;
+        // checked status on any child items should mirrror this parent item
+        if (item.HasChild)
+        {
+            foreach (TreeItemData child in item.TreeItems)
+            {
+                child.IsChecked = item.IsChecked;
+            }
+        }
+        // if there's a parent and all children are checked/unchecked, parent should match
+        if (item.Parent != null)
+        {
+            item.Parent.IsChecked = !item.Parent.TreeItems.Any(i => !i.IsChecked);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (identity.IsAuthenticated)
+        {
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+            loginid = Convert.ToInt32(nameIdentifierClaim.Value);
+
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+
+            var userlist = await _adduser_rights.GetUserList(new CommanRequest { UserID = 2 });
+            UserList = userlist.Data;
+            lodemenuformate(loginid);
+
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+    }
+    public async void lodemenuformate(int id)
+    {
+        var menuformet =await _adduser_rights.GetMenuListFormate(new CommanRequest { UserID = id });
+
+        if (menuformet.Data.Any())
+        {
+            foreach (var item in menuformet.Data)
+            {
+                if (item.ChildMenuItems.Any())
+                {
+                    //item.MenuName;
+                    //GetIconValue(item.GifIcon);
+                    TreeItemData treeitemwithchild = new TreeItemData(item.MenuName, item.MenuItemId);
+                    foreach (var childitem in item.ChildMenuItems)
+                    {
+                        if (childitem.ChildMenuItems.Any())
+                        {
+                            //childitem.MenuItemName
+
+                            foreach (var childchilditem in childitem.ChildMenuItems)
+                            {
+                                //childchilditem.MenuItemPath
+                                //childchilditem.MenuName
+                            }
+
+                        }
+                        else
+                        {
+                            
+                            treeitemwithchild.AddChild(childitem.MenuName, childitem.MenuItemId);
+                            TreeItems.Add(treeitemwithchild);
+                            //childitem.MenuItemPath
+                            //childitem.MenuName
+                        }
+                    }
+
+
+                }
+                else
+                {
+                  
+                    TreeItems.Add(new TreeItemData(item.MenuName, item.MenuItemId));
+                    //item.MenuItemPath
+                  // GetIconValue( item.GifIcon)
+                  // item.MenuName
+                }
+
+            }
+        }
+
+
+        // TreeItemData itemFruits = new TreeItemData("Fruits",1);
+        // TreeItemData itemVeg = new TreeItemData("Vegetables",2);
+        // TreeItemData itemGrains = new TreeItemData("Grains",3);
+        // itemFruits.IsExpanded = true;
+        // itemFruits.AddChild("Apple",1);
+        // itemFruits.AddChild("Banana",2);
+       
+
+        // itemGrains.AddChild("Barley",1);
+        // itemGrains.AddChild("Oats",2);
+        
+        // itemVeg.AddChild("Carrot",1);
+        // itemVeg.AddChild("Leek",2);
+       
+        // TreeItems.Add(itemFruits);
+        // TreeItems.Add(itemGrains);
+        // TreeItems.Add(itemVeg);
+    }
+
+    public string GetSelected()
+    {
+        string seleteditem="";
+        if (TreeItems != null && TreeItems.Count > 0)
+        {
+            foreach (var item in TreeItems)
+            {
+                if(item.IsChecked)
+                    seleteditem = seleteditem + item.Text;
+                if(item.HasChild)
+                {
+                    foreach(var childitem in item.TreeItems)
+                    {
+                        if(childitem.IsChecked)
+                        {
+                            seleteditem = seleteditem + childitem.Text;
+                        }
+
+                    }
+
+                }
+
+
+            }
+        }
+
+
+        return seleteditem;
+    }
+
+    public  ListItems selecteduser
+    {
+        get
+        {
+            return _selectedItem;
+        }
+        set
+        {
+            _selectedItem = value;
+            fillMenuByUser(value);
+
+
+        }
+
+
+    }
+    private async Task fillMenuByUser(ListItems val)
+    {
+        slecteduserid = val.Value;
+        //fil the menu
+    }
+    private async Task<IEnumerable<ListItems>> LodefilterList(string value)
+    {
+       if (string.IsNullOrEmpty(value))
+            return UserList;
+        return UserList.Where(x => x.Text.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+       
+    }
+   
+   }

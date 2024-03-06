@@ -26,6 +26,13 @@ namespace AdminPanelApp.Data.AdminPanelServices.Adduser_rightsServices
             return await httpMessageReponse.Content.ReadFromJsonAsync<Result<List<MenuItem>>>();
         }
 
+        public async Task<Result<List<ListItems>>> GetUserList(CommanRequest model)
+        {
+            var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommanRequest>($"/Adduser_rights/GetUserList", model);
+
+            return await httpMessageReponse.Content.ReadFromJsonAsync<Result<List<ListItems>>>();
+        }
+
         public async Task<Result<MessageEF>> UpdateMenuByID(CommanRequest model)
         {
             var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommanRequest>($"/Adduser_rights/UpdateMenuByID", model);

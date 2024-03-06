@@ -161,7 +161,7 @@
       "UpstreamPathTemplate": "/AddUser/AddUpdateUser", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -177,7 +177,7 @@
       "UpstreamPathTemplate": "/AddUser/ActivationUser", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -210,7 +210,7 @@
       "UpstreamPathTemplate": "/AddUser/GetRole", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -227,7 +227,7 @@
       "UpstreamPathTemplate": "/AddUser/GetUserByID", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -244,7 +244,7 @@
       "UpstreamPathTemplate": "/AddUser/UpdatePassword", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -253,6 +253,22 @@
     /********Add user  End**************/
 
     /********User rights Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/Adduser_rights/GetUserList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Adduser_rights/GetUserList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
     {
       "DownstreamPathTemplate": "/api/Adduser_rights/GetMenuListFormate",
       "DownstreamScheme": "http",
@@ -265,7 +281,7 @@
       "UpstreamPathTemplate": "/Adduser_rights/GetMenuListFormate", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -281,7 +297,7 @@
       "UpstreamPathTemplate": "/Adduser_rights/GetMenuListByRole", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -297,7 +313,7 @@
       "UpstreamPathTemplate": "/Adduser_rights/UpdateMenuByID", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -317,7 +333,7 @@
       "UpstreamPathTemplate": "/UserMapping/GetApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -333,7 +349,7 @@
       "UpstreamPathTemplate": "/UserMapping/GetWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -349,7 +365,7 @@
       "UpstreamPathTemplate": "/UserMapping/GetOutlet", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -366,7 +382,7 @@
       "UpstreamPathTemplate": "/UserMapping/AssignApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -383,7 +399,7 @@
       "UpstreamPathTemplate": "/UserMapping/AssignWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -400,7 +416,7 @@
       "UpstreamPathTemplate": "/UserMapping/AssignOutlet", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -420,7 +436,7 @@
       "UpstreamPathTemplate": "/Application/AddApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -436,7 +452,7 @@
       "UpstreamPathTemplate": "/Application/UpdateApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -452,7 +468,7 @@
       "UpstreamPathTemplate": "/Application/ModifyStatusApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -469,7 +485,7 @@
       "UpstreamPathTemplate": "/Application/GetApplicationBYID", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -486,7 +502,7 @@
       "UpstreamPathTemplate": "/Application/GetApplicationList", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -505,7 +521,7 @@
       "UpstreamPathTemplate": "/Workspace/GetApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -521,7 +537,7 @@
       "UpstreamPathTemplate": "/Workspace/AddWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -537,7 +553,7 @@
       "UpstreamPathTemplate": "/Workspace/UpdateWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -554,7 +570,7 @@
       "UpstreamPathTemplate": "/Workspace/ModifyStatusWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -571,7 +587,7 @@
       "UpstreamPathTemplate": "/Workspace/AssignWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -588,7 +604,7 @@
       "UpstreamPathTemplate": "/Workspace/GetWorkspaceList", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -609,7 +625,7 @@
       "UpstreamPathTemplate": "/Outlet/GetApplication", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -625,7 +641,7 @@
       "UpstreamPathTemplate": "/Outlet/GetWorkspace", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -641,7 +657,7 @@
       "UpstreamPathTemplate": "/Outlet/AddOutlet", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -658,7 +674,7 @@
       "UpstreamPathTemplate": "/Outlet/UpdateOutlet", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -675,7 +691,7 @@
       "UpstreamPathTemplate": "/Outlet/ModifyStatusOutlet", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -692,7 +708,7 @@
       "UpstreamPathTemplate": "/Outlet/GetOutletBYID", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -709,7 +725,7 @@
       "UpstreamPathTemplate": "/Outlet/GetOutletList", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -729,7 +745,7 @@
       "UpstreamPathTemplate": "/License/GetLicenseTypeList", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -745,7 +761,7 @@
       "UpstreamPathTemplate": "/License/GetLicenseList", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -761,7 +777,7 @@
       "UpstreamPathTemplate": "/License/GetLicenseTranList", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -778,7 +794,7 @@
       "UpstreamPathTemplate": "/License/GetLicenseBYID", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -795,7 +811,7 @@
       "UpstreamPathTemplate": "/License/AddUpdateLicense", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -812,7 +828,7 @@
       "UpstreamPathTemplate": "/License/ModifyStatusLicense", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -829,7 +845,7 @@
       "UpstreamPathTemplate": "/License/SubscribeLicense", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -846,7 +862,7 @@
       "UpstreamPathTemplate": "/License/UnSubscribeLicense", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -863,7 +879,7 @@
       "UpstreamPathTemplate": "/License/UpdatePaymentStatus", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -883,7 +899,7 @@
       "UpstreamPathTemplate": "/SMSTemplate/Add", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -899,7 +915,7 @@
       "UpstreamPathTemplate": "/SMSTemplate/View", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
     },
@@ -915,7 +931,7 @@
       "UpstreamPathTemplate": "/SMSTemplate/Edit", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -932,7 +948,7 @@
       "UpstreamPathTemplate": "/SMSTemplate/Delete", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 
@@ -949,7 +965,7 @@
       "UpstreamPathTemplate": "/SMSTemplate/Update", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
-       "AuthenticationProviderKeys": [ "Bearer" ],
+        "AuthenticationProviderKeys": [ "Bearer" ],
         "AllowedScopes": []
       }
 

@@ -277,5 +277,45 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.Adduser_rightsServices
                 Children = FillRecursive(flatObjects, item.CategoryId)
             }).ToList();
         }
+       
+        public async Task<Result<List<ListItems>>> GetUserList(CommanRequest model)
+        {
+            Result<List<ListItems>> res = new Result<List<ListItems>>();
+            try
+            {
+                var paramList = new
+                {
+                    UserID = model.UserID,
+                    Check = 4,
+
+                };
+
+                var result = await Connection.QueryAsync<ListItems>("Proc_Get_All_DropDown", paramList, commandType: System.Data.CommandType.StoredProcedure);
+
+                if (result.Count() > 0)
+                {
+
+                    res.Data = result.ToList();
+                    res.Status = true;
+                    res.Message = new List<string>() { "Successful!" };
+                }
+                else
+                {
+                    res.Data = null;
+                    res.Status = false;
+                    res.Message = new List<string>() { "Failed!" };
+
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Data = null;
+                res.Status = false;
+                res.Message.Add("Exception Occur! - " + ex.Message.ToString());
+                _exceptionDataProvider.ErrorList(new LogEntry { ErrorMessage = ex.Message, StackTrace = ex.StackTrace, Action = "GetUserList", Controller = "Adduser_rightsProvider", ReturnType = "AdminPanel", UserID = model.UserID.ToString() });
+                return res;
+            }
+            return res;
+        }
     }
 }

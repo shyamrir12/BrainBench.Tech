@@ -159,7 +159,7 @@
             var userlistresp = await _adduser.GetUserList(new CommanRequest { Filter = searchText, UserID = Convert.ToInt32(nameIdentifierClaim?.Value) });
 
             userlist = userlistresp.Data;
-            if (RengList != null)
+            if (userlist != null)
                 totalrows = userlistresp.Data.Count();
 
 
