@@ -2,10 +2,10 @@
 @inject NavigationManager _navigationManager
 @inject IToastService _toastService
 @inject IAdduser_rightsSubscriber _adduser_rights
-<MudPaper >
-<MudAutocomplete T="@ListItems" Label="Search User" @bind-Value="selecteduser" SearchFunc="@LodefilterList" ToStringFunc="@(e=> e==null?null : $"{e.Text}")" />
+<MudPaper Class="pa-4 ma-2">
+    <MudAutocomplete T="@ListItems" Label="Search User" @bind-Value="selecteduser" SearchFunc="@LodefilterList" ToStringFunc="@(e=> e==null?null : $"{e.Text}")" ShowProgressIndicator="true" ProgressIndicatorColor="Color.Default" />
 
-<MudPaper  Height="400px" Class="overflow-y-auto" Elevation="0">
+<MudPaper  Height="380px" Class="pa-4 ma-2 overflow-y-auto" Elevation="0">
     <MudTreeView Items="@TreeItems" Dense=true >
         <ItemTemplate>
             <MudTreeViewItem @bind-Expanded="@context.IsExpanded" Items="@context.TreeItems">
@@ -20,7 +20,9 @@
 </MudPaper>
     <div style="width: 100%">
 
-    <MudText Typo="@Typo.subtitle1">Sum of selected items: @GetSelected(),  @slecteduserid</MudText>
+   @*  <MudText Typo="@Typo.subtitle1"> selected items: @GetSelected(),  @slecteduserid</MudText> *@
+        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.AppRegistration" Color="Color.Primary" OnClick="updatemenurights"
+                   Class="ml-auto"  FullWidth="true">Update User Rights</MudButton>
     </div>
 </MudPaper>
 @code {
@@ -69,7 +71,7 @@
 
             var userlist = await _adduser_rights.GetUserList(new CommanRequest { UserID = 2 });
             UserList = userlist.Data;
-            lodemenuformate(loginid);
+            //await  lodemenuformate(loginid);
 
             nml.SpinnerVisible = false;
             await _notifyMainLayout.InvokeAsync(nml);
@@ -80,39 +82,42 @@
             _navigationManager.NavigateTo("/", true);
         }
     }
-    public async void lodemenuformate(int id)
+    public async Task lodemenuformate(int id)
     {
+
         var menuformet =await _adduser_rights.GetMenuListFormate(new CommanRequest { UserID = id });
 
         if (menuformet.Data.Any())
         {
+            //var orderdlist = menuformet.Data.OrderBy(x => x.DisplaySrNo);
             foreach (var item in menuformet.Data)
             {
                 if (item.ChildMenuItems.Any())
                 {
-                    //item.MenuName;
-                    //GetIconValue(item.GifIcon);
+
                     TreeItemData treeitemwithchild = new TreeItemData(item.MenuName, item.MenuItemId);
                     foreach (var childitem in item.ChildMenuItems)
                     {
                         if (childitem.ChildMenuItems.Any())
                         {
-                            //childitem.MenuItemName
+
+                            TreeItemData treeitemwithchildchild = new TreeItemData(childitem.MenuName, childitem.MenuItemId);
+                            treeitemwithchildchild.Parent = treeitemwithchild;
 
                             foreach (var childchilditem in childitem.ChildMenuItems)
                             {
-                                //childchilditem.MenuItemPath
-                                //childchilditem.MenuName
+                                treeitemwithchildchild.AddChild(childchilditem.MenuName, childchilditem.MenuItemId);
+                                TreeItems.Add(treeitemwithchild);
+
                             }
 
                         }
                         else
                         {
-                            
+
                             treeitemwithchild.AddChild(childitem.MenuName, childitem.MenuItemId);
                             TreeItems.Add(treeitemwithchild);
-                            //childitem.MenuItemPath
-                            //childitem.MenuName
+
                         }
                     }
 
@@ -120,34 +125,17 @@
                 }
                 else
                 {
-                  
+
                     TreeItems.Add(new TreeItemData(item.MenuName, item.MenuItemId));
-                    //item.MenuItemPath
-                  // GetIconValue( item.GifIcon)
-                  // item.MenuName
+
                 }
 
             }
         }
 
 
-        // TreeItemData itemFruits = new TreeItemData("Fruits",1);
-        // TreeItemData itemVeg = new TreeItemData("Vegetables",2);
-        // TreeItemData itemGrains = new TreeItemData("Grains",3);
-        // itemFruits.IsExpanded = true;
-        // itemFruits.AddChild("Apple",1);
-        // itemFruits.AddChild("Banana",2);
-       
 
-        // itemGrains.AddChild("Barley",1);
-        // itemGrains.AddChild("Oats",2);
-        
-        // itemVeg.AddChild("Carrot",1);
-        // itemVeg.AddChild("Leek",2);
-       
-        // TreeItems.Add(itemFruits);
-        // TreeItems.Add(itemGrains);
-        // TreeItems.Add(itemVeg);
+
     }
 
     public string GetSelected()
@@ -158,14 +146,17 @@
             foreach (var item in TreeItems)
             {
                 if(item.IsChecked)
-                    seleteditem = seleteditem + item.Text;
+                    seleteditem = seleteditem+"," + item.Value;
                 if(item.HasChild)
                 {
+                    //added for if parent menu has child if not the partial selection gon
+                    seleteditem = seleteditem + "," + item.Value;
+
                     foreach(var childitem in item.TreeItems)
                     {
                         if(childitem.IsChecked)
                         {
-                            seleteditem = seleteditem + childitem.Text;
+                            seleteditem = seleteditem + "," + childitem.Value;
                         }
 
                     }
@@ -180,6 +171,49 @@
         return seleteditem;
     }
 
+    public void clear()
+    {
+
+        if (TreeItems != null && TreeItems.Count > 0)
+        {
+            foreach (var item in TreeItems)
+            {
+
+                item.IsChecked=false;
+                if (item.HasChild)
+                {
+                    foreach (var childitem in item.TreeItems)
+                    {
+                        childitem.IsChecked = false;
+
+                    }
+
+                }
+
+
+            }
+        }
+
+
+
+    }
+    public void remove()
+    {
+
+        if (TreeItems != null && TreeItems.Count > 0)
+        {
+            foreach (var item in TreeItems)
+            {
+
+                TreeItems.Remove(item);
+
+
+            }
+        }
+
+
+
+    }
     public  ListItems selecteduser
     {
         get
@@ -198,15 +232,87 @@
     }
     private async Task fillMenuByUser(ListItems val)
     {
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
         slecteduserid = val.Value;
+        TreeItems.Clear();
+        await lodemenuformate(Convert.ToInt32(String.IsNullOrEmpty(val.Value) ? "0" : val.Value));
+        //clear();
+
+        var asignedmenulist = await _adduser_rights.GetMenuListByRole(new CommanRequest { UserID = (Convert.ToInt32(String.IsNullOrEmpty(val.Value) ? "0" : val.Value)) });
+
+
+
+        if (TreeItems != null && TreeItems.Count > 0)
+        {
+
+            foreach (var item in TreeItems)
+            {
+                var asignedmenuitem = asignedmenulist.Data.Where(x => x.MenuItemId == Convert.ToInt32(item.Value)).FirstOrDefault();
+                if (asignedmenuitem!=null )
+                {
+                    item.IsChecked = true;
+                }
+
+
+                if (item.HasChild && asignedmenuitem != null)
+                {
+                    foreach (var childitem in item.TreeItems)
+                    {
+
+                        var asignedmenuitemchild = asignedmenuitem.ChildMenuItems.Where(x => x.MenuItemId == Convert.ToInt32(childitem.Value)).FirstOrDefault();
+                        if (asignedmenuitemchild != null)
+                        {
+                            childitem.IsChecked = true;
+                        }
+                    }
+
+                }
+
+
+            }
+        }
+
+        StateHasChanged();
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
         //fil the menu
     }
     private async Task<IEnumerable<ListItems>> LodefilterList(string value)
     {
-       if (string.IsNullOrEmpty(value))
+        if (string.IsNullOrEmpty(value))
             return UserList;
         return UserList.Where(x => x.Text.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-       
+
     }
-   
-   }
+    private async Task updatemenurights()
+    {
+        string selectedmenuids = GetSelected();
+        if (!String.IsNullOrEmpty(slecteduserid) && slecteduserid!="0")
+        {
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+            var responce = await _adduser_rights.UpdateMenuByID(new CommanRequest { UserID = Convert.ToInt32(slecteduserid), ids = selectedmenuids,SubRoleId=loginid });
+            if (responce.Status==true)
+            {
+                _toastService.ShowSuccess(responce.Data.Msg);
+
+            }
+            else
+            {
+                _toastService.ShowSuccess(responce.Message.FirstOrDefault());
+            }
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+        }
+        else
+        {
+            _toastService.ShowError("!Please Select User");
+        }
+        
+
+       
+
+    }
+  
+}
