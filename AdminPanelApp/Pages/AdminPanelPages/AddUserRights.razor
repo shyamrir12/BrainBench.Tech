@@ -69,9 +69,9 @@
             nml.SpinnerVisible = true;
             await _notifyMainLayout.InvokeAsync(nml);
 
-            var userlist = await _adduser_rights.GetUserList(new CommanRequest { UserID = 2 });
+            var userlist = await _adduser_rights.GetUserList(new CommanRequest { UserID = loginid });
             UserList = userlist.Data;
-            //await  lodemenuformate(loginid);
+            await  lodemenuformate(loginid);
 
             nml.SpinnerVisible = false;
             await _notifyMainLayout.InvokeAsync(nml);
@@ -178,7 +178,7 @@
         {
             foreach (var item in TreeItems)
             {
-
+                //if (item.Value != 127 && item.Value != 78 && item.Value != 131)
                 item.IsChecked=false;
                 if (item.HasChild)
                 {
@@ -235,9 +235,9 @@
         nml.SpinnerVisible = true;
         await _notifyMainLayout.InvokeAsync(nml);
         slecteduserid = val.Value;
-        TreeItems.Clear();
-        await lodemenuformate(Convert.ToInt32(String.IsNullOrEmpty(val.Value) ? "0" : val.Value));
-        //clear();
+        //TreeItems.Clear();
+        //await lodemenuformate(Convert.ToInt32(String.IsNullOrEmpty(val.Value) ? "0" : val.Value));
+        clear();
 
         var asignedmenulist = await _adduser_rights.GetMenuListByRole(new CommanRequest { UserID = (Convert.ToInt32(String.IsNullOrEmpty(val.Value) ? "0" : val.Value)) });
 

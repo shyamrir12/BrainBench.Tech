@@ -1,14 +1,16 @@
 ﻿using AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices;
 using AdminPanelModels;
 using LoginModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class UserMappingController : ControllerBase
+    [Route("api/{controller}/{action}")]
+    [ApiController]
+    [Authorize]
+    public class UserMappingController : ControllerBase
 	{
 		private readonly IUserMappingProvider _userMappingProvider;
 		public UserMappingController(IUserMappingProvider userMappingProvider)

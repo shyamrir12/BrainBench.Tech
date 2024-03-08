@@ -145,7 +145,7 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.UserMappingServices
                     Check = 1,
 
                 };
-                var result = await Connection.QueryAsync<ListItems>("Get_TBL_Document_IssueBy_Master", paramList, commandType: System.Data.CommandType.StoredProcedure);
+                var result = await Connection.QueryAsync<ListItems>("Proc_Get_All_DropDown", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
                 if (result.Count() > 0)
                 {

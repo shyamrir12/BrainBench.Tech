@@ -1,5 +1,206 @@
-﻿<h3>UserMapping</h3>
+﻿@page "/workspacemapping"
+@using System.Linq
+@inject NavigationManager _navigationManager
+@inject IAdduser_rightsSubscriber _adduser_rights
+@inject IUserMappingSubscriber _usermapping
+@inject IToastService _toastService
+<MudPaper Class="pa-4 ma-2">
+    <MudAutocomplete T="@ListItems" Label="Search User" @bind-Value="selecteduser" SearchFunc="@LodefilterList" ToStringFunc="@(e=> e==null?null : $"{e.Text}")" ShowProgressIndicator="true" ProgressIndicatorColor="Color.Default" />
 
+
+<MudSelect MultiSelectionTextFunc="@(new Func<List<string>, string>(ApplicationGetMultiSelectionText))"
+           MultiSelection="true" @bind-Value="Applicationvalue" @bind-SelectedValues="Applicationoptions" T="string"
+           Label="Application" AdornmentIcon="@Icons.Material.Filled.Search" AnchorOrigin="Origin.BottomCenter" SelectAll="true">
+    @foreach (var Application in Applicationselectionlist)
+    {
+        <MudSelectItem T="string" Value="@Application.Value">@Application.Text</MudSelectItem>
+    }
+</MudSelect>
+<MudSelect MultiSelectionTextFunc="@(new Func<List<string>, string>(WorkspaceGetMultiSelectionText))"
+           MultiSelection="true" @bind-Value="Workspacevalue" @bind-SelectedValues="Workspaceoptions" T="string"
+           Label="Workspace" AdornmentIcon="@Icons.Material.Filled.Search" AnchorOrigin="Origin.BottomCenter" SelectAll="true">
+    @foreach (var Workspace in Workspaceselectionlist)
+    {
+        <MudSelectItem T="string" Value="@Workspace.Value">@Workspace.Text</MudSelectItem>
+    }
+</MudSelect>
+@* <div>@_navigationManager.Uri.Split('/')[_navigationManager.Uri.Split('/').Length-1] </div> *@
+@* <MudSwitch @bind-Checked="multiselectionTextChoice" Class="mud-width-full" Color="Color.Primary">MultiSelection Text choice</MudSwitch> *@
+<MudSelect MultiSelectionTextFunc="@(new Func<List<string>, string>(OutletGetMultiSelectionText))"
+           MultiSelection="true" @bind-Value="Outletvalue" @bind-SelectedValues="Outletoptions" T="string"
+           Label="Outlet" AdornmentIcon="@Icons.Material.Filled.Search" AnchorOrigin="Origin.BottomCenter" SelectAll="true">
+    @foreach (var Outlet in Outletselectionlist)
+    {
+        <MudSelectItem T="string" Value="@Outlet.Value">@Outlet.Text</MudSelectItem>
+    }
+</MudSelect>
+    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.AppRegistration" Color="Color.Primary" OnClick="usermapping"
+               Class="ml-auto" FullWidth="true">Update User Mapping</MudButton>
+</MudPaper>
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
 
+    int loginid = 0;
+    private ListItems _selectedItem { get; set; }
+    public List<ListItems> UserList { get; set; }
+    //private bool multiselectionTextChoice;
+
+    private string Applicationvalue { get; set; } = "Assigned Application";
+    private IEnumerable<string> Applicationoptions { get; set; } = new HashSet<string>() ;
+
+    private List<ListItems> Applicationselectionlist { get; set; } = new List<ListItems> { new ListItems { Value = "0", Text = "" } };
+
+
+    private string Workspacevalue { get; set; } = "Assigned Workspace";
+    private IEnumerable<string> Workspaceoptions { get; set; } = new HashSet<string>() { "1", "2" };
+
+    private List<ListItems> Workspaceselectionlist { get; set; } = new List<ListItems> { new ListItems { Value = "1", Text = "Workspace 1" }, new ListItems { Text = "Workspace 2", Value = "2" } };
+
+
+    private string Outletvalue { get; set; } = "Assigned Outlet";
+    private IEnumerable<string> Outletoptions { get; set; } = new HashSet<string>() { "1", "2" };
+
+    private List<ListItems> Outletselectionlist { get; set; } = new List<ListItems> { new ListItems { Value = "1", Text = "Outlet 1" }, new ListItems { Text = "Outlet 2", Value = "2" } };
+
+    private string ApplicationGetMultiSelectionText(List<string> selectedValues)
+    {
+
+        var selectedItems = Applicationselectionlist.Where(item1 => selectedValues.Any(item2 => item2 == item1.Value)).ToList();
+
+
+        return $"Assigned Application{(selectedValues.Count > 1 ? "s" : "")}: {string.Join(", ", selectedItems.Select(x => x.Text))}";
+
+    }
+
+    private string WorkspaceGetMultiSelectionText(List<string> selectedValues)
+    {
+
+        var selectedItems = Workspaceselectionlist.Where(item1 => selectedValues.Any(item2 => item2 == item1.Value)).ToList();
+
+
+        return $"Assigned Workspace{(selectedValues.Count > 1 ? "s" : "")}: {string.Join(", ", selectedItems.Select(x => x.Text))}";
+
+
+        // if (multiselectionTextChoice)
+        // {
+        //     return $"Selected state{(selectedValues.Count > 1 ? "s" : "")}: {string.Join(", ", selectedValues.Select(x => x))}";
+        // }
+        // else
+        // {
+        //     return $"{selectedValues.Count} state{(selectedValues.Count > 1 ? "s have" : " has")} been selected";
+        // }
+    }
+    private string OutletGetMultiSelectionText(List<string> selectedValues)
+    {
+
+        var selectedItems = Outletselectionlist.Where(item1 => selectedValues.Any(item2 => item2 == item1.Value)).ToList();
+
+
+        return $"Assigned Outlet{(selectedValues.Count > 1 ? "s" : "")}: {string.Join(", ", selectedItems.Select(x => x.Text))}";
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (identity.IsAuthenticated)
+        {
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+            loginid = Convert.ToInt32(nameIdentifierClaim.Value);
+
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+
+            var userlist = await _adduser_rights.GetUserList(new CommanRequest { UserID = loginid });
+            UserList = userlist.Data;
+
+            var applist = await _usermapping.GetApplication(new CommanRequest { UserID = loginid });
+            Applicationselectionlist = applist.Data;
+
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+    }
+
+    public ListItems selecteduser
+    {
+        get
+        {
+            return _selectedItem;
+        }
+        set
+        {
+            _selectedItem = value;
+            fillApplicationWorkspaceoutletByUser(value);
+
+
+        }
+
+
+    }
+    private async Task fillApplicationWorkspaceoutletByUser(ListItems val)
+    {
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
+        //slecteduserid = val.Value;
+        //do when user selected
+        var userapplist = await _usermapping.GetApplication(new CommanRequest { UserID = (Convert.ToInt32(String.IsNullOrEmpty(val.Value) ? "0" : val.Value)) });
+        //Applicationoptions.Concat(userapplist.Data.Select(x => x.Value));
+        foreach (var item in userapplist.Data)
+        {
+            ((HashSet<string>)Applicationoptions).Add(item.Value);
+            
+        }
+           
+        StateHasChanged();
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
+        
+    }
+    private async Task<IEnumerable<ListItems>> LodefilterList(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return UserList;
+        return UserList.Where(x => x.Text.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+
+    }
+    private async Task usermapping()
+    {
+        // string selectedmenuids = GetSelected();
+        // if (!String.IsNullOrEmpty(slecteduserid) && slecteduserid != "0")
+        // {
+        //     nml.SpinnerVisible = true;
+        //     await _notifyMainLayout.InvokeAsync(nml);
+        //     var responce = await _adduser_rights.UpdateMenuByID(new CommanRequest { UserID = Convert.ToInt32(slecteduserid), ids = selectedmenuids, SubRoleId = loginid });
+        //     if (responce.Status == true)
+        //     {
+        //         _toastService.ShowSuccess(responce.Data.Msg);
+
+        //     }
+        //     else
+        //     {
+        //         _toastService.ShowSuccess(responce.Message.FirstOrDefault());
+        //     }
+        //     nml.SpinnerVisible = false;
+        //     await _notifyMainLayout.InvokeAsync(nml);
+        // }
+        // else
+        // {
+        //     _toastService.ShowError("!Please Select User");
+        // }
+
+
+
+
+    }
 }
