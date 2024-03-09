@@ -1,0 +1,76 @@
+﻿@page "/application"
+@inject NavigationManager _navigationManager
+@inject IApplicationSubscriber _application
+@inject IToastService _toastService
+<MudTable Items="@applicationlist" Hover="true" Bordered="true" Striped="true" Filter="new Func<DmsIssuedBy,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Application</MudTh>
+        <MudTh>Description</MudTh>
+       
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Application">@context.issuedbyname</MudTd>
+        <MudTd DataLabel="Sign">@context.Description</MudTd>
+       
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+
+    MudTabs tabs;
+    int userid = 0;
+
+    private string searchString1 = "";
+    private DmsIssuedBy selectedItem1 = null;
+    private HashSet<DmsIssuedBy> selectedItems = new HashSet<DmsIssuedBy>();
+
+    List<DmsIssuedBy> applicationlist = new List<DmsIssuedBy>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var identity = user.Identity as ClaimsIdentity;
+
+            // Find the NameIdentifier claim
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            // Get the value of the NameIdentifier claim
+
+            userid = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            var applist =await _application.GetApplicationList(new CommanRequest { UserID = userid });
+            if(applist.Status==true)
+            applicationlist = applist.Data;
+        }
+      
+    }
+    private bool FilterFunc1(DmsIssuedBy element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(DmsIssuedBy element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.issuedbyname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+       
+        return false;
+    }
+}

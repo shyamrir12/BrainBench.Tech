@@ -2,14 +2,16 @@
 using AdminPanelModels;
 using AdminPanelModels.UserMangment;
 using LoginModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminPanelAPI.Areas.AdminPanel.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
-	public class DMSIssuedByController : ControllerBase
+    [Route("api/{controller}/{action}")]
+    [ApiController]
+    [Authorize]
+    public class DMSIssuedByController : ControllerBase
 	{
 		private readonly IDmsIssuedByProvider _dmsIssuedByProvider;
 
