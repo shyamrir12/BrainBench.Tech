@@ -371,7 +371,7 @@
 
     },
     {
-      "DownstreamPathTemplate": "/api/UserMapping/AssignApplication",
+      "DownstreamPathTemplate": "/api/UserMapping/UpdateUserMapping",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -379,7 +379,7 @@
           "Port": 5110
         }
       ],
-      "UpstreamPathTemplate": "/UserMapping/AssignApplication", //for clent
+      "UpstreamPathTemplate": "/UserMapping/UpdateUserMapping", //for clent
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKeys": [ "Bearer" ],
@@ -387,41 +387,7 @@
       }
 
     },
-    {
-      "DownstreamPathTemplate": "/api/UserMapping/AssignWorkspace",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5110
-        }
-      ],
-      "UpstreamPathTemplate": "/UserMapping/AssignWorkspace", //for clent
-      "UpstreamHttpMethod": [ "POST" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKeys": [ "Bearer" ],
-        "AllowedScopes": []
-      }
-
-    },
-    {
-      "DownstreamPathTemplate": "/api/UserMapping/AssignOutlet",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 5110
-        }
-      ],
-      "UpstreamPathTemplate": "/UserMapping/AssignOutlet", //for clent
-      "UpstreamHttpMethod": [ "POST" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKeys": [ "Bearer" ],
-        "AllowedScopes": []
-      }
-
-    },
-
+    
     /********UserMapping  End**************/
     /********Application Start*******AdminPanel API*******/
     {

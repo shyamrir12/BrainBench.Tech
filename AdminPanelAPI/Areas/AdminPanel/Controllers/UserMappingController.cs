@@ -29,18 +29,11 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
         {
             return _userMappingProvider.GetOutlet(model);
         }
-        public Task<Result<MessageEF>> AssignApplication(CommanRequest model)
+        public Task<Result<MessageEF>> UpdateUserMapping(CommanRequest model)
         {
-            return _userMappingProvider.AssignApplication(model);
+            return _userMappingProvider.UpdateUserMapping(model);
         }
-        public Task<Result<MessageEF>> AssignWorkspace(CommanRequest model)
-        {
-            return _userMappingProvider.AssignWorkspace(model);
-        }
-        public Task<Result<MessageEF>> AssignOutlet(CommanRequest model)
-        {
-            return _userMappingProvider.AssignOutlet(model);
-        }
+       
         //user sub branch mapping
     }
 }

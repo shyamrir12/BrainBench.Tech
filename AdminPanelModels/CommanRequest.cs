@@ -22,10 +22,10 @@ namespace AdminPanelModels
         public int? PageSize { get; set; }
         public int? PageIndex { get; set; }
         public string? Filter { get; set; }
-        
-        //public string? Deptids { get; set; }
-        //public string? Iids { get; set; }
-        //public string? Cids { get; set; }
+
+        public string? Deptids { get; set; }
+        public string? Iids { get; set; }
+        public string? Cids { get; set; }
         //public int? Deptid { get; set; }
         //public int? Iid { get; set; }
         //public int? Cid { get; set; }

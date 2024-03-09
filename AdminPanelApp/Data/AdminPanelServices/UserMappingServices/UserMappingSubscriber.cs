@@ -12,26 +12,14 @@ namespace AdminPanelApp.Data.AdminPanelServices.UserMappingServices
         {
             _httpClient = httpClient;
         }
-        public async Task<Result<MessageEF>> AssignApplication(CommanRequest model)
+        public async Task<Result<MessageEF>> UpdateUserMapping(CommanRequest model)
         {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommanRequest>($"/UserMapping/AssignApplication", model);
+            var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommanRequest>($"/UserMapping/UpdateUserMapping", model);
 
             return await httpMessageReponse.Content.ReadFromJsonAsync<Result<MessageEF>>();
         }
 
-        public async Task<Result<MessageEF>> AssignOutlet(CommanRequest model)
-        {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommanRequest>($"/UserMapping/AssignOutlet", model);
-
-            return await httpMessageReponse.Content.ReadFromJsonAsync<Result<MessageEF>>();
-        }
-
-        public async Task<Result<MessageEF>> AssignWorkspace(CommanRequest model)
-        {
-            var httpMessageReponse = await _httpClient.PostAsJsonAsync<CommanRequest>($"/UserMapping/AssignWorkspace", model);
-
-            return await httpMessageReponse.Content.ReadFromJsonAsync<Result<MessageEF>>();
-        }
+       
 
         public async Task<Result<List<ListItems>>> GetApplication(CommanRequest model)
         {

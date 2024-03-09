@@ -1,4 +1,4 @@
-﻿@page "/workspacemapping"
+﻿@page "/usermapping"
 @using System.Linq
 @inject NavigationManager _navigationManager
 @inject IAdduser_rightsSubscriber _adduser_rights
@@ -138,11 +138,7 @@
             Workspaceselectionlist.Clear();
             ((HashSet<string>)Workspaceoptions).Clear();
         }
-
-
-
-
-
+        
         nml.SpinnerVisible = false;
         await _notifyMainLayout.InvokeAsync(nml);
 
@@ -298,28 +294,31 @@
     }
     private async Task usermapping()
     {
-        // string selectedmenuids = GetSelected();
-        // if (!String.IsNullOrEmpty(slecteduserid) && slecteduserid != "0")
-        // {
-        //     nml.SpinnerVisible = true;
-        //     await _notifyMainLayout.InvokeAsync(nml);
-        //     var responce = await _adduser_rights.UpdateMenuByID(new CommanRequest { UserID = Convert.ToInt32(slecteduserid), ids = selectedmenuids, SubRoleId = loginid });
-        //     if (responce.Status == true)
-        //     {
-        //         _toastService.ShowSuccess(responce.Data.Msg);
+        string iids = string.Join(", ", Applicationoptions.Select(x => x));
+        string deptids = string.Join(", ", Workspaceoptions.Select(x => x));
+        string cids = string.Join(", ", Outletoptions.Select(x => x));
 
-        //     }
-        //     else
-        //     {
-        //         _toastService.ShowSuccess(responce.Message.FirstOrDefault());
-        //     }
-        //     nml.SpinnerVisible = false;
-        //     await _notifyMainLayout.InvokeAsync(nml);
-        // }
-        // else
-        // {
-        //     _toastService.ShowError("!Please Select User");
-        // }
+        if (userid>0)
+        {
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+            var responce = await _usermapping.UpdateUserMapping(new CommanRequest { UserID = userid, SubRoleId = loginid, Iids = iids, Deptids = deptids, Cids = cids });
+            if (responce.Status == true)
+            {
+                _toastService.ShowSuccess(responce.Data.Msg);
+
+            }
+            else
+            {
+                _toastService.ShowSuccess(responce.Message.FirstOrDefault());
+            }
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+        }
+        else
+        {
+            _toastService.ShowError("!Please Select User");
+        }
 
 
 
