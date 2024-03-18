@@ -8,11 +8,11 @@ namespace LoginModels
 {
     public class MessageEF
     {
-        public string Satus { get; set; }
-        public string Msg { get; set; }
-        public string Value { get; set; }
-        public string Data { get; set; }
-        public string UserName { get; set; }
+        public string? Satus { get; set; }
+        public string? Msg { get; set; }
+        public string? Value { get; set; }
+        public string? Data { get; set; }
+        public string? UserName { get; set; }
         //public string Password { get; set; }
 
         //---added by suresh

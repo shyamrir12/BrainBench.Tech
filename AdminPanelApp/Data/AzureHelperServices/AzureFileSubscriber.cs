@@ -18,9 +18,23 @@ namespace AdminPanelApp.Data.AzureHelperServices
             throw new NotImplementedException();
         }
 
-        public Task<MessageEF> DeleteFile(MyFileRequest FileNameWithPath)
+        public async Task<MessageEF> DeleteFile(MyFileRequest filerequest)
         {
-            throw new NotImplementedException();
+            
+           try
+            {
+
+                var httpMessageReponse = await _httpClient.PostAsJsonAsync<MyFileRequest>($"/AzureFile/DeleteFile", filerequest);
+
+                return await httpMessageReponse.Content.ReadFromJsonAsync<MessageEF>();
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         public async Task< MyFileResult> DownloadFile( MyFileRequest filerequest)

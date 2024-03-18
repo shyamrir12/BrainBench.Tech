@@ -16,6 +16,8 @@
     <Folder Include="Areas\OldDSC\Models\" />
     <Folder Include="Areas\Payment\Models\" />
     <Folder Include="wwwroot\SupportDll\" />
+    <Folder Include="wwwroot\Upload\Application\Image\" />
+    <Folder Include="wwwroot\Upload\Application\Imagethumbnail\" />
     <Folder Include="wwwroot\Upload\DSC\" />
     <Folder Include="wwwroot\Upload\UserPhoto\" />
   </ItemGroup>

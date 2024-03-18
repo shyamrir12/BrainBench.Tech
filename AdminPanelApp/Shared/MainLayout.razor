@@ -17,7 +17,7 @@
 <MudThemeProvider />
 <MudDialogProvider Position="DialogPosition.Center" />
 <MudSnackbarProvider />
-<MudOverlay @bind-Visible="@SpinnerVisible" DarkBackground="true" Absolute="true">
+<MudOverlay @bind-Visible="@SpinnerVisible" LightBackground="true" ZIndex="9999">
     <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
 </MudOverlay>
 <MudLayout>
@@ -96,21 +96,7 @@
 
 </MudLayout>
 
-@* <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div> *@
 
 
 @code {
@@ -140,18 +126,10 @@
     protected override async Task OnInitializedAsync()
     {
         
-        //getting the current authenticated user for the app
-        UserLoginSession currentUser = null;// await _httpClient.GetFromJsonAsync<User>("user/getcurrentuser");
-        if (currentUser != null)
-        {
-            //setting the themeName parameter for JS function
-            //var themeName = currentUser.DarkTheme == 1 ? "dark" : "light";
-            //var themeName = "light";
-            //calling the JS function
-            //var module = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/site.js");
-            //await module.InvokeVoidAsync("setTheme", themeName);
-
-        }
+        // var authState = await authenticationState;
+        // var user = authState.User;
+        // if (!user.Identity.IsAuthenticated)
+        //     _navigationManager.NavigateTo("/", true);
 
 
        

@@ -124,6 +124,25 @@ namespace LoginModels
                 return builder.ToString();
             }
         }
+        public static List<T> AddSerialNumbers<T>(List<T> items)
+        {
+            List<T> itemsWithSerial = new List<T>();
+            for (int i = 0; i < items.Count; i++)
+            {
+                T item = items[i];
+                // You need to ensure that the type T has a property to which you can append the serial number.
+                // For this example, let's assume that T has a "Name" property.
+                // This may not work for all types, and you may need to adjust based on your actual requirements.
+                var itemType = typeof(T);
+                var nameProperty = itemType.GetProperty("sno");
+                if (nameProperty != null && nameProperty.PropertyType == typeof(string))
+                {
+                    nameProperty.SetValue(item, $"{i + 1} {nameProperty.GetValue(item)}");
+                }
+                itemsWithSerial.Add(item);
+            }
+            return itemsWithSerial;
+        }
         public class CaptchaResponse
         {
             public string CaptchaText { get; set; }

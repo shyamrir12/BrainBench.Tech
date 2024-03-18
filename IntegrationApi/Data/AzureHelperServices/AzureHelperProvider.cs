@@ -20,8 +20,16 @@ namespace IntegrationApi.Data.AzureHelperServices
 
 		public Task<MessageEF> DeleteFile(MyFileRequest FileNameWithPath)
 		{
-			AzureFileHelper fl = new AzureFileHelper(configuration);
-			return fl.DeleteFileFromAzure(FileNameWithPath.FileNameWithPath);
+			if (configuration["AzurSettings:UseLocal"] == "Yes")
+			{
+				LocalFileHelper fl = new LocalFileHelper(configuration);
+				return fl.DeleteFileFromLocal(FileNameWithPath.FileNameWithPath);
+			}
+			else
+			{
+				AzureFileHelper fl = new AzureFileHelper(configuration);
+				return fl.DeleteFileFromAzure(FileNameWithPath.FileNameWithPath);
+			}
 		}
 
 		public Task<MyFileResult> DownloadFile(MyFileRequest FileNameWithPath)

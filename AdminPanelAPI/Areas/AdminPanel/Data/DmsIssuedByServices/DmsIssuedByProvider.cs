@@ -25,12 +25,12 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                   issuedByName=model.issuedbyname ,
-                   issuedByNameHindi=model.issuedbynamehindi ,
+                   issuedByName=model.nameenglish ,
+                   issuedByNameHindi=model.namehindi ,
                    loginid=model.loginid,
                    ipaddress=model.ipadress,
                    Description =model.Description ,
-                   Image =model.Image ,
+                   Image =model.ApplicationImage,
                    Imagethumbnail =model.Imagethumbnail
                 };
 
@@ -191,13 +191,13 @@ namespace AdminPanelAPI.Areas.AdminPanel.Data.DmsIssuedByServices
             {
                 var paramList = new
                 {
-                    issuebyid=model.issuedid,
-                    issuedByName = model.issuedbyname,
-                    issuedByNameHindi = model.issuedbynamehindi,
+                    issuebyid=model.issuebyid,
+                    issuedByName = model.nameenglish,
+                    issuedByNameHindi = model.namehindi,
                     loginid = model.loginid,
                     ipaddress = model.ipadress,
                     Description = model.Description,
-                    Image = model.Image,
+                    Image = model.ApplicationImage,
                     Imagethumbnail = model.Imagethumbnail
 
                 };

@@ -104,6 +104,19 @@
       "UpstreamPathTemplate": "/AzureFile/DownloadFileResult",
       "UpstreamHttpMethod": [ "POST" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/DeleteFile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/DeleteFile",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
     /***********File server start*******************/
 
     /********EMail/SMS/File Upload END**************/
@@ -387,7 +400,7 @@
       }
 
     },
-    
+
     /********UserMapping  End**************/
     /********Application Start*******AdminPanel API*******/
     {
