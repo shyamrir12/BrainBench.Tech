@@ -8,12 +8,12 @@ using System.Data;
 using AdminPanelAPI.Extension;
 using AdminPanelAPI.Data.ExceptionDataServices;
 
-namespace AdminPanelAPI.Areas.AdminPanel.Data.SMSTempateMasterServices
+namespace AdminPanelAPI.Areas.AdminPanel.Data.SMSTemplateMasterServices
 {
-	public class SMSTempateMasterProvider: RepositoryBase, ISMSTempateMasterProvider
+	public class SMSTemplateMasterProvider: RepositoryBase, ISMSTemplateMasterProvider
 	{
         private readonly IExceptionDataProvider _exceptionDataProvider;
-        public SMSTempateMasterProvider(IConnectionFactory connectionFactory, IExceptionDataProvider exceptionDataProvider) : base(connectionFactory)
+        public SMSTemplateMasterProvider(IConnectionFactory connectionFactory, IExceptionDataProvider exceptionDataProvider) : base(connectionFactory)
 		{
             _exceptionDataProvider = exceptionDataProvider;
         }

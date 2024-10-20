@@ -32,15 +32,19 @@ namespace AdminPanelModels.UserMangment
         public string captcha { get; set; }
 
       //  public List<Department> departmentList { get; set; }
+       
+        public int documentissuedval { get; set; }
+       
         [Required]
         [Display(Name = "Document IssuedBy")]
-        public int documentissuedval { get; set; }
-
         public string issuenameenglish { get; set; }
         public string ULBType { get; set; }
 
         public string? Description { get; set; }
         public string? Image { get; set; }
         public string? Imagethumbnail { get; set; }
+
+      //  Deptid WarkspaceName   WarkspaceNameHindi AddedDate   isactive IsApproved  issuebyid loginid UpdatedOn UpdatedBy   Description Image   Imagethumbnail ApplicationName ApplicationNameHindi
+
     }
 }

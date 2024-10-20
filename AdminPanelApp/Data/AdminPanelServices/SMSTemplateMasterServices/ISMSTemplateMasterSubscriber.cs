@@ -2,9 +2,9 @@
 using AdminPanelModels;
 using LoginModels;
 
-namespace AdminPanelApp.Data.AdminPanelServices.SMSTempateMasterServices
+namespace AdminPanelApp.Data.AdminPanelServices.SMSTemplateMasterServices
 {
-    public interface ISMSTempateMasterSubscriber
+    public interface ISMSTemplateMasterSubscriber
     {
         Task<Result<MessageEF>> AddSMSTemplateMaster(SMSTemplateMaster model);
         Task<Result<List<SMSTemplateMaster>>> ViewSMSTemplateMaster(CommanRequest model);

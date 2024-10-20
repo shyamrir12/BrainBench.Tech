@@ -3,13 +3,13 @@ using AdminPanelModels.UserMangment;
 using LoginModels;
 using System.Net.Http.Json;
 
-namespace AdminPanelApp.Data.AdminPanelServices.SMSTempateMasterServices
+namespace AdminPanelApp.Data.AdminPanelServices.SMSTemplateMasterServices
 {
-    public class SMSTempateMasterSubscriber : ISMSTempateMasterSubscriber
+    public class SMSTemplateMasterSubscriber : ISMSTemplateMasterSubscriber
     {
         private readonly HttpClient _httpClient;
 
-        public SMSTempateMasterSubscriber(HttpClient httpClient)
+        public SMSTemplateMasterSubscriber(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }

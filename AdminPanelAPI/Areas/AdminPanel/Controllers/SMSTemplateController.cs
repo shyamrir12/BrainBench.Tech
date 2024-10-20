@@ -1,4 +1,4 @@
-﻿using AdminPanelAPI.Areas.AdminPanel.Data.SMSTempateMasterServices;
+﻿using AdminPanelAPI.Areas.AdminPanel.Data.SMSTemplateMasterServices;
 using AdminPanelModels;
 using AdminPanelModels.UserMangment;
 using LoginModels;
@@ -13,9 +13,9 @@ namespace AdminPanelAPI.Areas.AdminPanel.Controllers
    // [Authorize(Roles = "Admin")]
 	public class SMSTemplateController : ControllerBase
 	{
-		private readonly ISMSTempateMasterProvider _smstempatemasterprovider;
+		private readonly ISMSTemplateMasterProvider _smstempatemasterprovider;
 
-		public SMSTemplateController(ISMSTempateMasterProvider smstempatemasterprovider)
+		public SMSTemplateController(ISMSTemplateMasterProvider smstempatemasterprovider)
 		{
             _smstempatemasterprovider= smstempatemasterprovider;
 

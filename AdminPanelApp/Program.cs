@@ -5,7 +5,7 @@ using AdminPanelApp.Data.AdminPanelServices.ApplicationServices;
 using AdminPanelApp.Data.AdminPanelServices.DashBoardServices;
 using AdminPanelApp.Data.AdminPanelServices.LicenseServices;
 using AdminPanelApp.Data.AdminPanelServices.OutletServices;
-using AdminPanelApp.Data.AdminPanelServices.SMSTempateMasterServices;
+using AdminPanelApp.Data.AdminPanelServices.SMSTemplateMasterServices;
 using AdminPanelApp.Data.AdminPanelServices.UserMappingServices;
 using AdminPanelApp.Data.AdminPanelServices.WorkspaceServices;
 using AdminPanelApp.Data.AzureHelperServices;
@@ -99,7 +99,7 @@ await builder.Build().RunAsync();
    ("OutletServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<ILicenseSubscriber, LicenseSubscriber>
    ("LicenseServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
-    builder.Services.AddHttpClient<ISMSTempateMasterSubscriber, SMSTempateMasterSubscriber>
+    builder.Services.AddHttpClient<ISMSTemplateMasterSubscriber, SMSTemplateMasterSubscriber>
    ("SMSTempateMasterServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
     builder.Services.AddHttpClient<IDashboardSubscriber, DashboardSubscriber>
        ("DashboardServiceClient", client => client.BaseAddress = new Uri(baseurl)).AddHttpMessageHandler<CustomAuthorizationHandler>(); ;
