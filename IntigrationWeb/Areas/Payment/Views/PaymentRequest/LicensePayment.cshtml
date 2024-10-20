@@ -1,0 +1,223 @@
+﻿@{
+    ViewBag.Title = "License Payment Process";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using IntegrationModels;
+@model IntegrationModels.PaymentRequestModel
+<style>
+    .icic-type {
+        margin-left: 328px;
+    }
+
+    .sbi-logo, .icic-logo {
+        height: 40px;
+    }
+
+    @@media only screen and (max-width: 1366px) {
+        .icic-type {
+            margin-left: 250px;
+        }
+    }
+
+    @@media only screen and (max-width: 768px) {
+        .icic-type {
+            margin-left: 298px;
+        }
+    }
+
+    @@media only screen and (max-width:640px) {
+        .icic-type {
+            margin-left: 0px;
+        }
+    }
+</style>
+
+<section class="wrapper main-wrapper row">
+    <div class="col-12">
+       
+        <div class="row">
+            <div class="col-12">
+                <div class="main-tab">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            Licensee Payment Information
+                        </li>
+                    </ul>
+                  
+                </div>
+
+                <section class="box form-container">
+                    <div class="content-body">
+                        <form action="LicenseeTransferPayment" method="post" id="__EUAntiForgeryForm">
+
+                            @Html.HiddenFor(model => model.Licensee_Id)
+                            @Html.Hidden("PaymentMode")
+                            @Html.Hidden("PaymentBank")
+                            @Html.Hidden("Pmode")
+                            @Html.Hidden("NetBanking_mode")
+                            @Html.Hidden("PaymentType")
+                            <input type="hidden" value="@Model.TotalPayable" id="totalPayable" name="totalPayable">
+                            <div class="row">
+                                <div class="col-sm-12" style="display:none;">
+                                    <div class="form-group row">
+                                        <label for="inputName" class="col-sm-4 col-form-label font-weight-bolder">TransactionalID</label>
+                                        <div class="col-sm-8">
+                                            <label class="form-control">@Model.Licensee_Id</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group row">
+                                        <label for="inputMail" class="col-sm-4 col-form-label font-weight-bolder">Total Payable Amount(in Rs.)</label>
+                                        <div class="col-sm-7">
+                                            <label class="form-control">@Model.TotalPayable</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="row">
+
+                                <label class="list-group-item active text-center" style="visibility:hidden" id="divOnlineOption"></label>
+                                <div class="row col-md-12">
+                                    <div class="col-md-2 default-form-control-style">
+
+                                        <img src="@Url.Content("~/CMSimg/SBI.jpg")" alt="SBI" class="ml-2 mb-md-0 mb-3 sbi-logo" />
+                                        <input name="BankSelection" type="radio" id="chkSBI" value="SBI" checked="checked" />
+                                    </div>
+                                    <div class="col-md-2 default-form-control-style">
+                                        <img src="@Url.Content("~/CMSimg/ICICI.png")" alt="ICICI" class="ml-2 mb-md-0 mb-3 icic-logo" />
+                                        <input name="BankSelection" type="radio" id="chkICICI" value="ICICI" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" id="divPaymentOption" style="display: none">
+                                <div class="col-lg-12 col-md-12 col-xs-12">
+                                    <div id="divOnline">
+                                        <div class="col-md-12">
+                                            <div class="col-md-4 default-form-control-style" style="text-align: left;">
+                                                @(Html.Label("Net Banking"))
+                                                <input name="ModeSelection" type="radio" value="NetBanking" checked="checked" />
+                                            </div>
+                                            <div class="col-md-4 default-form-control-style">
+                                                @(Html.Label("NEFT/RTGS"))
+                                                <input name="ModeSelection" type="radio" value="NEFT" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <input type="submit" id="btnSave" value="Make Payment" onclick="return onMakePayment();" class="btn btn-success btn-md ml-0 waves-effect waves-light" />
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    backMe = "yes";
+    indicateMe = "yes";
+    $(document).ready(function () {
+        loadNavigation('balancequantitye-permit', 'glepermit', 'License', 'tl', 'Payment', 'Online Payment', ' ');
+    });
+</script>
+<script>
+    $("#chkICICI").click(function () {
+        $("#divPaymentOption").show();
+    });
+    $("#chkHDFC").click(function () {
+        $("#divPaymentOption").hide();
+    });
+
+    $("#chkSBI").click(function () {
+        $("#divPaymentOption").hide();
+    });
+    $('#chkDemoBank').click(function () {
+        $("#divPaymentOption").hide();
+    });
+</script>
+<script>
+    function onMakePayment() {
+        var isValid = 0;
+        if ($("#divOnlineOption").hasClass("active") == true) {
+            $("#PaymentMode").val(1); // set online payment mode
+
+            var bank = $("input:radio[name='BankSelection']:checked").val();
+            var mode = $("input:radio[name='ModeSelection']:checked").val();
+            var NetBanking = $("input:radio[name='NetBankingSelection']:checked").val();
+
+            if (bank == "HDFC") {
+                $("#PaymentBank").val("HDFC");
+                //if (confirm('Are you sure to make payment ?')) {
+                $("#__AntiForgeryForm").submit();
+                //}
+            }
+            else if (bank == "ICICI") {
+                $("#PaymentBank").val("ICICI");
+                if (mode == "NetBanking") {
+                    $("#PaymentMode").val("NetBanking")
+                    if (NetBanking == "Corporate") {
+                        $("#NetBanking_mode").val("Corporate");
+                        $("#__AntiForgeryForm").submit();
+                    }
+                    else if (NetBanking == "Retail") {
+                        $("#NetBanking_mode").val("Retail");
+                        $("#__AntiForgeryForm").submit();
+                    }
+                }
+                else {
+                    $("#PaymentMode").val("NEFT")
+                    $("#__AntiForgeryForm").submit();
+                }
+
+            }
+            else if (bank == "SBI") {
+
+                $("#PaymentBank").val("SBI");
+                //if (confirm('Are you sure to make payment ?')) {
+                $("#__AntiForgeryForm").submit();
+                //}
+            }
+            else {
+
+                swal('', "Please select bank to make payment !", 'warning');
+                return false;
+            }
+        }
+        else {
+            $("#PaymentMode").val(0); // set offline mode value
+            if ($("#ChallanNumber").val()) {
+                if ($("#ChallanDate").val()) {
+                    if ($('input[name="ChallanCopyPath"]').val() != "") {
+                        if (filesize < 2048000) {
+                            if (confirm('Are you sure to make payment ?')) {
+                                $("#__EUAntiForgeryForm").submit();
+                            }
+                        }
+                        else {
+                            alert("Please make sure your file is less than 2 MB!");
+                            return false;
+                        }
+                    }
+                    else {
+                        alert("Please select file!");
+                    }
+                }
+                else {
+                    lert("Please enter Challan Date!");
+                    $("#ChallanDate").focus();
+                }
+            }
+            else {
+                alert("Please enter Challan Number!");
+                $("#ChallanNumber").focus();
+            }
+        }
+    }
+</script>

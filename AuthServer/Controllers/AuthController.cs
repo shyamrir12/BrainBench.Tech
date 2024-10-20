@@ -1,5 +1,6 @@
-﻿using AuthServer.Models;
+﻿
 using AuthServer.Services;
+using LoginModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -10,6 +11,7 @@ using System.Text;
 
 namespace AuthServer.Controllers
 {
+	[Route("api/[controller]/[action]")]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class AuthController : ControllerBase
@@ -23,8 +25,8 @@ namespace AuthServer.Controllers
 			this._configuration = configuration;
 			this._usercontext = usercontext;
 		}
-		
 
+		
 		//Migrating to JWT Authorization...
 		private string GenerateJwtToken(UserLoginSession user)
 		{
@@ -45,23 +47,13 @@ namespace AuthServer.Controllers
 			var key = Encoding.ASCII.GetBytes(secretKey);
 
 			//create claims
-			var claimEmail = new Claim(ClaimTypes.Email, user.ApplicantName);
-			string UserSubUserid = "";
-			if (user.IsSubUser)
-			{
-				UserSubUserid = user.SubUserID.ToString();
-			}
-			else
-			{
-				UserSubUserid = user.UserId.ToString();
-			}
-			var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, UserSubUserid);
-
-			var claimRole = new Claim(ClaimTypes.Role, user.UserType == null ? "" : user.UserType);
-			var UserName = new Claim(ClaimTypes.Name, user.UserType == null ? "" : user.UserName);
+			var claimEmail = new Claim(ClaimTypes.Email, user.EmailId);
+			var claimUserid = new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString());
+			var claimRole = new Claim(ClaimTypes.Role, user.Role == null ? "" : user.Role);
+			var UserName = new Claim(ClaimTypes.Name, user.Name == null ? "" : user.Name);
 
 			//create claimsIdentity
-			var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier, claimRole, UserName }, "serverAuth");
+			var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimUserid, claimRole, UserName }, "serverAuth");
 
 			// generate token that is valid for 7 days
 			var tokenDescriptor = new SecurityTokenDescriptor
@@ -90,7 +82,7 @@ namespace AuthServer.Controllers
 			UserLoginSession loggedInUser = await _usercontext.Authenticate(authenticationRequest);
 			if (loggedInUser != null)
 			{
-				if (loggedInUser.ApplicantName == "-1")
+				if (loggedInUser.Name == "-1")
 				{
 					token = "";
 				}
@@ -107,7 +99,7 @@ namespace AuthServer.Controllers
 			return await Task.FromResult(new AuthenticationResponse() { Token = token });
 		}
 		[HttpPost]
-		public async Task<Result<UserLoginSession>> GetUserByJWT(AuthenticationResponse jwtToken)
+		public async Task<Result<UserLoginSession>> GetUserByJWT( [FromBody] string jwtToken)
 		{
 			Result<UserLoginSession> res = new Result<UserLoginSession>();
 			double seconds = 0;
@@ -130,7 +122,7 @@ namespace AuthServer.Controllers
 				SecurityToken securityToken;
 
 				//validating the token
-				var principle = tokenHandler.ValidateToken(jwtToken.Token, tokenValidationParameters, out securityToken);
+				var principle = tokenHandler.ValidateToken(jwtToken, tokenValidationParameters, out securityToken);
 				var jwtSecurityToken = (JwtSecurityToken)securityToken;
 
 				DateTime validTo = jwtSecurityToken.Payload.ValidTo;
@@ -148,12 +140,13 @@ namespace AuthServer.Controllers
 					//returning the user if found
 					var userId = principle.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 					var UserType = principle.FindFirst(ClaimTypes.Role)?.Value;
-					var UserName = principle.FindFirst(ClaimTypes.UserData)?.Value;
+					//var UserName = principle.FindFirst(ClaimTypes.UserData)?.Value;
 					LoginEF model = new LoginEF();
 					model.UserID = int.Parse(userId);
 					model.UserType = UserType.ToString();
-					//model.UserName = UserName.ToString();
-					res.Data = await _usercontext.GetUserById(model);
+					model.validTo= validTo;
+                    //model.UserName = UserName.ToString();
+                    res.Data = await _usercontext.GetUserById(model);
 					res.Status = true;
 					res.Message = new System.Collections.Generic.List<string>() { "Success" };
 				}

@@ -1,0 +1,348 @@
+﻿@{
+
+    Layout = "~/Views/Shared/_LayoutDSC.cshtml";
+}
+<style>
+    section.content {
+        width: 500px;
+        margin: 0 auto;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        background-color: #dddddd30;
+        border: 1px solid #ddd;
+        padding: 1rem;
+    }
+
+</style>
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1" style="display: none" id="btnErrorPopup"></button>
+<div id="myModal1" class="modal fade modal-error" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" id="errorHeader">
+                <h5 class="modal-title" id="errorTitle"><i class="fas fa-exclamation-triangle"></i>Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeError" onclick='return getSetFocus();setGetFocus();'>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-1">
+                    </div>
+                    <div class="col-sm-10">
+                        <span id="errorMessage"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <h4 class="text-center mb-3">NewDSC</h4>
+    @*THis div is only for demo purpose to download azure file*@
+    <div class="row" style="display:none">
+        <div class="col-sm-3">
+            <div class="form-group row">
+                <div class="col-sm-6">
+
+                    <a href='@Url.Content("~/NewDSC/NewDSC/DownloadFileFromAzure")?path=DSC/WithoutDSC/test-latest1.pdf' target="_blank" class="file-download-licensee">Download Test File From Azure</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="ddlTokens">Tokens</label>
+                <div class="input-group mb-3">
+                    <select class="form-control" id="ddlTokens">
+                        <option selected>Select Device</option>
+                    </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-secondary" type="button" runat="server" id="btnRefreshtoken" onclick="callListCHProvider();">Refresh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="ddlCert">Certificates</label>
+                <select class="form-control" id="ddlCert">
+                    <option selected>Select Certificate</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="tokenPassword">Password</label>
+                <input type="password" class="form-control" id="tokenPassword" placeholder="Password">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group row">
+                <div class="col-sm-3">
+                    <label for="CBPdfSigning">Pdf Signing</label>
+                </div>
+                <input type="checkbox" id="CBPdfSigning" title="Pdf Signing" style="margin-top: -3px;" />
+                <input id="hfPdfFileName" type="hidden" value="" />
+                <input type="hidden" id="hfPdfFileBase64" value="" />
+                <input id="fName" type="hidden" />
+                <input id="fid" type="hidden" />
+                <input id="FNID" type="hidden" />
+                <input id="FNTYPE" type="hidden" />
+                <input id="UPDATEIN" type="hidden" />
+                <input id="SIGNType" type="hidden" />
+                <input id="TABLEID" type="hidden" />
+                <input type="hidden" id="hfdsctype" value="" />
+
+            </div>
+        </div>
+    </div>
+    <div id="dataSigningContainer">
+        <div class="form-group" style="display:none;">
+            <label for="dataToSign">Data To Sign</label>
+            <textarea class="form-control" id="dataToSign" placeholder="Data To Sign" disabled="disabled">Test Data</textarea>
+        </div>
+        <div class="form-group">
+            <label for="ddlDataType">Data Type</label>
+            <select class="form-control" id="ddlDataType">
+                <option value="TextPKCS7">TextPKCS7</option>
+                <option value="TextPKCS1">TextPKCS1</option>
+                <option value="XML">XML</option>
+                <option value="Sha256HashPKCS7">Sha256HashPKCS7</option>
+                <option value="Sha256HashPKCS1">Sha256HashPKCS1</option>
+                <option value="TBSCertificate">TBSCertificate</option>
+                <option value="TextPKCS7ATTACHED">TextPKCS7ATTACHED</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <input type="button" id="signData" class="form-control btn btn-success" onclick="callSign();" value="Sign" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" id="sdContainer" style="display: none;">
+        <label for="signedData">Signed Data</label>
+        <textarea class="form-control" id="signedData"></textarea>
+        <button class="form-control btn-dark" onclick="copyFunction('#signedData');">Copy Signed Data</button>
+    </div>
+    <div class="form-group" id="sdPdfContainer" style="display: none;">
+        <label for="signedData">Signed Data</label>
+        <textarea class="form-control" id="signedDataPDF" onchange="TxtChanged();"></textarea>
+    </div>
+    <div id="divLoading">
+    </div>
+</section>
+
+<script>
+    function getParameterValues(key) {
+        var pageURL = window.location.search.substring(1);
+        var urlQS = pageURL.split('&');
+        for (var i = 0; i < urlQS.length; i++) {
+            var paramName = urlQS[i].split('=');
+            if (paramName[0] == key) {
+                //replace the special char like "+","&" etc from value
+                var value = paramName[1].replace('%20', ' ').replace('%26', '&').replace('+', ' ');
+                return value;
+            }
+        }
+    }
+
+    //(4) Function to get the data from parent window to signe in child window
+    function SaveSingedData() {
+        try {
+
+        } catch (e) {
+
+        }
+    }
+
+    //(5) Function to get the pdf data from parent and save(normal pdf) in child window
+    function SaveNormalPDF() {
+        //alert('@Url.Action("SaveNormalPdfFile", "NewDSC", new { Area = "NewDSC" })' + '?test=test');
+        try {
+            var dt = new Date();
+            //var FNID = $("#FNID").val();
+            //var FNTYPE = $("#FNTYPE").val();
+            //var FileName = "LTP_" + FNID + "_" + dt.getDate() + "" + (dt.getMonth() + 1) + "" + dt.getFullYear() + "_" + dt.getHours() + "_" + dt.getMinutes() + "_" + dt.getSeconds() + ".pdf";
+            var FileName = $("#FNTYPE").val() + "_" + $("#FNID").val() + "_" + dt.getDate() + "" + (dt.getMonth() + 1) + "" + dt.getFullYear() + "_" + dt.getHours() + "_" + dt.getMinutes() + "_" + dt.getSeconds() + ".pdf";
+            $("#fName").val(FileName).change();
+            $('#hfPdfFileName').val(FileName);
+            $.ajax({
+                url: '@Url.Action("SaveNormalPdfFile", "NewDSC", new { Area = "NewDSC" })',
+                data: { base64BinaryStr: $('#hfPdfFileBase64').val(), fileName: $("#fName").val(), ID: $("#FNID").val(), UpdateIn: $("#UPDATEIN").val() },
+                type: "POST",
+                //dataType: 'json',
+                success: function (msg) {
+                    if (msg == "SUCCESS") {
+                        $("#signData").prop('disabled', false);
+                    }
+                    else {
+                        $("#signData").prop('disabled', true);
+                        alert(msg);
+                    }
+                }
+            });
+        }
+        catch (e) {
+            //alert(e.data)
+            alert("Your DSC Connection is not working. Please try after some time.");
+        }
+    }
+
+    //(6) The below event handler will handle to call the parent window function
+    // Allow window to listen for a postMessage
+    window.addEventListener("message", (event) => {
+        debugger;
+        // Normally you would check event.origin
+        // To verify the targetOrigin matches
+        // this window's domain
+        let hfPdfFileBase64 = document.querySelector('#hfPdfFileBase64');
+        let FNID = document.querySelector('#FNID');
+        let FNTYPE = document.querySelector('#FNTYPE');
+        let UPDATEIN = document.querySelector('#UPDATEIN');
+        let SIGNType = document.querySelector('#SIGNType');
+        let TABLEID = document.querySelector('#TABLEID');
+        let dataToSign = document.querySelector('#dataToSign');
+        let hfdsctype = document.querySelector('#hfdsctype');
+
+
+        // event.data contains the message sent
+        if (event.data.SIGNType == "signpdf") {
+            SIGNType.value = event.data.SIGNType;
+            hfdsctype.value = event.data.SIGNType;
+            hfPdfFileBase64.value = event.data.PdfFileBase64;//`Name is ${event.data.pName} Age is  ${event.data.pAge}`;
+            FNID.value = event.data.FNID;
+            FNTYPE.value = event.data.FNTYPE;
+            UPDATEIN.value = event.data.UPDATEIN;
+            TABLEID.value = event.data.TABLEID;
+        }
+        else if (event.data.SIGNType == "signdoc") {
+            SIGNType.value = event.data.SIGNType;
+            hfdsctype.value = event.data.SIGNType;
+            dataToSign.value = event.data.DocData;
+        }
+    });
+
+    window.onload = function () {
+        var dsctype = getParameterValues("dsctype");
+        //alert('@ViewBag.FileName');
+        //$("#hfPdfFileName").val('@ViewBag.FileName');
+        //$("#hfPdfFileBase64").val('@ViewBag.PdfFileBase64');
+        //$("#dataToSign").html('@ViewBag.PDFName');
+
+        //(1)Show the loading div while window loaded for 5 seconds
+        $("#divLoading").addClass('show');
+        setTimeout(function () { $("#divLoading").addClass('hide'); }, 5000);
+
+        //(2)Call the post message from the child window to get base64 pdf file from parend window
+        //after opening the child window and if fully loaded.
+        if (dsctype == "signpdf") {
+            let demoCall = { RequestParam: "signpdf" };
+            // In production, DO NOT use '*', use toe target domain
+            window.opener.postMessage(demoCall, '*')// childwin is the targetWindow
+            $("#hfdsctype").val(dsctype);
+        }
+        else if (dsctype == "signdoc") {
+            //after opening the child window and if fully loaded.
+            let demoCallData = { RequestParam: "signdoc" };
+            // In production, DO NOT use '*', use toe target domain
+            window.opener.postMessage(demoCallData, '*')// childwin is the targetWindow
+            $("#hfdsctype").val(dsctype);
+        } else {
+            $("#btnErrorPopup").click();
+            $("#errorMessage").html('DSC Type is not defined! Please specify the dsctype in your request link.');
+            $("#hfdsctype").val("");
+        }
+
+    };
+
+    $(document).ready(function () {
+        //(3)After the above call completed call the belwo function after some time delay
+        setTimeout(function () {
+            //added by sunil 29-06-22
+            if ($("#hfdsctype").val() == "signpdf") {
+                $("#CBPdfSigning").attr("checked", true);
+                SaveNormalPDF();
+                changeContainer();
+            }
+            else if ($("#hfdsctype").val() == "signdoc") {
+                $("#CBPdfSigning").attr("checked", false);
+                $("#CBPdfSigning").prop('disabled', true);
+                $('#ddlDataType').val("TextPKCS7ATTACHED").change();
+                $('#dataToSign').attr("disabled", "disabled")
+                changeContainer();
+            }
+        }, 5000); // sending base64 data to em-bridge
+
+    });
+
+    //This function will call after sign completed in em bridge (for Data Sign only)
+    function DataSignCompleted(SiginedCertificate, SignedText, Status) {
+        if (Status == "1") {
+            //window.location.href = '@ViewBag.RedirectURL'
+            let msgSuccess = { DSCResult: "SUCCESS", DSCSignedText: SignedText, DSCStatus: Status };
+            // In production, DO NOT use '*', use toe target domain
+            window.opener.postMessage(msgSuccess, '*')// childwin is the targetWindow
+            //window.opener.location.reload();
+            window.close();
+        } else {
+            //window.location.href = '@ViewBag.RedirectURL'
+            let msgSuccess = { DSCResult: "FAIL", DSCSignedText: '', DSCStatus: Status };
+            // In production, DO NOT use '*', use toe target domain
+            window.opener.postMessage(msgSuccess, '*')// childwin is the targetWindow
+            //window.opener.location.reload();
+            window.close();
+        }
+    }
+
+    //This function will call after sign completed in em bridge (for PDF only)
+    function SignCompleted(signedData, status) {
+        //alert(signedData);
+        $.ajax({
+            url: '@Url.Action("CheckVerifyResponse", "NewDSC", new { Area = "NewDSC" })',
+            type: "POST",
+            data: { contentType: "pkcs7", signDataBase64Encoded: signedData, responseType: "plain", status: status },
+            async: false,
+            success: function (msg) {
+                if (msg == "SUCCESS") {
+                    $.ajax({
+                        url: '@Url.Action("SavePdfFile", "NewDSC", new { Area = "NewDSC" })',
+                        type: "POST",
+                        async: false,
+                        data: { base64BinaryStr: signedData, fileName: $("#fName").val(), ID: $("#TABLEID").val(), UpdateIn: $("#UPDATEIN").val() },
+                        success: function (msg) {
+                            if (msg == "SUCCESS") {
+                                //window.location.href = '@ViewBag.RedirectURL'
+                                let msgSuccess = { DSCResult: "SUCCESS" };
+                                // In production, DO NOT use '*', use toe target domain
+                                window.opener.postMessage(msgSuccess, '*')// childwin is the targetWindow
+                                //window.opener.location.reload();
+                                window.close();
+                            }
+                            else {
+                                //alert(msg);
+                                let msgFailed = { DSCResult: "FAILED" };
+                                // In production, DO NOT use '*', use toe target domain
+                                window.opener.postMessage(msgFailed, '*')// childwin is the targetWindow
+                                //window.opener.location.reload();
+                                window.close();
+
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+</script>
+

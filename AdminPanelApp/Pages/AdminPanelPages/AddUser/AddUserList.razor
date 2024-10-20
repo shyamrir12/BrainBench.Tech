@@ -1,0 +1,214 @@
+﻿@using System.Security.Claims;
+@inject NavigationManager _navigationManager
+@inject IAddUserSubscriber _adduser
+@inject IToastService _toastService
+ <div style="overflow-y: auto; max-height: 500px;">
+<MudTextField @bind-Value="searchText" Variant="Variant.Filled" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" OnAdornmentClick="HandleSearch" AdornmentAriaLabel="Search">
+
+</MudTextField>
+
+    <Virtualize ItemsProvider="loadOnlyVisibleItems" Context="singleuser" @ref="virtualizeComponent" OverscanCount="4">
+    <ItemContent>
+        <MudCard style="margin-bottom: 5px;">
+
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                        <MudAvatar Color="Color.Secondary">@singleuser.Name[0]</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@singleuser.Name</MudText>
+                    <MudText Typo="Typo.body2">@singleuser.EmailId</MudText>
+                        <MudText Typo="Typo.caption">@singleuser.CreateDate ,@singleuser.Designation</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.TopRight" TransformOrigin="Origin.TopLeft">
+                        <MudStack>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(e => edituserevent(singleuser))"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(e => deleteuserevent(singleuser))"></MudIconButton>
+                        </MudStack>
+                    </MudMenu>
+                </CardHeaderActions>
+            </MudCardHeader>
+
+        </MudCard>
+    </ItemContent>
+    <Placeholder>
+        <MudCard style="margin-bottom: 5px;">
+
+            <MudCardHeader>
+                Loading...
+            </MudCardHeader>
+        </MudCard>
+    </Placeholder>
+
+
+</Virtualize>
+</div>
+@code {
+    //USer Auth
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    //Loader
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+
+    //1 for pass item to parent add event for selected edit item
+    [Parameter]
+    public EventCallback<AddUserModel> OnUserSelection { get; set; }
+
+    //6.declare parameter for the parent
+    [Parameter]
+    public int id { get; set; }
+
+    public Virtualize<AddUserModel>? virtualizeComponent;
+    List<AddUserModel> RengList = new List<AddUserModel>();
+    //List<AddUserModel> adduserlist = new List<AddUserModel>();
+    public string searchText;
+    int totalrows =0;
+    int userid = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var identity = user.Identity as ClaimsIdentity;
+
+            // Find the NameIdentifier claim
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            // Get the value of the NameIdentifier claim
+
+            userid = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            // var userlist =await _adduser.GetUserList(request);
+            //adduserlist = userlist.Data;
+            // totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count - 1]);
+        }
+    }
+
+    private async void HandleSearch()
+    {
+        await virtualizeComponent?.RefreshDataAsync();
+
+        StateHasChanged();
+
+    }
+
+    private async ValueTask<ItemsProviderResult<AddUserModel>> loadOnlyVisibleItems(ItemsProviderRequest itemsProviderRequest)
+    {
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (!identity.IsAuthenticated)
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+
+        var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+        int PageIndex  = itemsProviderRequest.StartIndex;
+        int PageSize = itemsProviderRequest.Count;
+
+        CommanRequest request = new CommanRequest();
+
+
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
+
+        if (String.IsNullOrEmpty(searchText))
+        {
+
+            request.PageSize = PageSize;
+            request.PageIndex = PageIndex;
+            request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            var userlist = await _adduser.GetUserList(request);
+
+
+            RengList = userlist.Data;
+            if(RengList!=null)
+                totalrows = Convert.ToInt32(userlist.Message[userlist.Message.Count - 1]); 
+
+
+        }
+        else
+        {
+            request.Filter = searchText;
+            request.UserID = Convert.ToInt32(nameIdentifierClaim?.Value);
+
+            var userlist = await _adduser.GetUserList(request);
+
+            RengList = userlist.Data;
+            if (RengList != null)
+                totalrows = userlist.Data.Count();
+
+
+        }
+
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
+        //await Task.Delay(1000);
+        return new ItemsProviderResult<AddUserModel>(RengList, totalrows);
+    }
+
+    //6. setting parent (added or edited item) parameter to list item
+    protected async override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        //call API to reload the data from data base
+
+        if (id > 0)
+        {
+            // await virtualizeComponent?.RefreshDataAsync();
+
+            // StateHasChanged();
+
+
+            // nml.SpinnerVisible = true;
+            // await _notifyMainLayout.InvokeAsync(nml);
+            // var singleuser = await _adduser.GetUserByID(new CommanRequest { UserID = id });
+            // if (singleuser.Status == true )
+            // {
+            //     RengList.Add(singleuser.Data);
+
+            //     StateHasChanged();
+            // }
+            // nml.SpinnerVisible = false;
+            // await _notifyMainLayout.InvokeAsync(nml);
+            // id = 0;
+        }
+
+
+
+    }
+
+
+
+
+    private async Task deleteuserevent(AddUserModel? aum)
+    {
+        nml.SpinnerVisible = true;
+        await _notifyMainLayout.InvokeAsync(nml);
+
+        var responce=  await _adduser.ActivationUser(new CommanRequest { UserID = aum.UserID, Active = false, SubRoleId = userid });
+        if (responce.Status==true)
+        {
+            _toastService.ShowSuccess(responce.Data.Msg);
+             StateHasChanged();
+        }
+       
+        nml.SpinnerVisible = false;
+        await _notifyMainLayout.InvokeAsync(nml);
+    }
+
+    private void edituserevent(AddUserModel? aum)
+    {
+        //1 by invoking this method inside edit event passing value to parent
+        OnUserSelection.InvokeAsync(aum);
+        //StateHasChanged();
+
+    }
+
+}

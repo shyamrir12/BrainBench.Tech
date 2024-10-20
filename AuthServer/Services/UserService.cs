@@ -1,8 +1,11 @@
 ﻿using AuthServer.Factory;
-using AuthServer.Models;
+using LoginModels;
 using AuthServer.Repository;
 using Dapper;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuthServer.Services
 {
@@ -13,11 +16,50 @@ namespace AuthServer.Services
 		{
 
 		}
+		//Added for salt and password incription by shyam sir 14-9-23
+		public static string ComputeSha256Hash(string rawData)
+		{
+			using (SHA256 sha256Hash = SHA256.Create())
+			{
+				byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+				StringBuilder builder = new StringBuilder();
+
+				for (int i = 0; i <= bytes.Length - 1; i++)
+					builder.Append(bytes[i].ToString("x2"));
+
+				return builder.ToString();
+			}
+		}
+		//Added for salt and password incription by shyam sir 14-9-23
+
 		public async Task<UserLoginSession> Authenticate(LoginEF model)
 		{
 			UserLoginSession objUserLoginSession = new UserLoginSession();
 			try
 			{
+
+				//Added for salt and password incription by shyam sir 14-9-23
+				var paramListPass = new
+				{
+					UserName = model.UserName,
+					Check = "1",
+				};
+
+				var resultPass = ConnectionAuthDB.Query<UserLoginSession>("AdminPanel_uspUserdata", paramListPass, commandType: System.Data.CommandType.StoredProcedure);
+				if (resultPass.Count() > 0)
+				{
+
+					string pwd2 = ComputeSha256Hash(model.UserID + resultPass.FirstOrDefault().Password);
+					if (model.Password.ToUpper() == pwd2.ToUpper())
+					{
+						model.Password = resultPass.FirstOrDefault().Password;
+					}
+
+
+				}
+				//Added for salt and password incription by shyam sir 14-9-23
+
+
 				var paramList = new
 				{
 					UserName = model.UserName,
@@ -30,7 +72,7 @@ namespace AuthServer.Services
 					UserAgent = model.Browserinfo
 				};
 
-				var result = ConnectionAuthDB.Query<UserLoginSession>("uspValidateUser", paramList, commandType: System.Data.CommandType.StoredProcedure);
+				var result = ConnectionAuthDB.Query<UserLoginSession>("AdminPanel_ValidateUser", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
 				if (result.Count() > 0)
 				{
@@ -39,7 +81,7 @@ namespace AuthServer.Services
 				}
 				else
 				{
-					objUserLoginSession.ApplicantName = "-1";
+					objUserLoginSession.Name = "-1";
 				}
 
 				return objUserLoginSession;
@@ -50,72 +92,39 @@ namespace AuthServer.Services
 
 				throw ex;
 			}
-			finally
-			{
+			//finally
+			//{
 
-				objUserLoginSession = null;
-			}
+			//	objUserLoginSession = null;
+			//}
 		}
 
 
 		public async Task<UserLoginSession> GetUserById(LoginEF model)
 		{
-
-
-			UserLoginSession objUserLoginSession = new UserLoginSession();
+         
+            UserLoginSession objUserLoginSession = new UserLoginSession();
 			try
 			{
-				var paramListPass = new
+				
+				var paramList = new
 				{
 					UserId = model.UserID,
 					UserName = model.UserName,
-					Check = "1",
+					Check = "2",
 				};
 
-				var resultPass = ConnectionAuthDB.Query<UserLoginSession>("uspUserdata", paramListPass, commandType: System.Data.CommandType.StoredProcedure);
-
-				var paramList = new
-				{
-					UserName = resultPass.FirstOrDefault().UserName,
-					Password = resultPass.FirstOrDefault().Password,
-					EncryptPassword = resultPass.FirstOrDefault().EncryptPassword,
-					LoginUserType = model.UserType,
-					Check = "1",
-					RemoteIp = model.Remoteid,
-					LocalIp = model.Localip,
-					UserAgent = model.Browserinfo
-				};
-
-				var result = ConnectionAuthDB.Query<UserLoginSession>("uspValidateUser", paramList, commandType: System.Data.CommandType.StoredProcedure);
+				var result = ConnectionAuthDB.Query<UserLoginSession>("AdminPanel_uspUserdata", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
 				if (result.Count() > 0)
 				{
 					objUserLoginSession = result.FirstOrDefault();
-					//if (objUserLoginSession.IsSubUser) // changed for sub user login with prakash(27-03-23)
-					//{
-					//    objUserLoginSession.Listmenu = MenuList(new menuonput() { MineralId = (int)objUserLoginSession.MineralId, UserID = (int)objUserLoginSession.SubUserID, MineralName = objUserLoginSession.MineralName, MMenuId = null });
-					//}
-					//else
-					//{
-					//    objUserLoginSession.Listmenu = MenuList(new menuonput() { MineralId = (int)objUserLoginSession.MineralId, UserID = (int)objUserLoginSession.UserId, MineralName = objUserLoginSession.MineralName, MMenuId = null });
-					//}
-					menuonput objmenu = new menuonput();
-					List<MenuEF> Listmenu = new List<MenuEF>();
-					if (objUserLoginSession.IsSubUser) // changed for sub user login with prakash(27-03-23)
-					{
-						objmenu.UserID = Convert.ToInt32(objUserLoginSession.SubUserID);
-					}
-					else
-					{
-						objmenu.UserID = Convert.ToInt32(objUserLoginSession.UserId);
-					}
 
-					objmenu.MineralId = Convert.ToInt32(objUserLoginSession.MineralId);
-					objmenu.MineralName = objUserLoginSession.MineralName;
-					objmenu.MMenuId = null;
-					Listmenu = MenuList(objmenu);
-					objUserLoginSession.Listmenu = Listmenu;
-				}
+					
+					objUserLoginSession.Items = MenuList(objUserLoginSession.UserID, objUserLoginSession.RoleId);
+                    objUserLoginSession.validTo=model.validTo;
+
+                }
 
 				return objUserLoginSession;
 
@@ -135,77 +144,81 @@ namespace AuthServer.Services
 		}
 
 
-		public List<MenuEF> MenuList(menuonput objmenuonput)
+		public List<MenuItem> MenuList(int UserID,int RoleId)
 		{
-			string result = "";
-			List<MenuEF> objListMenuEF = new List<MenuEF>();
-			List<childMenu> objListchildMenu;
+
+			List<MenuItem> objListMenuEF = new List<MenuItem>();
+			
+			List<Category> categories = new List<Category>();
 			try
 			{
 				var paramList = new
 				{
-					UserID = objmenuonput.UserID,
-					MineralId = objmenuonput.MineralId,
-					MineralName = objmenuonput.MineralName,
-					MMenuId = objmenuonput.MMenuId
+					RoleId = RoleId,
+					UserID = UserID,
+					
 				};
-				IDataReader dr = ConnectionAuthDB.ExecuteReader("GetUserWiseMenuDataAfterLogin_New_backup", paramList, commandType: System.Data.CommandType.StoredProcedure);
-				DataSet ds = new DataSet();
-				ds = ConvertDataReaderToDataSet(dr);
-				string menu = "";
-				if (ds.Tables[0].Rows.Count > 0)
-				{
-					foreach (DataRow dro in ds.Tables[0].Rows)
-					{
-						MenuEF objMenuEF = new MenuEF();
-						objMenuEF.MenuId = int.Parse(dro["MenuId"].ToString());
-						objMenuEF.MenuName = dro["MenuName"].ToString();
-						objMenuEF.ParentId = dro["ParentId"].ToString();
-						objMenuEF.Controller = dro["Controller"].ToString();
-						objMenuEF.url = dro["url"].ToString();
-						objMenuEF.Area = dro["Area"].ToString();
-						objMenuEF.ActionName = dro["ActionName"].ToString();
-						objMenuEF.IsView = dro["IsView"].ToString();
-						objMenuEF.IsAdd = dro["IsAdd"].ToString();
-						objMenuEF.IsEdit = dro["IsEdit"].ToString();
-						objMenuEF.IsDelete = dro["IsDelete"].ToString();
-						objMenuEF.DisplaySrNo = int.Parse(dro["DisplaySrNo"].ToString());
-						objMenuEF.CssClass = dro["CssClass"].ToString();
-						objMenuEF.MenuLevel = dro["MenuLevel"].ToString();
-						objMenuEF.ParentMenuName = dro["ParentMenuName"].ToString();
-						objMenuEF.LinkPath = dro["LinkPath"].ToString();
-						objMenuEF.SvgPath = dro["SvgPath"].ToString();
-						objMenuEF.divclass = dro["divclass"].ToString();
-						objMenuEF.MobileMenu = int.Parse(dro["MobileMenu"].ToString());
-						objListchildMenu = new List<childMenu>();
-						foreach (DataRow dro1 in ds.Tables[1].Rows)
-						{
-							if (dro1["ParentId"].ToString() == objMenuEF.MenuId.ToString())
-							{
-								childMenu objchildMenu = new childMenu();
-								objchildMenu.MenuId = int.Parse(dro1["MenuId"].ToString());
-								objchildMenu.MenuName = dro1["MenuName"].ToString();
-								objchildMenu.ParentId = int.Parse(dro1["ParentId"].ToString());
-								objchildMenu.Controller = dro1["Controller"].ToString();
-								objchildMenu.url = dro1["url"].ToString();
-								objchildMenu.Area = dro1["Area"].ToString();
-								objchildMenu.ActionName = dro1["ActionName"].ToString();
-								objchildMenu.IsView = dro1["IsView"].ToString();
-								objchildMenu.IsAdd = dro1["IsAdd"].ToString();
-								objchildMenu.IsEdit = dro1["IsEdit"].ToString();
-								objchildMenu.IsDelete = dro1["IsDelete"].ToString();
-								objchildMenu.DisplaySrNo = dro1["DisplaySrNo"].ToString();
-								objchildMenu.CssClass = dro1["CssClass"].ToString();
-								objchildMenu.MenuLevel = dro1["MenuLevel"].ToString();
-								objchildMenu.ParentMenuName = dro1["ParentMenuName"].ToString();
-								objchildMenu.GifIcon = dro1["GifIcon"].ToString();
-								objchildMenu.Description = dro1["Description"].ToString();
-								objListchildMenu.Add(objchildMenu);
-							}
-						}
-						objMenuEF.childMenuList = objListchildMenu;
+				var result = ConnectionAuthDB.Query<Category>("Proc_Get_MenuBy_UserRoll", paramList, commandType: System.Data.CommandType.StoredProcedure);
 
-						objListMenuEF.Add(objMenuEF);
+				if (result.Count() > 0)
+				{
+					foreach (var item in result)
+					{
+
+						categories.Add(
+						new Category
+						{
+							CategoryId = item.CategoryId,
+							CategoryName = item.CategoryName,
+							ControllerName = item.ControllerName,
+							ActionName =item.ActionName,
+							url = item.url,
+							Area = item.Area,
+							DisplaySrNo = item.DisplaySrNo,
+							GifIcon = item.GifIcon,
+							ParentCategoryId = (item.ParentCategoryId != 0) ? item.ParentCategoryId : (int?)null
+						});
+
+						
+					}
+
+					List<TreeNode> headerTree = FillRecursive(categories, null);
+
+					foreach (var item in headerTree)
+					{
+						var _google = new MenuItem()
+						{
+							MenuItemId = item.CategoryId,
+							MenuName = item.CategoryName,
+							MenuItemName = item.ControllerName,
+							MenuItemPath = item.ActionName,
+							url = item.url,
+							Area = item.Area,
+							DisplaySrNo = item.DisplaySrNo,
+							GifIcon = item.GifIcon,
+							ParentItemId = item.ParentCategoryId,
+						};
+						foreach (var item2 in item.Children)
+						{
+							_google.ChildMenuItems.Add(new MenuItem()
+							{
+								MenuItemId = item2.CategoryId,
+								MenuName = item2.CategoryName,
+								MenuItemName = item2.ControllerName,
+								MenuItemPath = item2.ActionName,//+"?page=" + item.CategoryId
+								url = item2.url,
+								Area = item2.Area,
+								DisplaySrNo = item2.DisplaySrNo,
+								GifIcon = item2.GifIcon,
+								ParentItemId= item2.ParentCategoryId,
+							}); 
+						}
+						//if (_google.MenuName.Equals("Dashboard"))
+						//	objListMenuEF.Insert(0, _google);
+						//else if (_google.MenuName.Equals("Master"))
+						//	objListMenuEF.Insert(1, _google);
+						//else
+							objListMenuEF.Add(_google);
 					}
 				}
 			}
@@ -218,18 +231,38 @@ namespace AuthServer.Services
 			return objListMenuEF;
 		}
 
-		public DataSet ConvertDataReaderToDataSet(IDataReader data)
+
+		private static List<TreeNode> FillRecursive(List<Category> flatObjects, int? parentId = null)
 		{
-			DataSet ds = new DataSet();
-			int i = 0;
-			while (!data.IsClosed)
+			return flatObjects.Where(x => x.ParentCategoryId.Equals(parentId)).Select(item => new TreeNode
 			{
-				ds.Tables.Add("Table" + (i + 1));
-				ds.EnforceConstraints = false;
-				ds.Tables[i].Load(data);
-				i++;
-			}
-			return ds;
+				
+				CategoryName = item.CategoryName,
+				ControllerName = item.ControllerName,
+				ActionName = item.ActionName,
+				CategoryId = item.CategoryId,
+				url=item.url,
+				Area = item.Area,
+				DisplaySrNo = item.DisplaySrNo,				
+				GifIcon = item.GifIcon,
+				ParentCategoryId = item.ParentCategoryId,
+
+				Children = FillRecursive(flatObjects, item.CategoryId)
+			}).ToList();
 		}
+
+		//public DataSet ConvertDataReaderToDataSet(IDataReader data)
+		//{
+		//	DataSet ds = new DataSet();
+		//	int i = 0;
+		//	while (!data.IsClosed)
+		//	{
+		//		ds.Tables.Add("Table" + (i + 1));
+		//		ds.EnforceConstraints = false;
+		//		ds.Tables[i].Load(data);
+		//		i++;
+		//	}
+		//	return ds;
+		//}
 	}
 }

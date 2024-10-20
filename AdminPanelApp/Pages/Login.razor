@@ -1,0 +1,189 @@
+﻿@page "/"
+@using System.ComponentModel.DataAnnotations
+@using AdminPanelApp.Data.LoginServices;
+@using LoginModels;
+@using System.Security.Cryptography;
+@using System.Text;
+
+@inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorageService
+@inject ILoginProvider _loginProvider
+@inject IToastService _toastService
+
+<EditForm Model="@loginef" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardHeader>
+                    
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Left"><b>User Login</b></MudText>
+                       
+                       @*  <MudImage Src="img/braibenchlogo.png" Width=300 Height=150 Alt="Login" Elevation="25" Class="rounded-lg" /> *@
+                       
+
+                     </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudIconButton Icon="@Icons.Material.Filled.Home" Color="Color.Success" />
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                     <MudFocusTrap  DefaultFocus="DefaultFocus.FirstChild">
+                        <MudTextField Label="EmailId or UserName" HelperText="Use EmailId or UserName" Class="mt-3" OnlyValidateIfDirty=true
+                    @bind-Value="loginef.UserName" For="@(() => loginef.UserName)" />
+
+                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" OnlyValidateIfDirty=true 
+                    Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonShowPasswordclick" AdornmentAriaLabel="Show Password"
+                    @bind-Value="loginef.Password" For="@(() => loginef.Password)" InputType="@PasswordInput" />
+
+                    <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
+                        <MudTextField Immediate=true Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="loginef.captcha" For="@(() => loginef.captcha)" OnlyValidateIfDirty=true />
+                        <MudChip Icon="@Icons.Material.Filled.QuestionAnswer" Label="true" Color="Color.Primary">@CaptchaText</MudChip>
+                    </MudPaper>
+                    </MudFocusTrap>
+                </MudCardContent>
+                <MudCardActions>
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto "
+                               Disabled="@(!context.IsModified() || !context.Validate())"
+                    EndIcon="@Icons.Material.Filled.Login" FullWidth="true">login</MudButton>
+                                           
+                </MudCardActions>
+                <MudCardActions>
+              
+                
+                    <MudItem xs="6">
+                        <MudText Typo="Typo.body2" Align="Align.Left">
+                            <MudLink Href="/register">Create an account</MudLink>
+                        </MudText>
+                        
+                    </MudItem>
+                    <MudItem xs="6">
+                       
+                        <MudText Typo="Typo.body2" Align="Align.Right">
+                            <MudLink Href="/forgotpassword">Forgot password?</MudLink>
+                           @*  <MudLink  Href="/">Back to home</MudLink> *@
+                        </MudText>
+                    </MudItem>
+
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@code {
+  
+    LoginEF loginef = new LoginEF();
+    bool success;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+
+    bool isShow;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    private string CaptchaText;
+    private int CaptchaSolution;
+
+    void ButtonShowPasswordclick()
+    {
+        @if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var captcharesponce = MyUtility.GenerateCaptcha();
+        CaptchaSolution = captcharesponce.CaptchaSolution;
+        CaptchaText = captcharesponce.CaptchaText;
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+
+            _navigationManager.NavigateTo("/dashboard", true);
+
+        }
+
+
+    }
+
+
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        if (context.Validate())
+        {
+            if (Convert.ToInt32(loginef.captcha) == CaptchaSolution)
+            {
+                nml.SpinnerVisible = true;
+                _notifyMainLayout.InvokeAsync(nml);
+
+                Random randcls = new Random();
+                loginef.UserID = randcls.Next();
+
+                loginef.Password = MyUtility.ComputeSha256Hash(loginef.UserID + MyUtility.ComputeSha256Hash(loginef.Password));
+                loginef.Mail = "test1234@gail.com";
+                AuthenticationResponse authenticationResponse = await _loginProvider.AuthenticateJWT(loginef);
+
+                nml.SpinnerVisible = false;
+                _notifyMainLayout.InvokeAsync(nml);
+
+                if (authenticationResponse.Token != string.Empty)
+                {
+                    await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
+
+                    _navigationManager.NavigateTo("/dashboard", true);
+                  
+
+                }
+                else
+                {
+                    _toastService.ShowError("Invalid user-name or password");
+                }
+                success = true;
+                StateHasChanged();
+
+
+            }
+            else
+            {
+
+                var captcharesponce = MyUtility.GenerateCaptcha();
+                CaptchaSolution = captcharesponce.CaptchaSolution;
+                CaptchaText = captcharesponce.CaptchaText;
+                _toastService.ShowError("CAPTCHA incorrect. Try again!");
+            }
+
+        }
+        else
+        {
+            _toastService.ShowError("!Please fill the form correctly");
+        }
+
+     
+
+    }
+  }

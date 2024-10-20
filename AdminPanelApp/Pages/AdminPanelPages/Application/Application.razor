@@ -1,0 +1,327 @@
+﻿@inject IToastService _toastService
+@inject IApplicationSubscriber _application
+@inject NavigationManager _navigationManager
+@inject IAzureFileSubscriber _azrfileSubscriber
+@inject IConfiguration _configuration
+<EditForm Model="@application" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                @*    <MudCardHeader>
+                <CardHeaderContent>
+                <MudText Typo="Typo.h5" Align="Align.Start"><b>Add User</b></MudText>
+                </CardHeaderContent>
+                </MudCardHeader> *@
+                <MudCardContent>
+                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+
+                        <MudTextField Label="Applicant Name" HelperText="Max. 8 characters"
+                        @bind-Value="application.nameenglish" For="@(() => application.nameenglish)" />
+
+                        <MudTextField Label="Description" HelperText="Description" Class="mt-3" Lines="5"
+                        @bind-Value="application.Description" For="@(() => application.Description)" />
+
+                        @*  <MudGrid>
+                        <MudItem xs="6"> *@
+                        <MudFileUpload Class="align-content-start" T="IBrowserFile" Context="editimagecontext" FilesChanged="UploadApplicationImageFiles" MaximumFileCount="1">
+                            <ButtonTemplate>
+                                <MudButton HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           for="@editimagecontext">
+                                    Upload Application Image
+                                </MudButton>
+                            </ButtonTemplate>
+                            <SelectedTemplate>
+
+                                <MudList>
+
+
+
+                                    @if (applicationImagefile != null)
+                                    {
+                                        <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@applicationImagefile">
+                                            @applicationImagefile.Name <code>@applicationImagefile.Size bytes</code>
+                                        </MudListItem>
+                                    }
+                                    else
+                                    {
+                                        if (!String.IsNullOrEmpty(application.ApplicationImage))
+                                        {
+                                            <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                                                @application.ApplicationImage
+                                            </MudListItem>
+                                        }
+                                    }
+
+
+
+                                </MudList>
+
+                            </SelectedTemplate>
+                        </MudFileUpload>
+
+                        @*   </MudItem>
+                        <MudItem xs="6"> *@
+                        <MudFileUpload Class="align-content-start" T="IBrowserFile" Context="editthumbnailcontext" FilesChanged="UploadApplicationImagethumbnailFiles" MaximumFileCount="1">
+                            <ButtonTemplate>
+                                <MudButton HtmlTag="label"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                                           for="@editthumbnailcontext">
+                                    Upload Application Image
+                                </MudButton>
+                            </ButtonTemplate>
+                            <SelectedTemplate>
+
+                                <MudList>
+
+
+
+                                    @if (applicationImagethumbnailfile != null)
+                                    {
+                                        <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@applicationImagethumbnailfile">
+                                            @applicationImagethumbnailfile.Name <code>@applicationImagethumbnailfile.Size bytes</code>
+                                        </MudListItem>
+                                    }
+                                    else
+                                    {
+                                        if (!String.IsNullOrEmpty(application.Imagethumbnail))
+                                        {
+                                            <MudListItem Icon="@Icons.Material.Filled.AttachFile">
+                                                @application.Imagethumbnail
+                                            </MudListItem>
+                                        }
+                                    }
+
+
+
+                                </MudList>
+
+                            </SelectedTemplate>
+                        </MudFileUpload>
+                        @*
+                        </MudItem>
+                        </MudGrid> *@
+
+
+
+
+
+                        @*   <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
+                        <MudTextField Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="adduser.captcha" For="@(() => adduser.captcha)" OnlyValidateIfDirty=true />
+                        <MudChip Icon="@Icons.Material.Filled.QuestionAnswer" Label="true" Color="Color.Primary">@CaptchaText</MudChip>
+                        </MudPaper> *@
+
+                    </MudFocusTrap>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudButton ButtonType="ButtonType.Submit" EndIcon="@Icons.Material.Filled.AppRegistration" Variant="Variant.Filled" Color="Color.Primary"
+                                       Class="ml-auto" Disabled="@(!context.IsModified() || !context.Validate())" FullWidth="true">@buttonText</MudButton>
+
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudButton FullWidth="true" EndIcon="@Icons.Material.Filled.ClearAll" Variant="Variant.Filled" Color="Color.Primary" OnClick="ClearForm">Clear</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                   @*  <MudButtonGroup Color="Color.Primary" Variant="Variant.Filled" OverrideStyles="true">
+                       
+                       
+
+                    </MudButtonGroup> *@
+
+
+
+
+
+                </MudCardActions>
+
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+    public DmsIssuedBy application = new DmsIssuedBy();
+    [Parameter]
+    public DmsIssuedBy applicationparam { get; set; }
+    public string buttonText = "Save";
+    public int parentid { get; set; }
+
+    IBrowserFile applicationImagefile { get; set; }
+    IBrowserFile applicationImagethumbnailfile { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (identity.IsAuthenticated)
+        {
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+            parentid = Convert.ToInt32(nameIdentifierClaim.Value);
+            application.loginid = parentid;
+
+
+            application = applicationparam;
+            if (applicationparam.issuebyid > 0)
+                buttonText = "Update";
+            else
+                buttonText = "Save";
+
+            applicationparam = null;
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+    }
+
+    private async void OnValidSubmit(EditContext context)
+    {
+        var folderpath = _configuration.GetValue<string>("KeyList:ApplicationImage");
+        var folderthumbnailpath = _configuration.GetValue<string>("KeyList:ApplicationImagethumbnail");
+        Result<MessageEF> resp = new Result<MessageEF>();
+        if (context.Validate())
+        {
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+            application.loginid = parentid;
+
+            if (applicationImagefile != null && applicationImagefile.Size > 0)
+            {
+                if (!string.IsNullOrEmpty(applicationImagefile.Name))
+                {
+
+
+                    var buffers = new byte[applicationImagefile.Size];
+                    await applicationImagefile.OpenReadStream().ReadAsync(buffers);
+
+                    byte[] ImageBytes = buffers;
+
+                    string base64BinaryStr = Convert.ToBase64String(ImageBytes);
+                    string strName = DateTime.Now.Ticks.ToString() + "_" + Path.GetFileName(applicationImagefile.Name);
+
+                    MyFileRequest myFileRequest = new MyFileRequest();
+                    myFileRequest.FileContenctBase64 = base64BinaryStr;
+                    myFileRequest.FileName = strName;
+                    myFileRequest.FolderName = folderpath;
+                    myFileRequest.FileNameWithPath = folderpath + "\\" + strName;
+                    MessageEF e = await _azrfileSubscriber.SaveFile(myFileRequest);
+
+                    if (application.issuebyid > 0)
+                    {
+                        if (!String.IsNullOrEmpty(application.ApplicationImage))
+                        {
+
+                            MessageEF ed = await _azrfileSubscriber.DeleteFile(new MyFileRequest { FileNameWithPath = application.ApplicationImage });
+
+                        }
+                    }
+
+                    application.ApplicationImage = folderpath + "\\" + strName;
+
+                    // file download
+                    // MyFileResult fr = await _azrfileSubscriber.DownloadFile(myFileRequest);
+                    // await JSRuntime.InvokeVoidAsync("downloadFile", fr.ContentType, fr.FileBase64, fr.FileName);
+                }
+            }
+            if (applicationImagethumbnailfile != null && applicationImagethumbnailfile.Size > 0)
+            {
+                if (!string.IsNullOrEmpty(applicationImagethumbnailfile.Name))
+                {
+
+                    var buffers = new byte[applicationImagethumbnailfile.Size];
+                    await applicationImagethumbnailfile.OpenReadStream().ReadAsync(buffers);
+
+                    byte[] ImageBytes = buffers;
+
+                    string base64BinaryStr = Convert.ToBase64String(ImageBytes);
+                    string strName = DateTime.Now.Ticks.ToString() + "_" + Path.GetFileName(applicationImagethumbnailfile.Name);
+
+                    MyFileRequest myFileRequest = new MyFileRequest();
+                    myFileRequest.FileContenctBase64 = base64BinaryStr;
+                    myFileRequest.FileName = strName;
+                    myFileRequest.FolderName = folderthumbnailpath;
+                    myFileRequest.FileNameWithPath = folderthumbnailpath + "\\" + strName;
+                    MessageEF e = await _azrfileSubscriber.SaveFile(myFileRequest);
+
+                    if (application.issuebyid > 0)
+                    {
+                        if (!String.IsNullOrEmpty(application.Imagethumbnail))
+                        {
+
+                            MessageEF ed = await _azrfileSubscriber.DeleteFile(new MyFileRequest { FileNameWithPath = application.Imagethumbnail });
+
+
+                        }
+                    }
+                    application.Imagethumbnail = folderthumbnailpath + "\\" + strName;
+
+                    // file download
+                    // MyFileResult fr = await _azrfileSubscriber.DownloadFile(myFileRequest);
+                    // await JSRuntime.InvokeVoidAsync("downloadFile", fr.ContentType, fr.FileBase64, fr.FileName);
+                }
+            }
+            if (application.issuebyid > 0)
+            {
+
+                resp = await _application.UpdateApplication(application);
+
+            }
+
+            else
+            {
+                resp = await _application.AddApplication(application);
+            }
+
+            if (resp.Status == true)
+                _toastService.ShowSuccess(resp.Data.Msg);
+            else
+                _toastService.ShowSuccess(resp.Message.FirstOrDefault());
+
+            application = new DmsIssuedBy();
+            application.loginid = parentid;
+
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+
+        }
+        else
+            _toastService.ShowError("!Please fill the form correctly");
+    }
+    private async Task UploadApplicationImageFiles(IBrowserFile _file)
+    {
+        applicationImagefile = _file;
+
+
+    }
+    private async Task UploadApplicationImagethumbnailFiles(IBrowserFile _file)
+    {
+        applicationImagethumbnailfile = _file;
+
+
+    }
+    private async Task ClearForm()
+    {
+        application = new DmsIssuedBy();
+        applicationImagefile = null;
+        applicationImagethumbnailfile = null;
+        application.loginid = parentid;
+    }
+}

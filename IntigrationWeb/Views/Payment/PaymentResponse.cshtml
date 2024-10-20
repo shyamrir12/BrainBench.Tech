@@ -1,0 +1,255 @@
+﻿
+@{
+
+    Layout = null;
+  
+}
+@using IntigrationWeb.Helper;
+@using IntegrationModels;
+@using Microsoft.Extensions.Options;
+@inject IConfiguration _configuration;
+@model IntegrationModels.PaymentTransaction;
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Khanij-online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        }
+
+        .section {
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 100px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        tr th {
+            font-size: 16px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        tr td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 10px 10px;
+        }
+
+        .custom-btn-parent {
+            display: flex;
+            justify-content: center;
+        }
+
+        .custom-btn {
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 25px;
+            font-weight: 500;
+            background: #4caf50;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: inset 2px 2px 2px 0px rgb(255 255 255 / 50%), 7px 7px 20px 0px rgb(0 0 0 / 10%), 4px 4px 5px 0px rgb(0 0 0 / 10%);
+            outline: none;
+            margin-top: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .text-danger {
+            color: #e91b1b;
+        }
+
+        .text-orange {
+            color: #ff5722;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-success {
+            color: #13db22;
+        }
+
+        table tr td span {
+            font-weight: 500;
+        }
+
+        .header {
+            border-bottom: 1px solid #dddd;
+            height: 100px;
+            width: 100%;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #711519;
+            box-shadow: 1px 1px 2px rgb(0 0 0 / 11%);
+        }
+
+            .header .p-3 {
+                padding: .5rem 0rem;
+            }
+    </style>
+
+</head>
+<body id="tablePRint">
+   
+        <div style="text-align:right;">
+            <a href="javascript:void(0);" id="btnSaveDraft" onclick="DownloadForm();" class="btn btn-success btn-md  mb-2  waves-effect waves-light rounded-0 showhide">Download Receipt</a>
+
+        </div>
+        <table>
+            <tbody>
+                <tr>
+
+                    <td colspan="2" style="background-color: #711519">
+                        <div class="p-3 text-center">
+                            <img src="~/CMSimg/Khanij-logo-white.png" />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="text-center" style="margin-bottom: 1.5rem;"> <h3>Payment Acknowledgement</h3> </td>
+                </tr>
+              
+
+                @if (Model.ApplicantName != null)
+                {
+                    <tr>
+                        <th width="300px">Applicant Name</th>
+                        <td> @Model.ApplicantName</td>
+                    </tr>
+                }
+                @if (Model.PaymentFor != null)
+                {
+                    <tr>
+                        <th width="300px">Payment For</th>
+                        <td> @Model.PaymentFor</td>
+                    </tr>
+                }
+                <tr>
+                    <th width="300px">Applicant Transaction Number</th>
+                    <td> @Model.CLNT_TXN_REF</td>
+                </tr>
+                <tr>
+
+                    <th>Transaction Bank Code</th>
+                    <td> @Model.TPSL_BANK_CD</td>
+                </tr>
+                <tr>
+                    <th>Payment Transaction ID</th>
+                    <td>@Model.TPSL_TXN_ID</td>
+                </tr>
+                <tr>
+                    <th>Payment Transaction DateTime </th>
+                    <td>@DateTime.Now.ToString("dd-MMM-yyyy hh:mm:ss tt")</td>
+                    @*<td>@Model.TPSL_TXN_TIME</td>*@
+                </tr>
+                <tr>
+                    <th>Payment Status </th>
+                    <td>
+                        @if (Model.TXN_STATUS == "PENDING")
+                        {
+                            <span class="text-orange">PENDING</span><span style="margin:15px"><img src="~/CMSimg/expired.png" alt="status image" height="20"></span>
+                        }
+                        else if (Model.TXN_STATUS == "SUCCESS")
+                        {
+                            <span class="text-success">SUCCESS</span><span style="margin:15px">
+                                <img src="~/CMSimg/accept.png" alt="status image" height="20">
+                            </span>
+                        }
+                        else if (Model.TXN_STATUS == "FAILED")
+                        {
+                            <span class="text-danger">FAILED</span><span style="margin:15px">
+                                <img src="~/CMSimg/cross.png" alt="status image" height="20">
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-orange">@Model.TXN_STATUS</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <th>Total Paid Amount </th>
+                    <td> Rs.  @Model.TXN_AMT</td>
+                </tr>
+                @if (Model.CLNT_TXN_REF.StartsWith("ORD"))
+                {
+                    <tr>
+                        <th>Total Wallet Adjusted Amount </th>
+                        <td> Rs. @ViewBag.WalletAmount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="custom-btn-parent showhide">
+           
+             @if (Model.CLNT_TXN_REF.StartsWith("LP"))
+            {
+            var dataString = "/LicenseePayment/PaymentRequest/PaymentRequestView";
+            var final = _configuration.GetValue<string>("PaymentKeyList:RedirecToLincenseUrl") + dataString;
+                <a class="btn btn-sm btn-success" href='@final'>OK</a>
+            }
+        </div>
+    </div>
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+<script>
+    function DownloadForm() {
+        // Hide the elements you want to exclude from the PDF
+        $('.showhide').hide();
+        // Add any other elements you want to hide here
+
+        var HTML_Width = $("#tablePRint").width();
+        var HTML_Height = $("#tablePRint").height();
+        var top_left_margin = 15;
+        var PDF_Width = HTML_Width + (top_left_margin * 2);
+        var PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        var canvas_image_width = HTML_Width;
+        var canvas_image_height = HTML_Height;
+        var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+        html2canvas($("#tablePRint")[0], { allowTaint: true }).then(function (canvas) {
+            canvas.getContext('2d');
+            console.log(canvas.height + " " + canvas.width);
+
+            var data = canvas.toDataURL("image/JPEG", 1.0);
+            var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+            pdf.addImage(data, 'JPEG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+            for (var i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
+                pdf.addImage(data, 'JPEG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+            }
+
+            data = pdf.save('SBI_PaymentReceipt' + ".pdf");
+
+            // Show the hidden elements after generating the PDF
+            $('.showhide').show();
+            // Revert any other changes you made to hide elements
+        });
+    }
+</script>
+

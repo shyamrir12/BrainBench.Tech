@@ -8,3 +8,35 @@
 @using Microsoft.JSInterop
 @using AdminPanelApp
 @using AdminPanelApp.Shared
+@using LoginModels
+@using AdminPanelModels.UserMangment
+@using AdminPanelModels
+@using Microsoft.AspNetCore.Components.Authorization
+@using Blazored.Toast
+@using Blazored.Toast.Services
+@using Blazored.LocalStorage
+@using MudBlazor
+@using BlazorDB
+@using AvnRepository
+@using Data
+
+@using Newtonsoft.Json;
+
+@using AdminPanelApp.Data.AdminPanelServices.Adduser_rightsServices;
+@using AdminPanelApp.Data.AdminPanelServices.AddUserServices;
+@using AdminPanelApp.Data.AdminPanelServices.ApplicationServices;
+@using AdminPanelApp.Data.AdminPanelServices.DashBoardServices;
+@using AdminPanelApp.Data.AdminPanelServices.LicenseServices;
+@using AdminPanelApp.Data.AdminPanelServices.OutletServices;
+@using AdminPanelApp.Data.AdminPanelServices.SMSTempateMasterServices;
+@using AdminPanelApp.Data.AdminPanelServices.UserMappingServices;
+@using AdminPanelApp.Data.AdminPanelServices.WorkspaceServices;
+@using AdminPanelApp.Data.AzureHelperServices;
+@using AdminPanelApp.Data.EncryptDecryptServices;
+@using AdminPanelApp.Data.LoginServices;
+@using AdminPanelApp.Data.MailSMSServices;
+@using AdminPanelApp.Data.RecoverPasswordServices;
+@using AdminPanelApp.Data.RegisterServices;
+@using AdminPanelApp.Data.UserSessionIndexDB;
+
+@using System.Security.Claims;

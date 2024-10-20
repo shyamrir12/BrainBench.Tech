@@ -1,39 +1,128 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">AdminPanelApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@using AdminPanelApp.Data.UserSessionIndexDB;
+@using Newtonsoft.Json;
+@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorageService
+@inject UserDb _usermanager;
+<MudNavMenu>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    @if (MenuList.Any())
+    {
+        foreach (var item in MenuList)
+        {
+            if (item.ChildMenuItems.Any())
+            {
+                <MudNavGroup Title="@item.MenuName" Expanded="false" Icon="@GetIconValue( item.GifIcon)">
+                    @foreach (var childitem in item.ChildMenuItems)
+                    {
+                        if (childitem.ChildMenuItems.Any())
+                        {
+                            <MudNavGroup Title="@childitem.MenuItemName" Expanded="false">
+
+                                @foreach (var childchilditem in childitem.ChildMenuItems)
+                                {
+                                    <MudNavLink Href="@childchilditem.MenuItemPath" Match="NavLinkMatch.All">@childchilditem.MenuName</MudNavLink>
+                                }
+                            </MudNavGroup>
+                        }
+                        else
+                        {
+                            <MudNavLink Href="@childitem.MenuItemPath" Match="NavLinkMatch.All">@childitem.MenuName</MudNavLink>
+                        }
+                    }
+
+                </MudNavGroup>
+            }
+            else
+            {
+                <MudNavLink Href="@item.MenuItemPath" Match="NavLinkMatch.All" Icon="@GetIconValue( item.GifIcon)">@item.MenuName</MudNavLink>
+            }
+
+        }
+    }
+
+
+  </MudNavMenu>
+
 
 @code {
+
     private bool collapseNavMenu = true;
+    List<MenuItem> MenuList = new List<MenuItem>();
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
 
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var list = await _usermanager.GetAllAsync();
+            if (list != null)
+            {
+
+                var obj = JsonConvert.DeserializeObject<Result<UserLoginSession>>(list.FirstOrDefault().Email);
+                MenuList = obj.Data.Items;
+
+            }
+
+
+        }
+    }
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    private async Task Logout()
+    {
+        await _usermanager.DeleteAllAsync();
+        await _localStorageService.RemoveItemAsync("jwt_token");
+        _navigationManager.NavigateTo("/", true);
+       
+    }
+   
+    public string GetIconValue(string IconName)
+    {
+        string cicon = "";
+
+        switch (IconName)
+        {
+            case "PersonAdd":
+                cicon = Icons.Material.Filled.PersonAdd;
+                break;
+            case "Dashboard":
+                cicon = Icons.Material.Filled.Dashboard;
+                break;
+            case "Password":
+                cicon = Icons.Material.Filled.Password;
+                break;
+            case "BarChart":
+                cicon = Icons.Material.Filled.BarChart;
+                break;
+            case "AccountCircle":
+                cicon = Icons.Material.Filled.AccountCircle;
+                break;
+            case "Logout":
+                cicon = Icons.Material.Filled.Logout;
+                break;
+            case "PostAdd":
+                cicon = Icons.Material.Filled.PostAdd;
+                break;
+            case "Settings":
+                cicon = Icons.Material.Filled.Settings;
+                break;
+            case "AddChart":
+                cicon = Icons.Material.Filled.AddChart;
+                break;
+            default:
+                cicon = Icons.Material.Filled.Layers;
+                break;
+        }
+
+
+        return cicon;
     }
 }

@@ -1,0 +1,168 @@
+﻿
+@inject IToastService _toastService
+@inject IAddUserSubscriber _adduser
+@inject NavigationManager _navigationManager
+<EditForm Model="@adduser" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+             @*    <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5" Align="Align.Start"><b>Add User</b></MudText>
+                    </CardHeaderContent>
+                </MudCardHeader> *@
+                <MudCardContent>
+                    <MudFocusTrap DefaultFocus="DefaultFocus.FirstChild">
+                        <MudSelect T="string" Label="User Role" AnchorOrigin="Origin.BottomCenter" @bind-Value="adduser.RoleId">
+                            @foreach (var item in Roletype)
+                            {
+                                <MudSelectItem Value="@item.Value">@item.Text</MudSelectItem>
+
+                            }
+                        </MudSelect>
+                        <MudTextField Label="Applicant Name" HelperText="Max. 8 characters"
+                        @bind-Value="adduser.Name" For="@(() => adduser.Name)" />
+
+                        <MudTextField Label="Mobile No" HelperText="Mobile No" Class="mt-3"
+                        @bind-Value="adduser.Mobile_No" For="@(() => adduser.Mobile_No)" />
+
+                        <MudTextField Label="Email Id" Class="mt-3"
+                        @bind-Value="adduser.EmailId" For="@(() => adduser.EmailId)" />
+
+                        <MudTextField Label="Designation " Class="mt-3"
+                        @bind-Value="adduser.Designation" For="@(() => adduser.Designation)" />
+
+                        @*   <MudPaper class="input-group-text" Style="padding:0;border:hidden" Elevation="0">
+                        <MudTextField Label="Captcha" HelperText="Sum of given numbers ?" @bind-Value="adduser.captcha" For="@(() => adduser.captcha)" OnlyValidateIfDirty=true />
+                        <MudChip Icon="@Icons.Material.Filled.QuestionAnswer" Label="true" Color="Color.Primary">@CaptchaText</MudChip>
+                        </MudPaper> *@
+
+                    </MudFocusTrap>
+                </MudCardContent>
+                <MudCardActions>
+
+
+
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.AppRegistration" Color="Color.Primary"
+                               Class="ml-auto" Disabled="@(!context.IsModified() || !context.Validate())" FullWidth="true">@buttonText</MudButton>
+
+
+                </MudCardActions>
+
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+
+    public AddUserModel adduser = new AddUserModel();
+    public string buttonText = "Save";
+    public int parentid { get; set; }
+    public IEnumerable<ListItems> Roletype { get; set; } = new List<ListItems> { new ListItems { Value = "", Text = "" } };
+
+    [Parameter]
+    public AddUserModel adduserparam { get; set; }
+
+    // [Parameter]
+    // public EventCallback<int> OnUserAdd { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var identity = authState.User.Identity as ClaimsIdentity;
+        if (identity.IsAuthenticated)
+        {
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+            parentid = Convert.ToInt32(nameIdentifierClaim.Value);
+            adduser.ParentID = parentid;
+            var rolelist = await _adduser.GetRole(new CommanRequest { UserID = parentid });
+            Roletype = rolelist.Data;
+
+
+            adduser = adduserparam;
+            if (adduserparam.UserID > 0)
+            {
+                buttonText = "Update";
+            }
+            else
+            {
+                buttonText = "Save";
+            }
+            adduserparam = null;
+
+        }
+        else
+        {
+            _navigationManager.NavigateTo("/", true);
+        }
+    }
+    private async void OnValidSubmit(EditContext context)
+    {
+
+        if (context.Validate())
+        {
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+            adduser.ParentID = parentid;
+
+            var resresponce = await _adduser.AddUpdateUser(adduser);
+            if (resresponce.Status == true)
+            {
+                _toastService.ShowSuccess(resresponce.Data.Msg);
+                adduser = new AddUserModel();
+                adduser.ParentID = parentid;
+                // if (buttonText == "Save")
+                // {
+
+                //     await OnUserAdd.InvokeAsync(Convert.ToInt32(resresponce.Data.Data));
+                // }
+               
+
+            }
+
+            else
+                _toastService.ShowSuccess(resresponce.Message.FirstOrDefault());
+
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+
+        }
+        else
+            _toastService.ShowError("!Please fill the form correctly");
+    }
+    // protected override void OnParametersSet()
+    // {
+    //     if (adduserparam.UserID != null)
+    //     {
+    //         base.OnParametersSet();
+    //         adduser = adduserparam;
+    //         if (adduserparam.UserID > 0)
+    //         {
+    //             buttonText = "Update";
+    //         }
+    //         else
+    //         {
+    //             buttonText = "Save";
+    //         }
+    //         adduserparam = null;
+    //     }
+    //     else
+    //     {
+    //         adduser = new AddUserModel();
+    //         buttonText = "Save";
+    //     }
+    // }
+
+}

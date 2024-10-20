@@ -1,17 +1,148 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.Toast.Configuration;
+@using LoginModels;
+@using AdminPanelApp.Data.UserSessionIndexDB;
+@inherits LayoutComponentBase
+@inject NavigationManager _navigationManager
+@inject HttpClient _httpClient
+@inject IJSRuntime _jsRuntime
+@inject ILocalStorageService _localStorageService
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inject UserDb _usermanager;
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="3"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
+<MudThemeProvider />
+<MudDialogProvider Position="DialogPosition.Center" />
+<MudSnackbarProvider />
+<MudOverlay @bind-Visible="@SpinnerVisible" LightBackground="true" ZIndex="9999">
+    <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+</MudOverlay>
+<MudLayout>
+    <AuthorizeView>
+       
+    <MudAppBar Elevation="1" >
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudSpacer />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+            <MudMenu>
+                <ActivatorContent>
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit"></MudIcon>
+                </ActivatorContent>
+                <ChildContent>
+                    <MudCard Elevation="0">
+                        <MudCardHeader>
+                            <CardHeaderAvatar>
+                                <MudAvatar Image="img/userimg.jpg" />
+                            </CardHeaderAvatar>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">@context.User.Identity.Name </MudText>
+                            </CardHeaderContent>
+                           
+                        </MudCardHeader>
+                        <MudCardActions>
+                             <MudButton Variant="Variant.Text" Color="Color.Primary">Profile</MudButton>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary">Change Password</MudButton>
+                             <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="eventLogout">Logout</MudButton>
+                            
+                             </MudCardActions>
+                    </MudCard>
+                    
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+                </ChildContent>
+            </MudMenu>
+            @* <Authorized> *@
+             @*    <MudIconButton Class="ml-3" Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
+                <MudText Typo="Typo.h6">Hello, @context.User.Identity.Name</MudText> *@
+           @*  </Authorized> *@
+
+           
+            @*<NotAuthorized>
+            <MudIconButton Icon="@Icons.Filled.Login" Color="Color.Inherit" />
+            </NotAuthorized>*@
+       
+        @*<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />*@
+    </MudAppBar>
+    <MudDrawer @bind-Open="@open" Elevation="1" >
+        <MudDrawerHeader>
+
+            <MudText Typo="Typo.h6" Class="ml-3"> Admin Panel</MudText>
+           
+        </MudDrawerHeader>
+        <MudNavMenu>
+               
+            <NavMenu />
+        </MudNavMenu>
+    </MudDrawer>
+      
+    </AuthorizeView>
+    @*<MudDrawer @bind-Open="@open" ClipMode="DrawerClipMode.Docked" PreserveOpenState="@preserveOpenState" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
+
+    <NavMenu />
+    </MudDrawer>*@
+    <MudMainContent>
+        <MudContainer Class="mt-16" MaxWidth="MaxWidth.Medium">
+            <CascadingValue Value="event_spinner">
+             @Body
+            </CascadingValue>
+            @*<MudScrollToTop >
+            <MudFab Color="Color.Tertiary" Icon="@Icons.Filled.ArrowCircleUp" />
+            </MudScrollToTop>*@
+
+        </MudContainer>
+    </MudMainContent>
+
+</MudLayout>
+
+
+
+
+@code {
+    bool open = true;
+    bool dense = false;
+    bool preserveOpenState = false;
+    Breakpoint breakpoint = Breakpoint.Lg;
+    DrawerClipMode clipMode = DrawerClipMode.Never;
+    public bool SpinnerVisible { get; set; } = false;
+   // public string DroverTopBarVisible { get; set; } = "visible";
+
+    EventCallback<NotifyMainLayout> event_spinner => EventCallback.Factory.Create(this, (Action<NotifyMainLayout>)notifyLayoutWithSpinner);
+    private void notifyLayoutWithSpinner(NotifyMainLayout _notifyLayout)
+    {
+        SpinnerVisible = _notifyLayout.SpinnerVisible;
+        // DroverTopBarVisible = _notifyLayout.DroverTopBarVisible;
+
+    }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        // var authState = await authenticationState;
+        // var user = authState.User;
+        // if (!user.Identity.IsAuthenticated)
+        //     _navigationManager.NavigateTo("/", true);
+
+
+       
+        await base.OnInitializedAsync();
+    }
+    private async Task eventLogout()
+    {
+          await _usermanager.DeleteAllAsync();
+        await _localStorageService.RemoveItemAsync("jwt_token");
+        _navigationManager.NavigateTo("/", true);
+    }
+    
+
+   
+}
+

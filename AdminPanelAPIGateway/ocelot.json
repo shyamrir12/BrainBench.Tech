@@ -1,0 +1,987 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5232"
+  },
+  "Routes": [
+    /********New Auth Start******AuthServer API********/
+    {
+      "DownstreamPathTemplate": "/api/auth/AuthenticateJWT",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5206
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/AuthenticateJWT", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/auth/GetUserByJWT",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5206
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/GetUserByJWT", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    ///********New Auth End**************
+
+    /********EMail/SMS/File Upload Start*******Intigration API*******/
+    /************************common email start*****************************/
+    {
+      "DownstreamPathTemplate": "/api/MailService/SendCommonMail",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/MailService/SendCommonMail",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /************************common email end*****************************/
+    /****************************SMS INTEGRATION**************************/
+    {
+      "DownstreamPathTemplate": "/api/SMSService/Main",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/SMSService/Main",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /****************************SMS INTEGRATION END**************************/
+
+    /***********File server start*******************/
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/SaveFile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/SaveFile",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/SaveFiles",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/SaveFiles",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /***********Sunil Deshalaher 27-07-22 *******************/
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/DownloadFileResult",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/DownloadFileResult",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/AzureFile/DeleteFile",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5159
+        }
+
+      ],
+      "UpstreamPathTemplate": "/AzureFile/DeleteFile",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /***********File server start*******************/
+
+    /********EMail/SMS/File Upload END**************/
+
+    /********Registration Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/Register/CheckUserExist",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Register/CheckUserExist", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Register/RegisterUser",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Register/RegisterUser", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Register/GetApplicationType",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Register/GetApplicationType", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    /********Registration End**************/
+
+    /********Add user Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/AddUser/AddUpdateUser",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/AddUser/AddUpdateUser", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/AddUser/ActivationUser",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/AddUser/ActivationUser", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/AddUser/GetUserList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/AddUser/GetUserList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/AddUser/GetRole",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/AddUser/GetRole", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/AddUser/GetUserByID",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/AddUser/GetUserByID", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/AddUser/UpdatePassword",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/AddUser/UpdatePassword", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+
+    /********Add user  End**************/
+
+    /********User rights Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/Adduser_rights/GetUserList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Adduser_rights/GetUserList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Adduser_rights/GetMenuListFormate",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Adduser_rights/GetMenuListFormate", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Adduser_rights/GetMenuListByRole",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Adduser_rights/GetMenuListByRole", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Adduser_rights/UpdateMenuByID",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Adduser_rights/UpdateMenuByID", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+
+    /********User rights   End**************/
+    /********UserMapping Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/UserMapping/GetApplication",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/UserMapping/GetApplication", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/UserMapping/GetWorkspace",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/UserMapping/GetWorkspace", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/UserMapping/GetOutlet",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/UserMapping/GetOutlet", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/UserMapping/UpdateUserMapping",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/UserMapping/UpdateUserMapping", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+
+    /********UserMapping  End**************/
+    /********Application Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/DMSIssuedBy/AddApplication",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Application/AddApplication", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSIssuedBy/UpdateApplication",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Application/UpdateApplication", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSIssuedBy/ModifyStatusApplication",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Application/ModifyStatusApplication", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSIssuedBy/GetApplicationBYID",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Application/GetApplicationBYID", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSIssuedBy/GetApplicationList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Application/GetApplicationList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    /********Application  End**************/
+    /********Workspace Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/Department/GetApplication",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Workspace/GetApplication", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Department/AddWorkspace",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Workspace/AddWorkspace", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Department/UpdateWorkspace",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Workspace/UpdateWorkspace", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/Department/ModifyStatusWorkspace",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Workspace/ModifyStatusWorkspace", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/Department/AssignWorkspace",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Workspace/AssignWorkspace", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/Department/GetWorkspaceList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Workspace/GetWorkspaceList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+
+    /********Workspace  End**************/
+
+    /********Outlet Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/GetApplication",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/GetApplication", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/GetWorkspace",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/GetWorkspace", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/AddOutlet",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/AddOutlet", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/UpdateOutlet",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/UpdateOutlet", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/ModifyStatusOutlet",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/ModifyStatusOutlet", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/GetOutletBYID",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/GetOutletBYID", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/DMSHECategory/GetOutletList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/Outlet/GetOutletList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+
+    /********Outlet  End**************/
+    /********License Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/License/GetLicenseTypeList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/GetLicenseTypeList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/GetLicenseList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/GetLicenseList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/GetLicenseTranList",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/GetLicenseTranList", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/GetLicenseBYID",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/GetLicenseBYID", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/AddUpdateLicense",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/AddUpdateLicense", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/ModifyStatusLicense",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/ModifyStatusLicense", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/SubscribeLicense",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/SubscribeLicense", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/UnSubscribeLicense",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/UnSubscribeLicense", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/License/UpdatePaymentStatus",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/License/UpdatePaymentStatus", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+
+    /********License  End**************/
+    /********SMSTemplate Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/SMSTemplate/Add",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/SMSTemplate/Add", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/SMSTemplate/View",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/SMSTemplate/View", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/SMSTemplate/Edit",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/SMSTemplate/Edit", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/SMSTemplate/Delete",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/SMSTemplate/Delete", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    {
+      "DownstreamPathTemplate": "/api/SMSTemplate/Update",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/SMSTemplate/Update", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+
+    },
+    /********SMSTemplate  End**************/
+    /********RecoverPassword Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/RecoverPassword/GetRecoverPassword",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/RecoverPassword/GetRecoverPassword", //for clent
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    /********RecoverPassword  End**************/
+    /********DashBoard Start*******AdminPanel API*******/
+    {
+      "DownstreamPathTemplate": "/api/DashBoard/GetDashboard",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5110
+        }
+      ],
+      "UpstreamPathTemplate": "/DashBoard/GetDashboard", //for clent
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "Bearer" ],
+        "AllowedScopes": []
+      }
+    }
+    /********DashBoard  End**************/
+
+  ]
+}

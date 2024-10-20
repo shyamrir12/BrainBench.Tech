@@ -1,0 +1,148 @@
+﻿@page "/application"
+@inject NavigationManager _navigationManager
+@inject IApplicationSubscriber _application
+@inject IToastService _toastService
+@inject IAzureFileSubscriber _azrfileSubscriber
+@inject IConfiguration _configuration
+<MudTabs Elevation="3" Rounded="true" Class="mt-3" @ref="tabs" ActivePanelIndexChanged="HandleActivePanelIndexChanged">
+
+    <MudTabPanel Text='Add Application'>
+        <Application applicationparam="@application"></Application>
+    </MudTabPanel>
+    <MudTabPanel Text='Application List'>
+
+        <MudTable Dense="true" Items="@applicationlist" Hover="true" Bordered="true" Striped="true" Filter="new Func<DmsIssuedBy,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+               
+                <MudSpacer /> <MudSpacer /> <MudSpacer /><MudSpacer /> <MudSpacer />
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>SNo.</MudTh>
+                <MudTh>Application Name</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Image</MudTh>
+                <MudTh>Image Thumbnail</MudTh>
+                <MudTh>Action</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="SNo.">@context.sno</MudTd>
+                <MudTd DataLabel="Application Name">@context.nameenglish</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Image">
+                   
+                    
+                    <MudImage Src="@context.ApplicationImagebase64" Width="150" Height="150"  Elevation="25" Class="rounded-lg ma-4" />
+
+                    </MudTd>
+                <MudTd DataLabel="Image Thumbnail">
+
+                    <MudImage Src="@context.ImagethumbnailImagebase64" Width="100" Height="100" Elevation="25" Class="rounded-lg ma-4" />
+                </MudTd>
+                <MudTd DataLabel="Action">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="@(e => editevent(context))"></MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(e => deleteevent(context))"></MudIconButton>
+                </MudTd>
+
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </MudTabPanel>
+
+</MudTabs>
+
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+    [CascadingParameter]
+    public EventCallback<NotifyMainLayout> _notifyMainLayout { get; set; }
+    NotifyMainLayout nml = new NotifyMainLayout();
+
+    MudTabs tabs;
+    int userid = 0;
+
+    private string searchString1 = "";
+    private DmsIssuedBy selectedItem1 = null;
+    private HashSet<DmsIssuedBy> selectedItems = new HashSet<DmsIssuedBy>();
+
+    List<DmsIssuedBy> applicationlist = new List<DmsIssuedBy>();
+    DmsIssuedBy application = new DmsIssuedBy();
+
+    async Task HandleActivePanelIndexChanged(int newIndex)
+    {
+        if (newIndex==1)
+        {
+            nml.SpinnerVisible = true;
+            await _notifyMainLayout.InvokeAsync(nml);
+            var applist = await _application.GetApplicationList(new CommanRequest { UserID = userid });
+            if (applist.Status == true)
+            {
+                foreach (var item in applist.Data)
+                {
+                    // var folderpath = _configuration.GetValue<string>("KeyList:ApplicationImage");
+                    // item.ApplicationImage = folderpath+"\\"+"638457070726780000_3172022123470_gallery1.jpg";
+                    if (!String.IsNullOrEmpty(item.ApplicationImage))
+                    {
+                        MyFileResult fr = await _azrfileSubscriber.DownloadFile(new MyFileRequest { FileNameWithPath = item.ApplicationImage });
+                        item.ApplicationImagebase64 = "data:image/" + fr.ContentType + ";base64," + fr.FileBase64;
+                    }
+                    if (!String.IsNullOrEmpty(item.Imagethumbnail))
+                    {
+                        MyFileResult fr = await _azrfileSubscriber.DownloadFile(new MyFileRequest { FileNameWithPath = item.Imagethumbnail });
+                        item.ImagethumbnailImagebase64 = "data:image/" + fr.ContentType + ";base64," + fr.FileBase64;
+                    }
+
+                }
+                applicationlist = applist.Data;
+            }
+
+            nml.SpinnerVisible = false;
+            await _notifyMainLayout.InvokeAsync(nml);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+       
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var identity = user.Identity as ClaimsIdentity;
+
+            // Find the NameIdentifier claim
+            var nameIdentifierClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            // Get the value of the NameIdentifier claim
+
+            userid = Convert.ToInt32(nameIdentifierClaim?.Value);
+            
+        }
+
+    }
+    private bool FilterFunc1(DmsIssuedBy element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(DmsIssuedBy element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.nameenglish.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+    private void editevent(DmsIssuedBy? _app)
+    {
+        application = _app;
+        tabs.ActivatePanel(0);
+
+    }
+    private void deleteevent(DmsIssuedBy? _aum)
+    {
+        tabs.ActivatePanel(0);
+    }
+}

@@ -1,0 +1,229 @@
+﻿@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" src='@Url.Content("~/css/bootstrap.min.css")' type="text/css" />
+    <link rel="stylesheet" src='@Url.Content("~/css/emBridge.css")' type="text/css" />
+    <script src='@Url.Content("~/js/jquery.min.js")'></script>
+    <script src='@Url.Content("~/js/emBridge.js")'></script>
+    <script src='@Url.Content("~/js/popper.min.js")'></script>
+    <script src='@Url.Content("~/js/bootstrap.min.js")'></script>
+
+    <script>
+        window.onload = function () {
+            //alert('asdfasdf');
+            //alert('@ViewBag.FileName');
+            //$("#hfPdfFileName").val('@ViewBag.FileName');
+            //$("#hfPdfFileBase64").val('@ViewBag.PdfFileBase64');
+            //$("#dataToSign").html('@ViewBag.PDFName');
+
+        };
+
+        // Allow window to listen for a postMessage
+        window.addEventListener("message", (event) => {
+            debugger;
+            // Normally you would check event.origin
+            // To verify the targetOrigin matches
+            // this window's domain
+            let hfPdfFileBase64 = document.querySelector('#hfPdfFileBase64');
+            let FNID = document.querySelector('#FNID');
+            let FNTYPE = document.querySelector('#FNTYPE');
+            let UPDATEIN = document.querySelector('#UPDATEIN');
+
+            // event.data contains the message sent
+            hfPdfFileBase64.value = event.data.PdfFileBase64;
+            //`Name is ${event.data.pName} Age is  ${event.data.pAge}`;
+            FNID.value = event.data.FNID;
+            FNTYPE.value = event.data.FNTYPE;
+            UPDATEIN.value = event.data.UPDATEIN;
+
+            // call the belwo save pdf functn when call from client completed after 3-5 seconds
+            try {
+                var dt = new Date();
+                //var FNID = $("#FNID").val();
+                //var FNTYPE = $("#FNTYPE").val();
+                //var FileName = "LTP_" + FNID + "_" + dt.getDate() + "" + (dt.getMonth() + 1) + "" + dt.getFullYear() + "_" + dt.getHours() + "_" + dt.getMinutes() + "_" + dt.getSeconds() + ".pdf";
+                var FileName = $("#FNTYPE").val() + "_" + $("#FNID").val() + "_" + dt.getDate() + "" + (dt.getMonth() + 1) + "" + dt.getFullYear() + "_" + dt.getHours() + "_" + dt.getMinutes() + "_" + dt.getSeconds() + ".pdf";
+                $("#fName").val(FileName).change();
+
+                $.ajax({
+                    url: '@Url.Action("SaveNormalPdfFile", "NewDSC", new { Area = "NewDSC" })',
+                    data: { base64BinaryStr: data, fileName: $("#fName").val(), ID: $("#FNID").val(), UpdateIn: $("#UPDATEIN").val() },
+                    type: "post",
+                    dataType: 'json',
+                    success: function (msg) {
+                        if (msg == "SUCCESS") {
+                            $("#signData").prop('disabled', false);
+                        }
+                        else {
+                            $("#signData").prop('disabled', true);
+                            alert(msg);
+                        }
+                    }
+                });
+            }
+            catch (e) {
+                alert("Your DSC Connection is not working. Please try after some time.");
+            }
+        });
+
+
+        function SignCompleted(signedData, status) {
+            //alert(signedData);
+            $.ajax({
+                url: '@Url.Action("CheckVerifyResponse", "NewDSC", new { Area = "NewDSC" })',
+                type: "POST",
+                data: { contentType: "pkcs7", signDataBase64Encoded: signedData, responseType: "plain", status: status },
+                async: false,
+                success: function (msg) {
+                    if (msg == "SUCCESS") {
+                        $.ajax({
+                            url: '@Url.Action("SavePdfFile", "NewDSC", new { Area = "NewDSC" })',
+                            type: "POST",
+                            async: false,
+                            data: { base64BinaryStr: signedData, fileName: $("#fName").val(), ID: $("#FNID").val(), UpdateIn: $("#UPDATEIN").val() },
+                            success: function (msg) {
+                                if (msg == "SUCCESS") {
+                                    //window.location.href = '@ViewBag.RedirectURL'
+                                    let msgSuccess = { DSCResult: "SUCCESS" };
+                                    // In production, DO NOT use '*', use toe target domain
+                                    window.opener.postMessage(msgSuccess, '*')// childwin is the targetWindow
+                                    //window.opener.location.reload();
+                                    window.close();
+                                }
+                                else {
+                                    //alert(msg);
+                                    let msgFailed = { DSCResult: "FAILED" };
+                                    // In production, DO NOT use '*', use toe target domain
+                                    window.opener.postMessage(msgFailed, '*')// childwin is the targetWindow
+                                    //window.opener.location.reload();
+                                    window.close();
+
+                                }
+                            }
+                        });
+
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal1" style="display: none" id="btnErrorPopup"></button>
+    <div id="myModal1" class="modal fade modal-error" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" id="errorHeader">
+                    <h5 class="modal-title" id="errorTitle"><i class="fas fa-exclamation-triangle"></i>Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeError" onclick='return getSetFocus();setGetFocus();'>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-1">
+                        </div>
+                        <div class="col-sm-10">
+                            <span id="errorMessage"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="content">
+        <h2 style="color:red;">NewDSC</h2>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="ddlTokens">Tokens</label>
+                    <div class="input-group mb-3">
+                        <select class="form-control" id="ddlTokens">
+                            <option selected>Select Device</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" runat="server" id="btnRefreshtoken" onclick="callListCHProvider();">Refresh</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="ddlCert">Certificates</label>
+                    <select class="form-control" id="ddlCert">
+                        <option selected>Select Certificate</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label for="tokenPassword">Password</label>
+                    <input type="password" class="form-control" id="tokenPassword" placeholder="Password">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label for="CBPdfSigning">Pdf Signing</label>
+                    </div>
+                    <input type="checkbox" id="CBPdfSigning" title="Pdf Signing" style="margin-top: 7px;" />
+                    <input type="hidden" id="hfPdfFileName" value="" />
+                    <input type="hidden" id="hfPdfFileBase64" value="" />
+                    <input id="fName" type="hidden" />
+                    <input id="fid" type="hidden" />
+                    <input id="FNID" type="hidden" />
+                    <input id="FNTYPE" type="hidden" />
+                    <input id="UPDATEIN" type="hidden" />
+                </div>
+            </div>
+        </div>
+        <div id="dataSigningContainer">
+            <div class="form-group">
+                <label for="dataToSign">Data To Sign</label>
+                <textarea class="form-control" id="dataToSign" placeholder="Data To Sign"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="ddlDataType">Data Type</label>
+                <select class="form-control" id="ddlDataType">
+                    <option value="TextPKCS7">TextPKCS7</option>
+                    <option value="TextPKCS1">TextPKCS1</option>
+                    <option value="XML">XML</option>
+                    <option value="Sha256HashPKCS7">Sha256HashPKCS7</option>
+                    <option value="Sha256HashPKCS1">Sha256HashPKCS1</option>
+                    <option value="TBSCertificate">TBSCertificate</option>
+                    <option value="TextPKCS7ATTACHED">TextPKCS7ATTACHED</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <input type="button" id="signData" class="form-control btn btn-primary" onclick="callSign();" value="Sign" />
+        </div>
+        <div class="form-group" id="sdContainer" style="display: none;">
+            <label for="signedData">Signed Data</label>
+            <textarea class="form-control" id="signedData"></textarea>
+            <button class="form-control btn-dark" onclick="copyFunction('#signedData');">Copy Signed Data</button>
+        </div>
+        <div class="form-group" id="sdPdfContainer" style="display: none;">
+            <label for="signedData">Signed Data</label>
+            <textarea class="form-control" id="signedDataPDF" onchange="TxtChanged();"></textarea>
+        </div>
+        <div id="divLoading">
+        </div>
+    </section>
+
+</body>
+</html>
+

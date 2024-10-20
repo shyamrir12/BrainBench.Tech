@@ -8,12 +8,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AvnRepository" Version="1.0.3" />
+    <PackageReference Include="Blazor.SubtleCrypto" Version="6.0.1" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
+    <PackageReference Include="Blazored.Toast" Version="4.1.0" />
+    <PackageReference Include="BlazorIndexedDB" Version="0.3.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.26" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.20" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.20" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="MudBlazor" Version="6.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdminPanelModels\AdminPanelModels.csproj" />
+    <ProjectReference Include="..\LoginModels\LoginModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 </Project>
